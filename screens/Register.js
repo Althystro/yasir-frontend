@@ -11,13 +11,19 @@ import { useMutation } from "@tanstack/react-query";
 import { register } from "../api/auth";
 
 export default function Register({ navigation }) {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [civilId, setCivilId] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useContext(UserContext);
 
   const userInfo = {
-    fullName: fullName,
+    firstName: firstName,
+    lastName: lastName,
+    civilId: civilId,
+    phoneNumber: phoneNumber,
     email: email,
     password: password,
   };
@@ -46,9 +52,30 @@ export default function Register({ navigation }) {
       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
-        placeholder="Full Name"
-        value={fullName}
-        onChangeText={setFullName}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Civil ID"
+        value={civilId}
+        onChangeText={setCivilId}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
         autoCapitalize="none"
       />
       <TextInput
