@@ -28,6 +28,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
           {user ? <MainNav /> : <AuthNav />}
+          {/* <AuthNav /> */}
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
