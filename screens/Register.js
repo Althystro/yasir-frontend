@@ -48,8 +48,74 @@ export default function Register({ navigation }) {
   };
 
   return (
+    // <View style={styles.container}>
+    //   <Text style={styles.title}>Register</Text>
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="First Name"
+    //     value={firstName}
+    //     onChangeText={setFirstName}
+    //     autoCapitalize="none"
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Last Name"
+    //     value={lastName}
+    //     onChangeText={setLastName}
+    //     autoCapitalize="none"
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Civil ID"
+    //     value={civilId}
+    //     onChangeText={setCivilId}
+    //     autoCapitalize="none"
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Phone Number"
+    //     value={phoneNumber}
+    //     onChangeText={setPhoneNumber}
+    //     autoCapitalize="none"
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Email"
+    //     value={email}
+    //     onChangeText={setEmail}
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Password"
+    //     value={password}
+    //     onChangeText={setPassword}
+    //     secureTextEntry
+    //   />
+
+    //   <TouchableOpacity style={styles.button} onPress={handleRegister}>
+    //     <Text style={styles.buttonText}>Register</Text>
+    //   </TouchableOpacity>
+
+    //   <TouchableOpacity
+    //     style={styles.linkButton}
+    //     onPress={() => navigation.navigate("Login")}
+    //   >
+    //     <Text style={styles.linkText}>Already have an account? Login</Text>
+    //   </TouchableOpacity>
+    // </View>
+
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+    <View style={styles.topSection}>{/* Nothing added here? */}</View>
+    <View style={styles.midSection}>
+      {/* Only for the logo moto */}
+      <Text style={styles.midText}> Yessir | يسر </Text>
+      <Text style={{ color: "white", fontSize: 30 }}>Join Yessir</Text>
+    </View>
+
+    {/* The inputs */}
+    <View style={styles.bottomSection}>
+    <View style={styles.registerContainer}>
+       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -71,14 +137,14 @@ export default function Register({ navigation }) {
         onChangeText={setCivilId}
         autoCapitalize="none"
       />
-      <TextInput
+       <TextInput
         style={styles.input}
         placeholder="Phone Number"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
         autoCapitalize="none"
       />
-      <TextInput
+       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
@@ -92,27 +158,30 @@ export default function Register({ navigation }) {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+       <TouchableOpacity style={styles.button} onPress={handleRegister}>
+         <Text style={styles.buttonText}>Register</Text>
+       </TouchableOpacity>
 
-      <TouchableOpacity
+       <TouchableOpacity
         style={styles.linkButton}
         onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.linkText}>Already have an account? Login</Text>
-      </TouchableOpacity>
+         <Text style={styles.linkText}>Already have an account? Login</Text>
+       </TouchableOpacity>
+     </View>
     </View>
+  </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
+  registerContainer: {
+    // flex: 1,
+    // backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+    
   },
   title: {
     fontSize: 24,
@@ -130,9 +199,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 30,
     alignItems: "center",
     marginTop: 10,
   },
@@ -145,7 +214,49 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   linkText: {
-    color: "#007AFF",
+    color: "#1B2128",
     fontSize: 16,
+  },
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "transparent",
+  },
+  topSection: {
+    flex: 0.7,
+    backgroundColor: "#ffffff",
+    // backgroundColor: "red",
+  },
+  midSection: {
+    flex: 1,
+    backgroundColor: "#1B2128",
+    // backgroundColor: "blue",
+    marginTop: -40,
+    borderTopRightRadius: 60,
+    borderTopLeftRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bottomSection: {
+    flex: 3.5,
+    backgroundColor: "#ffffff",
+    // backgroundColor: "yellow",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+    marginTop: -30,
+    // justifyContent: "center",
+    // alignItems: "center",
+    alignContent: "flex-start",
+  },
+  midText: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  sectionContainer: {
+    width: "100%",
+    maxWidth: 400,
+    paddingHorizontal: 20,
+    marginVertical: 15,
   },
 });

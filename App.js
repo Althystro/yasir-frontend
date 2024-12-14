@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthNav from "./navigation/AuthNav";
 import MainNav from "./navigation/MainNav";
+import Home from "./screens/Home";
+
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -27,7 +29,9 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {user ? <MainNav /> : <AuthNav />}
+          {/* {user ? <MainNav /> : <AuthNav />} */}
+
+          <Home />
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
