@@ -6,6 +6,8 @@ import AllVehicles from "../components/AllVehicles";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons if not already installed
 import TestDrive from "../components/TestDrive";
 import PdfGenerator from "../components/PdfGenerator";
+import Home from "../screens/Home";
+import VehicleDetails from "../screens/VehicleDetails";
 
 const Tab = createBottomTabNavigator();
 
@@ -13,6 +15,7 @@ const MainNav = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -30,6 +33,7 @@ const MainNav = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
+      <Tab.Screen name="Home" component={VehicleDetails} />
       <Tab.Screen name="AI Recommendations" component={AiRecomendation} />
       <Tab.Screen name="All Vehicles" component={AllVehicles} />
       <Tab.Screen name="Test Drive" component={TestDrive} />

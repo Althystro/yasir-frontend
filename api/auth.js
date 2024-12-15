@@ -1,7 +1,6 @@
 import { saveToken } from "./storage";
 import instance from ".";
 
-
 const login = async (userInfo) => {
   console.log(userInfo);
   try {

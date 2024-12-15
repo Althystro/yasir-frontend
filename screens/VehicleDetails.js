@@ -5,62 +5,139 @@ import {
   View,
   SafeAreaView,
   FlatList,
+  Image,
+  TextInput,
 } from "react-native";
 import React, { useState } from "react";
 import cars from "../data/cars";
+import { Ionicons } from "@expo/vector-icons";
 
 const VehicleDetails = () => {
   const [selectedCar, setSelectedCar] = useState(null);
+  const [downPayment, setDownPayment] = useState("");
+  const [loanTerm, setLoanTerm] = useState("");
 
   const handleSelectedCar = (car) => {
     setSelectedCar(car);
   };
 
+  const calculateMonthlyPayment = () => {
+    if (!selectedCar || !downPayment || !loanTerm) return 0;
+
+    const carPrice = parseInt(selectedCar.price.replace(/\$|,/g, ""));
+    const principal = carPrice - parseInt(downPayment);
+    const monthlyInterest = 0.05 / 12; // 5% annual interest rate
+    const numberOfPayments = parseInt(loanTerm) * 12;
+
+    const monthlyPayment =
+      (principal *
+        monthlyInterest *
+        Math.pow(1 + monthlyInterest, numberOfPayments)) /
+      (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+
+    return monthlyPayment.toFixed(2);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topSection}>
-        {/* What will be added here the profile ? */}
-        {/* the FlatList part will be deleted later it only for me :) */}
         <FlatList
           data={cars}
           keyExtractor={(item) => item.id.toString()}
           horizontal
+          showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.carButton}
+              style={[
+                styles.carButton,
+                selectedCar?.id === item.id && styles.selectedCarButton,
+              ]}
               onPress={() => handleSelectedCar(item)}
             >
-              <Text>{item.name}</Text>
+              <Image source={{ uri: item.image }} style={styles.carImage} />
+              <Text style={styles.carButtonText}>{item.name}</Text>
+              <Text style={styles.carButtonPrice}>{item.price}</Text>
             </TouchableOpacity>
           )}
         />
       </View>
+
       <View style={styles.midSection}>
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}>
-          {selectedCar ? selectedCar.name : "Choose a car"}
-        </Text>
-        {/* <Text style={{ color: "white" }}>Vroom</Text> */}
+        {selectedCar ? (
+          <>
+            <Text style={styles.midText}>{selectedCar.name}</Text>
+            <View style={styles.detailsContainer}>
+              <View style={styles.detailItem}>
+                <Ionicons name="car-sport" size={24} color="white" />
+                <Text style={styles.detailText}>{selectedCar.engine}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Ionicons name="speedometer" size={24} color="white" />
+                <Text style={styles.detailText}>
+                  {selectedCar.fuelEfficiency}
+                </Text>
+              </View>
+            </View>
+          </>
+        ) : (
+          <Text style={styles.midText}>Choose a car</Text>
+        )}
       </View>
 
-      {/* Containes all cards */}
       <View style={styles.bottomSection}>
-        {/* Add the price / features / the caclulater thingy later ? maybe / button to buy */}
-
         {selectedCar ? (
           <>
             <Text style={styles.labelText}>Features</Text>
-
             <View style={styles.featuresContainer}>
-              {selectedCar.features.slice(0, 3).map((feature, index) => (
+              {selectedCar.features.map((feature, index) => (
                 <View style={styles.featuresCard} key={index}>
+                  <Ionicons
+                    name={
+                      index === 0
+                        ? "car"
+                        : index === 1
+                        ? "sunny"
+                        : "shield-checkmark"
+                    }
+                    size={24}
+                    color="#1B2128"
+                  />
                   <Text style={styles.featuresText}>{feature}</Text>
                 </View>
               ))}
             </View>
-            <View style={styles.calculaterSection}>
-              <Text style={{ fontSize: 30, fontWeight: 30 }}>Calculater ?</Text>
+
+            <View style={styles.calculatorSection}>
+              <Text style={styles.calculatorTitle}>Finance Calculator</Text>
+              <View style={styles.calculatorInputs}>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputLabel}>Down Payment ($)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={downPayment}
+                    onChangeText={setDownPayment}
+                    keyboardType="numeric"
+                    placeholder="10000"
+                  />
+                </View>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputLabel}>Loan Term (years)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={loanTerm}
+                    onChangeText={setLoanTerm}
+                    keyboardType="numeric"
+                    placeholder="5"
+                  />
+                </View>
+              </View>
+              {downPayment && loanTerm && (
+                <Text style={styles.monthlyPayment}>
+                  Monthly Payment: ${calculateMonthlyPayment()}
+                </Text>
+              )}
             </View>
+
             <View style={styles.priceContainer}>
               <Text style={styles.labelPriceText}>Starting From:</Text>
               <Text style={styles.priceText}>{selectedCar.price}</Text>
@@ -68,7 +145,7 @@ const VehicleDetails = () => {
           </>
         ) : (
           <Text style={styles.placeHolderText}>
-            select a Car to see details
+            Select a car to see details
           </Text>
         )}
       </View>
@@ -81,23 +158,23 @@ export default VehicleDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "transparent",
+    backgroundColor: "#ffffff",
   },
   topSection: {
-    flex: 0.6,
+    height: 200,
+    paddingTop: 20,
+    paddingBottom: 10,
     backgroundColor: "#ffffff",
-    // backgroundColor: "red",
   },
   midSection: {
     flex: 1,
     backgroundColor: "#1B2128",
-    // backgroundColor: "blue",
-    marginTop: -40,
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
-    justifyContent: "center",
-    // alignItems: "center",
+    paddingTop: 20,
+    paddingRight: 20,
+    paddingLeft: 20,
+    zIndex: 1,
   },
   bottomSection: {
     flex: 3.5,
@@ -105,93 +182,148 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
     marginTop: -30,
-    paddingHorizontal: 20, 
-    // alignContent: "flex-start",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  carButton: {
+    backgroundColor: "#f5f5f5",
+    padding: 15,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 20,
+    width: 200,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  selectedCarButton: {
+    backgroundColor: "#e8f0fe",
+    borderColor: "#1B2128",
+    borderWidth: 2,
+  },
+  carImage: {
+    width: 160,
+    height: 90,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  carButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  carButtonPrice: {
+    fontSize: 14,
+    color: "#666",
   },
   midText: {
-    marginLeft:20,
-    marginBottom:40,
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
+    marginBottom: 20,
+  },
+  detailsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 20,
+  },
+  detailItem: {
+    alignItems: "center",
+  },
+  detailText: {
+    color: "white",
+    marginTop: 5,
+    fontSize: 12,
+    textAlign: "center",
   },
   featuresContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
   featuresCard: {
-    flexDirection: "row",
-    padding: 10,
-    margin: 5,
+    padding: 15,
     alignItems: "center",
-    justifyContent: "center",
-    // marginTop:40,
-    // marginRight: 15,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    backgroundColor: "#f8f9fa",
     borderRadius: 20,
-    width: 120,
+    width: "30%",
     height: 100,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-  },
-  carButton: {
-    backgroundColor: "yellow",
-    padding: 10,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 8,
+    shadowRadius: 4,
+    elevation: 3,
   },
   featuresText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "black",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#1B2128",
     textAlign: "center",
+    marginTop: 10,
+  },
+  calculatorSection: {
+    backgroundColor: "#f8f9fa",
+    padding: 20,
+    marginTop: 20,
+    borderRadius: 20,
+  },
+  calculatorTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+  calculatorInputs: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  inputContainer: {
+    width: "45%",
+  },
+  inputLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+    color: "#666",
+  },
+  input: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  monthlyPayment: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 15,
+    textAlign: "center",
+    color: "#1B2128",
   },
   labelText: {
-    marginLeft: 2,
-    marginTop: 90,
-    marginBottom: 5,
     fontSize: 20,
     color: "#404040",
     fontWeight: "bold",
-    // marginBottom: 30,
+    marginTop: 20,
+    marginBottom: 10,
   },
   priceContainer: {
     marginTop: 20,
   },
   labelPriceText: {
-    marginLeft: 25,
     fontSize: 15,
     color: "#404040",
-    // fontWeight: "bold",
-    // marginBottom: 30,
   },
   priceText: {
-    marginLeft: 25,
-    fontSize: 50,
+    fontSize: 40,
     color: "#1B2128",
     fontWeight: "900",
-    // marginBottom: 30,
   },
   placeHolderText: {
     fontSize: 18,
     marginTop: 20,
-  },
-  calculaterSection: {
-    backgroundColor: "#f7f0f0",
-    alignItems: "center",
-    marginTop: 20,
-    marginRight: 15,
-    marginBottom:20,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 20,
-    width: 370,
-    height: 120,
+    textAlign: "center",
+    color: "#666",
   },
 });
