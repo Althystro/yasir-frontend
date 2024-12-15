@@ -28,10 +28,23 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <ScrollView  showsVerticalScrollIndicator={false}> */}
+      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
       <View style={styles.topSection}>
         {/* The search button and profile ? */}
 
+
+        <View></View>
+      </View>
+      <View style={styles.midSection}>
+
+        {/* Only for the logo moto */}
+        <Text style={styles.midText}> Yessir | يسر </Text>
+        <Text style={{ color: "white" }}>Vroom</Text>
+      </View>
+
+      {/* Containes all cards */}
+      <ScrollView style={styles.bottomSection}>
+        
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -47,17 +60,6 @@ const Home = () => {
             // onChangeText={handleSearch}
           />
         </View>
-
-        <View></View>
-      </View>
-      <View style={styles.midSection}>
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white" }}>Vroom</Text>
-      </View>
-
-      {/* Containes all cards */}
-      <View style={styles.bottomSection}>
         {/* Brands categories List */}
         <View style={styles.sectionContainer}>
           <CarBrandsList />
@@ -74,7 +76,7 @@ const Home = () => {
           {/* Calculater card */}
           <View style={styles.calculaterSection}></View>
         </View>
-      </View>
+      </ScrollView>
       {/* </ScrollView> */}
     </SafeAreaView>
   );
@@ -89,15 +91,17 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   topSection: {
-    flex: 0.6,
+    flex: 0.3,
     backgroundColor: "#ffffff",
     // backgroundColor: "red",
   },
   midSection: {
-    flex: 1,
+    flex: 0.5,
     backgroundColor: "#1B2128",
     // backgroundColor: "blue",
-    marginTop: -40,
+    marginTop: -90,
+    paddingTop: -30,
+
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
     justifyContent: "center",
@@ -109,15 +113,15 @@ const styles = StyleSheet.create({
     // backgroundColor: "yellow",
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
-    marginTop: -30,
-    // justifyContent: "center",
-    // alignItems: "center",
+    marginTop: -140,
+    marginBottom: 60,
     alignContent: "flex-start",
   },
   midText: {
     color: "white",
     fontSize: 35,
     fontWeight: "bold",
+    marginTop: -120,
   },
   sectionContainer: {
     width: "100%",
