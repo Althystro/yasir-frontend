@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import UserContext from "../context/UserContext";
 import { useMutation } from "@tanstack/react-query";
@@ -40,41 +41,82 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+    // <View style={styles.container}>
+    //   <Text style={styles.title}>Login</Text>
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Email"
+    //     value={email}
+    //     onChangeText={setEmail}
+    //     keyboardType="email-address"
+    //     autoCapitalize="none"
+    //   />
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Password"
+    //     value={password}
+    //     onChangeText={setPassword}
+    //     secureTextEntry
+    //   />
+    //   <TouchableOpacity style={styles.button} onPress={handleLogin}>
+    //     <Text style={styles.buttonText}>Login</Text>
+    //   </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.linkButton}
-        onPress={() => navigation.navigate("Register")}
-      >
-        <Text style={styles.linkText}>Don't have an account? Register</Text>
-      </TouchableOpacity>
+    //   <TouchableOpacity
+    //     style={styles.linkButton}
+    //     onPress={() => navigation.navigate("Register")}
+    //   >
+    //     <Text style={styles.linkText}>Don't have an account? Register</Text>
+    //   </TouchableOpacity>
+    // </View>
+
+    <View style={styles.container}>
+      <View style={styles.topSection}>{/* Nothing added here? */}</View>
+      <View style={styles.midSection}>
+        {/* Only for the logo moto */}
+        <Text style={styles.midText}> Yessir | يسر </Text>
+        <Text style={{ color: "white", fontSize: 30 }}>Welcome Back!</Text>
+      </View>
+
+      {/* The inputs */}
+      <View style={styles.bottomSection}>
+        <View style={styles.loginContainer}>
+          {/* <Text style={styles.title}>Login</Text> */}
+          <TextInput
+            style={styles.emailInput}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={styles.linkText}>Don't have an account? Register</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
+  loginContainer: {
+    // flex: 1,
+    // backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -82,22 +124,34 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 50,
   },
-  input: {
+  emailInput: {
     width: "100%",
     height: 40,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginTop: 80,
+    // marginBottom: 20,
   },
+  passwordInput: {
+    width: "100%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+
   button: {
     width: "100%",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 30,
     alignItems: "center",
     marginTop: 10,
   },
@@ -110,7 +164,50 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   linkText: {
-    color: "#007AFF",
+    color: "#1B2128",
     fontSize: 16,
+  },
+
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "transparent",
+  },
+  topSection: {
+    flex: 0.7,
+    backgroundColor: "#ffffff",
+    // backgroundColor: "red",
+  },
+  midSection: {
+    flex: 1,
+    backgroundColor: "#1B2128",
+    // backgroundColor: "blue",
+    marginTop: -40,
+    borderTopRightRadius: 60,
+    borderTopLeftRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bottomSection: {
+    flex: 3.5,
+    backgroundColor: "#ffffff",
+    // backgroundColor: "yellow",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+    marginTop: -30,
+    // justifyContent: "center",
+    // alignItems: "center",
+    alignContent: "flex-start",
+  },
+  midText: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  sectionContainer: {
+    width: "100%",
+    maxWidth: 400,
+    paddingHorizontal: 20,
+    marginVertical: 15,
   },
 });
