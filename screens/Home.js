@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TextInput,
   searchInput,
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import React from "react";
@@ -27,6 +28,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <ScrollView  showsVerticalScrollIndicator={false}> */}
       <View style={styles.topSection}>
         {/* The search button and profile ? */}
 
@@ -62,24 +64,18 @@ const Home = () => {
         </View>
         {/* Popular Car card */}
         <View>
-            <PopularCars/>
-
+          <PopularCars />
         </View>
 
         {/* The Ai / calculater card this is will be changed later */}
-        <View style={{flexDirection:'row'}}>
-            {/* Ai card */}
-            <View style={styles.aiSection}>
-
-            </View>
-            {/* Calculater card */}
-            <View style={styles.calculaterSection}>
-
-            </View>
-
-
+        <View style={{ flexDirection: "row" }}>
+          {/* Ai card */}
+          <View style={styles.aiSection}></View>
+          {/* Calculater card */}
+          <View style={styles.calculaterSection}></View>
         </View>
       </View>
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -146,10 +142,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 16,
   },
-  aiSection:{
-    backgroundColor: '#1B2128',
+  aiSection: {
+    backgroundColor: "#1B2128",
     alignItems: "center",
-    marginTop:20,
+    marginTop: 20,
     marginRight: 15,
     padding: 20,
     borderWidth: 1,
@@ -161,12 +157,11 @@ const styles = StyleSheet.create({
     // shadowOffset: { width: 0, height: 3},
     // shadowOpacity: 0.1,
     // shadowRadius: 8,
-
   },
-  calculaterSection:{
-    backgroundColor: '#EEEAE5',
+  calculaterSection: {
+    backgroundColor: "#EEEAE5",
     alignItems: "center",
-    marginTop:20,
+    marginTop: 20,
     marginRight: 15,
     padding: 20,
     borderWidth: 1,
@@ -178,6 +173,5 @@ const styles = StyleSheet.create({
     // shadowOffset: { width: 0, height: 3},
     // shadowOpacity: 0.1,
     // shadowRadius: 8,
-
-  }
+  },
 });

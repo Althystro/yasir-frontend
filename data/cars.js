@@ -36,7 +36,6 @@ const cars = [
       "All-Wheel Drive",
       "Panoramic Sunroof",
       "Adaptive Cruise Control",
-      "Premium Sound System",
     ],
   },
   {
@@ -49,12 +48,7 @@ const cars = [
     engine: "2.0L Inline-4 Turbo",
     fuelEfficiency: "22 MPG (city) / 28 MPG (highway)",
     available: false,
-    features: [
-      "Heated Seats",
-      "Digital Cockpit",
-      "360-degree Camera",
-      "Wireless Charging",
-    ],
+    features: ["Heated Seats", "Digital Cockpit", "360-degree Camera"],
   },
   {
     id: 3,
@@ -70,7 +64,6 @@ const cars = [
       "Quattro All-Wheel Drive",
       "Matrix LED Headlights",
       "Virtual Cockpit",
-      "Leather Upholstery",
     ],
   },
 ];

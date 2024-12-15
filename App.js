@@ -8,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AuthNav from "./navigation/AuthNav";
 import MainNav from "./navigation/MainNav";
 import Home from "./screens/Home";
+import VehicleDetails from "./screens/VehicleDetails";
 
 
 export default function App() {
@@ -29,9 +30,10 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {/* {user ? <MainNav /> : <AuthNav />} */}
+          {user ? <MainNav /> : <AuthNav />}
 
-          <Home />
+          {/* <Home /> */}
+          {/* <VehicleDetails/> */}
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
