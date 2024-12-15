@@ -2,12 +2,13 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AiRecomendation from "../components/AIRecomendation";
-import AllVehicles from "../components/AllVehicles";
+import AllVehicles from "../components/AllVehiclesList";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons if not already installed
 import TestDrive from "../components/TestDrive";
 import PdfGenerator from "../components/PdfGenerator";
 import Home from "../screens/Home";
 import VehicleDetails from "../screens/VehicleDetails";
+import AllVehiclesList from "../components/AllVehiclesList";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +34,7 @@ const MainNav = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={VehicleDetails} />
+      <Tab.Screen name="Home" component={AllVehiclesList} />
       <Tab.Screen name="AI Recommendations" component={AiRecomendation} />
       <Tab.Screen name="All Vehicles" component={AllVehicles} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
