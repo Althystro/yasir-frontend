@@ -35,9 +35,9 @@ export default function App() {
           {/* {user ? <MainNav /> : <AuthNav />} */}
 
           {/* <Home /> */}
-          {/* <VehicleDetails /> */}
+          <VehicleDetails />
           {/* <AuthNav /> */}
-          <ProfileScreen />
+          {/* <ProfileScreen /> */}
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
