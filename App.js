@@ -1,12 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { getToken } from "./api/storage";
 import UserContext from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NavigationContainer } from "@react-navigation/native";
-import AuthNav from "./navigation/AuthNav";
+import AuthNav from "./navigation/AuthNavigation/AuthNav";
 import MainNav from "./navigation/MainNav";
+import ProfileScreen from "./screens/Profile";
+import checkBaseURL from "./api/CheckBaseURL";
+import instance from "./api";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -27,7 +30,8 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {user ? <MainNav /> : <AuthNav />}
+          {/* {user ? <MainNav /> : <AuthNav />} */}
+          <ProfileScreen />
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
