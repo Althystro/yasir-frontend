@@ -1,9 +1,6 @@
 import { saveToken } from "./storage";
 import instance from ".";
 
-// Temporarily set the token for all requests
-// instance.defaults.headers.common["Authorization"] =
-//   "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoaUBoZWxsby5jb20iLCJpYXQiOjE3MzQwMTUyNTEsImV4cCI6MTczNDYyMDA1MX0.FlX4wxQ3Rb6AX1jxZOiM4GT0nZJuocyStWC10PbYpck";
 
 const login = async (userInfo) => {
   console.log(userInfo);
