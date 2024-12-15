@@ -15,10 +15,10 @@ const TestDrive = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const dealershipLocation = {
-    latitude: 29.313181,
-    longitude: 47.931523,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: "29.313181",
+    longitude: "47.931523",
+    latitudeDelta: "0.0922",
+    longitudeDelta: "0.0421",
   };
 
   const onChange = (event, selectedDate) => {
