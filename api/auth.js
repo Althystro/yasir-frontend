@@ -1,41 +1,26 @@
 import { saveToken } from "./storage";
 import instance from ".";
 
+// Temporarily set the token for all requests
+// instance.defaults.headers.common["Authorization"] =
+//   "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoaUBoZWxsby5jb20iLCJpYXQiOjE3MzQwMTUyNTEsImV4cCI6MTczNDYyMDA1MX0.FlX4wxQ3Rb6AX1jxZOiM4GT0nZJuocyStWC10PbYpck";
+
 const login = async (userInfo) => {
   console.log(userInfo);
-  const res = await instance.post("/auth/login", userInfo);
-  const token = res.data.token;
-  if (token) {
-    saveToken(token);
-  }
+  try {
+    const res = await instance.post("/auth/login", userInfo);
+    const token = res.data.token;
+    if (token) {
+      saveToken(token);
+    }
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
-// const register = async (userInfo) => {
-//   const res = await instance.post("/register", userInfo);
-//   if (res.data.token) {
-//     saveToken(res.data.token);
-//   }
-//   return res.data;
-// };
 
 const register = async (userInfo) => {
-  //   console.log("UI", userInfo);
-  //   const formData = new FormData();
-  //   for (let key in userInfo) {
-  //     if (key != "image") {
-  //       formData.append(key, userInfo[key]);
-  //     }
-  //   }
-
-  //   if (userInfo.image) {
-  //     formData.append("image", {
-  //       name: "image.jpg",
-  //       type: "image/jpeg",
-  //       uri: userInfo.image,
-  //     });
-  //   }
-  console.log(userInfo);
   const res = await instance.post("/auth/signup", userInfo);
   if (res.data) {
     saveToken(res.data.token);
@@ -45,8 +30,14 @@ const register = async (userInfo) => {
 };
 
 const getMyProfile = async () => {
-  const { data } = await instance.get("/auth/profile");
+  const { data } = await instance.get("/users/me");
   return data;
 };
 
-export { login, register, getMyProfile };
+const updateProfile = async (userInfo) => {
+  console.log(userInfo);
+  const res = await instance.post("/users/me", userInfo);
+  return res.data;
+};
+
+export { login, register, getMyProfile, updateProfile };
