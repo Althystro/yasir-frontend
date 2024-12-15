@@ -32,12 +32,12 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {user ? <MainNav /> : <AuthNav />}
+          {/* {user ? <MainNav /> : <AuthNav />} */}
 
           {/* <Home /> */}
-          {/* <VehicleDetails/> */}
+          {/* <VehicleDetails /> */}
           {/* <AuthNav /> */}
-          {/* <ProfileScreen /> */}
+          <ProfileScreen />
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
