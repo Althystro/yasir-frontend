@@ -4,27 +4,20 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  FlatList,
-  Image,
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import cars from "../data/cars";
 import { Ionicons } from "@expo/vector-icons";
 
-const VehicleDetails = () => {
-  const [selectedCar, setSelectedCar] = useState(null);
+const VehicleDetails = ({ route, navigation }) => {
+  const { vehicle } = route.params;
   const [downPayment, setDownPayment] = useState("");
   const [loanTerm, setLoanTerm] = useState("");
 
-  const handleSelectedCar = (car) => {
-    setSelectedCar(car);
-  };
-
   const calculateMonthlyPayment = () => {
-    if (!selectedCar || !downPayment || !loanTerm) return 0;
+    if (!vehicle || !downPayment || !loanTerm) return 0;
 
-    const carPrice = parseInt(selectedCar.price.replace(/\$|,/g, ""));
+    const carPrice = vehicle.price; // Price is already a number
     const principal = carPrice - parseInt(downPayment);
     const monthlyInterest = 0.05 / 12; // 5% annual interest rate
     const numberOfPayments = parseInt(loanTerm) * 12;
@@ -40,114 +33,106 @@ const VehicleDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topSection}>
-        <FlatList
-          data={cars}
-          keyExtractor={(item) => item.id.toString()}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.carButton,
-                selectedCar?.id === item.id && styles.selectedCarButton,
-              ]}
-              onPress={() => handleSelectedCar(item)}
-            >
-              <Image source={{ uri: item.image }} style={styles.carImage} />
-              <Text style={styles.carButtonText}>{item.name}</Text>
-              <Text style={styles.carButtonPrice}>{item.price}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-
       <View style={styles.midSection}>
-        {selectedCar ? (
-          <>
-            <Text style={styles.midText}>{selectedCar.name}</Text>
-            <View style={styles.detailsContainer}>
-              <View style={styles.detailItem}>
-                <Ionicons name="car-sport" size={24} color="white" />
-                <Text style={styles.detailText}>{selectedCar.engine}</Text>
-              </View>
-              <View style={styles.detailItem}>
-                <Ionicons name="speedometer" size={24} color="white" />
-                <Text style={styles.detailText}>
-                  {selectedCar.fuelEfficiency}
-                </Text>
-              </View>
-            </View>
-          </>
-        ) : (
-          <Text style={styles.midText}>Choose a car</Text>
-        )}
+        <Text
+          style={styles.midText}
+        >{`${vehicle.brand} ${vehicle.model}`}</Text>
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailItem}>
+            <Ionicons name="car-sport" size={24} color="white" />
+            <Text style={styles.detailText}>{vehicle.type}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Ionicons name="calendar" size={24} color="white" />
+            <Text style={styles.detailText}>{vehicle.year}</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.bottomSection}>
-        {selectedCar ? (
-          <>
-            <Text style={styles.labelText}>Features</Text>
-            <View style={styles.featuresContainer}>
-              {selectedCar.features.map((feature, index) => (
-                <View style={styles.featuresCard} key={index}>
-                  <Ionicons
-                    name={
-                      index === 0
-                        ? "car"
-                        : index === 1
-                        ? "sunny"
-                        : "shield-checkmark"
-                    }
-                    size={24}
-                    color="#1B2128"
-                  />
-                  <Text style={styles.featuresText}>{feature}</Text>
-                </View>
-              ))}
-            </View>
+        <Text style={styles.labelText}>Vehicle Information</Text>
+        <View style={styles.featuresContainer}>
+          <View style={styles.featuresCard}>
+            <Ionicons name="car" size={24} color="#1B2128" />
+            <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
+          </View>
+          <View style={styles.featuresCard}>
+            <Ionicons name="business" size={24} color="#1B2128" />
+            <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
+          </View>
+          <View style={styles.featuresCard}>
+            <Ionicons name="speedometer" size={24} color="#1B2128" />
+            <Text style={styles.featuresText}>Model: {vehicle.model}</Text>
+          </View>
+        </View>
 
-            <View style={styles.calculatorSection}>
-              <Text style={styles.calculatorTitle}>Finance Calculator</Text>
-              <View style={styles.calculatorInputs}>
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>Down Payment ($)</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={downPayment}
-                    onChangeText={setDownPayment}
-                    keyboardType="numeric"
-                    placeholder="10000"
-                  />
-                </View>
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>Loan Term (years)</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={loanTerm}
-                    onChangeText={setLoanTerm}
-                    keyboardType="numeric"
-                    placeholder="5"
-                  />
-                </View>
-              </View>
-              {downPayment && loanTerm && (
-                <Text style={styles.monthlyPayment}>
-                  Monthly Payment: ${calculateMonthlyPayment()}
-                </Text>
-              )}
+        <View style={styles.calculatorSection}>
+          <Text style={styles.calculatorTitle}>Finance Calculator</Text>
+          <View style={styles.calculatorInputs}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Down Payment ($)</Text>
+              <TextInput
+                style={styles.input}
+                value={downPayment}
+                onChangeText={setDownPayment}
+                keyboardType="numeric"
+                placeholder="1000"
+              />
             </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Loan Term (years)</Text>
+              <TextInput
+                style={styles.input}
+                value={loanTerm}
+                onChangeText={setLoanTerm}
+                keyboardType="numeric"
+                placeholder="5"
+              />
+            </View>
+          </View>
+          {downPayment && loanTerm && (
+            <Text style={styles.monthlyPayment}>
+              Monthly Payment: ${calculateMonthlyPayment()}
+            </Text>
+          )}
+        </View>
 
-            <View style={styles.priceContainer}>
-              <Text style={styles.labelPriceText}>Starting From:</Text>
-              <Text style={styles.priceText}>{selectedCar.price}</Text>
-            </View>
-          </>
-        ) : (
-          <Text style={styles.placeHolderText}>
-            Select a car to see details
+        <View style={styles.priceContainer}>
+          <Text style={styles.labelPriceText}>Price:</Text>
+          <Text style={styles.priceText}>
+            KD {vehicle.price.toLocaleString()}
           </Text>
-        )}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.testDriveButton]}
+              onPress={() =>
+                navigation.navigate("Test Drive", { vehicle: vehicle })
+              }
+            >
+              <Ionicons
+                name="car-sport"
+                size={20}
+                color="#ffffff"
+                style={styles.buttonIcon}
+              />
+              <Text style={styles.buttonText}>Book A Test Drive</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.buyNowButton]}
+              onPress={() =>
+                navigation.navigate("Pdf Generator", { vehicle: vehicle })
+              }
+            >
+              <Ionicons
+                name="cart"
+                size={20}
+                color="#ffffff"
+                style={styles.buttonIcon}
+              />
+              <Text style={styles.buttonText}>Buy Now</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -325,5 +310,40 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
     color: "#666",
+  },
+  buttonContainer: {
+    marginTop: 20,
+    gap: 10,
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 15,
+    borderRadius: 12,
+    marginVertical: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  testDriveButton: {
+    backgroundColor: "#1B2128",
+  },
+  buyNowButton: {
+    backgroundColor: "#2E5BE3",
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  buttonIcon: {
+    marginRight: 4,
   },
 });

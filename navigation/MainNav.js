@@ -9,6 +9,7 @@ import PdfGenerator from "../components/PdfGenerator";
 import Home from "../screens/Home";
 import VehicleDetails from "../screens/VehicleDetails";
 import AllVehiclesList from "../components/AllVehiclesList";
+import HomeNav from "./HomeNavigation/HomeNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +35,7 @@ const MainNav = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={AllVehiclesList} />
+      <Tab.Screen name="Home" component={HomeNav} />
       <Tab.Screen name="AI Recommendations" component={AiRecomendation} />
       <Tab.Screen name="All Vehicles" component={AllVehicles} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
