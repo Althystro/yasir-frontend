@@ -57,111 +57,6 @@ const VehicleDetails = ({ route, navigation }) => {
               <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
             </View>
           </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
-          <Text style={styles.labelText}>Vehicle Information</Text>
-          <View style={styles.featuresContainer}>
-            <View style={styles.featuresCard}>
-              <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-            </View>
-            <View style={styles.featuresCard}>
-              <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
-            </View>
-          </View>
 
           <View style={styles.calculatorSection}>
             <Text style={styles.calculatorTitle}>Finance Calculator</Text>
@@ -218,7 +113,7 @@ const VehicleDetails = ({ route, navigation }) => {
               <TouchableOpacity
                 style={[styles.button, styles.buyNowButton]}
                 onPress={() =>
-                  navigation.navigate("Pdf Generator", { vehicle: vehicle })
+                  navigation.navigate("Purchases", { vehicle: vehicle })
                 }
               >
                 <Ionicons

@@ -7,309 +7,235 @@ import {
   Alert,
   Modal,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
 import PdfGenerator from "../components/PdfGenerator";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
-
 import Stepper from "react-native-stepper-ui";
 
-const MyComponent = (props) => {
-  return (
-    <View>
-      <Text>{props.title}</Text>
-    </View>
-  );
-};
+const Purchases = ({ route }) => {
+  const { vehicle } = route.params;
+  const [active, setActive] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDuration, setSelectedDuration] = useState(null);
+  const [downPayment, setDownPayment] = useState("");
 
-const FinancingDuration = () => {
-  return (
-    <View style={[styles.componentContainer,{width:'100%'}]}>
-      <Text style={[styles.mainText]}>1. Select a Financing Duration: </Text>
-      <View style={styles.buttonContainer}>
+  // Step 1: Financing Duration Component
+  const FinancingDurationStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Select Financing Duration</Text>
+      <View style={styles.durationButtons}>
         {[1, 2, 3, 4, 5, 6].map((year) => (
-          <TouchableOpacity key={year} style={styles.durationButton}>
+          <TouchableOpacity
+            key={year}
+            style={[
+              styles.durationButton,
+              selectedDuration === year && styles.selectedButton,
+            ]}
+            onPress={() => setSelectedDuration(year)}
+          >
             <Text style={styles.durationButtonText}>
               {year} Year{year > 1 ? "s" : ""}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
-      {/* from 1 to 2 */}
-      {/* <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            style={[
-              styles.button
-            ]}
-          >
-            <Text style={styles.yearsText}> 1 Year</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.yearsText}> 2 Years</Text>
-          </TouchableOpacity>
-        </View> */}
-      {/* from 3 to 4 */}
-
-      {/* <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.yearsText}> 3 Years</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.yearsText}> 4 Years</Text>
-          </TouchableOpacity>
-        </View> */}
-
-      {/* from 5 to 6 */}
-
-      {/* <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.yearsText}> 5 Years</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.yearsText}> 6 Years</Text>
-          </TouchableOpacity>
-        </View> */}
     </View>
   );
-};
 
-const SetDownPayment = () => {
-  const [amount, setAmount] = useState("");
-  return (
-    <View style={styles.componentContainer}>
-      <Text style={styles.mainText}>2. Set Your Down Payment Amount: </Text>
+  // Step 2: Down Payment Component
+  const DownPaymentStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Set Down Payment Amount</Text>
       <TextInput
-        style={styles.amountInput}
-        placeholder="Amount"
-        value={amount}
-        onChangeText={setAmount}
+        style={styles.input}
+        value={downPayment}
+        onChangeText={setDownPayment}
+        placeholder="Enter amount"
         keyboardType="numeric"
       />
     </View>
   );
-};
 
-const SignatureModal = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  return (
-    <SafeAreaView style={styles.componentContainer}>
-          <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <PdfGenerator />
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.buttonText}>Done</Text>
-            </Pressable>
-            </View>
-        </View>
-      </Modal>
-
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.buttonText}>Add Signature</Text>
-      </Pressable>
-        
-    </SafeAreaView>
+  // Step 3: Vehicle Details Component
+  const VehicleDetailsStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Vehicle Details</Text>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
+        <Text style={styles.detailText}>Model: {vehicle.model}</Text>
+        <Text style={styles.detailText}>Year: {vehicle.year}</Text>
+        <Text style={styles.detailText}>Price: KD {vehicle.price}</Text>
+      </View>
+    </View>
   );
-};
 
-const ConfirmationMessage = ({ financingDuration, downPayment, onClose }) => {
+  // Step 4: Signature Component
+  const SignatureStep = ({ vehicle }) => {
+    if (!vehicle) {
+      return (
+        <View style={styles.stepContainer}>
+          <Text style={styles.stepTitle}>
+            Error: Vehicle data not available
+          </Text>
+        </View>
+      );
+    }
+
     return (
-      <View style={styles.ConfirmationMessageContainer}>
-        {/* Check Icon */}
-        <View style={styles.iconContainer}>
-          <Icon name="checkmark-circle" size={80} color="#1B2128" />
-        </View>
-  
-        {/* Confirmation Text */}
-        <Text style={styles.title}>Purchase Confirmed!</Text>
-  
-        {/* Display Selected Data */}
-        <View style={styles.dataContainer}>
-          <Text style={styles.dataText}>
-            <Text style={styles.label}>Financing Duration: </Text>
-            {financingDuration} Year{financingDuration > 1 ? "s" : ""}
-          </Text>
-          <Text style={styles.dataText}>
-            <Text style={styles.label}>Down Payment: </Text>${downPayment}
-          </Text>
-        </View>
-  
-        {/* Close Button */}
-        <TouchableOpacity style={styles.button} onPress={onClose}>
-          <Text style={styles.buttonText}>Close</Text>
+      <View style={styles.stepContainer}>
+        <Text style={styles.stepTitle}>Sign Documents</Text>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <PdfGenerator vehicle={vehicle} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.buttonText}>Open Signature</Text>
         </TouchableOpacity>
       </View>
     );
   };
 
-const content = [
-  <FinancingDuration />,
-  <SetDownPayment />,
-  <MyComponent title="Component 3" />, //check figma / the chosen car details
-  <SignatureModal />,
-  <MyComponent title="Component 5" />, //Add the upload documents component here 
-  <ConfirmationMessage
-      financingDuration={FinancingDuration}
-      downPayment={SetDownPayment}
-      onClose={() => alert("Stepper Finished!")}
-    />,
-];
-
-const Purchases = () => {
-  const [active, setActive] = useState(0);
-  return (
-    <View style={styles.container}>
-      <View style={styles.midSection}>
-        <Text style={styles.welcomeText}>Confirm Purchase</Text>
-      </View>
-
-      {/* The Stepper */}
-      <View style={styles.purchasesContainer}>
-        <View style={styles.stepperContainer}>
-          <Stepper
-            active={active}
-            content={content}
-            onBack={() => setActive((p) => p - 1)}
-            onFinish={() => alert("Done")}
-            onNext={() => setActive((p) => p + 1)}
-            stepStyle={styles.stepStyle}
-            stepTextStyle={styles.stepTextStyle}
-            activeStepTextStyle={styles.activeStepTextStyle}
-            activeStepStyle={styles.activeStepStyle}
-            connectorStyle={styles.connectorStyle}
-            contentStyle={styles.contentStyle}
-          />
-        </View>
+  // Step 5: Confirmation Component
+  const ConfirmationStep = () => (
+    <View style={styles.stepContainer}>
+      <Icon name="checkmark-circle" size={80} color="#1B2128" />
+      <Text style={styles.confirmationTitle}>Purchase Confirmed!</Text>
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryText}>
+          Financing Duration: {selectedDuration} Year
+          {selectedDuration > 1 ? "s" : ""}
+        </Text>
+        <Text style={styles.summaryText}>Down Payment: KD {downPayment}</Text>
       </View>
     </View>
   );
+
+  const content = [
+    <FinancingDurationStep />,
+    <DownPaymentStep />,
+    <VehicleDetailsStep />,
+    <SignatureStep vehicle={vehicle} />,
+    <ConfirmationStep />,
+  ];
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Confirm Purchase</Text>
+      </View>
+      <View style={styles.stepperContainer}>
+        <Stepper
+          active={active}
+          content={content}
+          onBack={() => setActive((p) => p - 1)}
+          onNext={() => setActive((p) => p + 1)}
+          onFinish={() => Alert.alert("Purchase Complete!")}
+          stepStyle={styles.stepStyle}
+          stepTextStyle={styles.stepTextStyle}
+          activeStepStyle={styles.activeStepStyle}
+          activeStepTextStyle={styles.activeStepTextStyle}
+        />
+      </View>
+    </SafeAreaView>
+  );
 };
 
-export default Purchases;
-
 const styles = StyleSheet.create({
-
-container: {
+  container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    marginTop:4
+    backgroundColor: "#F5F5F5",
   },
-  midSection: {
+  header: {
     backgroundColor: "#1B2128",
-    borderBottomRightRadius: 65,
-    borderBottomLeftRadius: 65,
-    justifyContent: "center",
+    padding: 20,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
     alignItems: "center",
-    paddingVertical: 40, // Increased padding for better spacing
   },
-  welcomeText: {
+  headerText: {
     color: "white",
-    fontSize: 28, // Increased font size
+    fontSize: 24,
     fontWeight: "bold",
-    marginTop:25
-  },
-  purchasesContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 30, // Added top padding
   },
   stepperContainer: {
-    marginBottom: 20, // Added bottom margin
+    flex: 1,
+    padding: 20,
   },
-  componentContainer: {
-    alignItems: 'center',
-    width: '100%',
-    marginTop:30
+  stepContainer: {
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 15,
+    alignItems: "center",
   },
-  mainText: {
-    fontWeight: "700",
+  stepTitle: {
     fontSize: 20,
-    marginBottom: 20, // Added bottom margin
-    color: '#1B2128', // Matched text color to theme
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#1B2128",
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+  durationButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 10,
   },
   durationButton: {
-    width: '40%',
+    width: "45%",
     padding: 15,
+    backgroundColor: "#DFE4F0",
     borderRadius: 10,
-    borderColor: "#1B2128",
-    borderWidth: 1,
     alignItems: "center",
-    margin: 10,
-    backgroundColor: '#DFE4F0', // Light background color
+    margin: 5,
+  },
+  selectedButton: {
+    backgroundColor: "#1B2128",
   },
   durationButtonText: {
     color: "#1B2128",
-    fontSize: 16,
     fontWeight: "bold",
   },
-  amountInput: {
+  input: {
     width: "80%",
     height: 50,
     borderWidth: 1,
-    borderColor: "#1B2128",
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    backgroundColor: 'white',
-  },
-  componentText: {
-    fontSize: 18,
-    color: '#1B2128',
-    marginBottom: 20,
-  },
-  button: {
+    borderColor: "#DFE4F0",
     borderRadius: 10,
     padding: 15,
-    elevation: 2,
-    minWidth: 150, 
-    // minHeight:300
-  },
-  buttonOpen: {
-    backgroundColor: "#DFE4F0",
-  },
-  buttonClose: {
-    backgroundColor: "#1B2128",
-    marginTop: 20,
-  },
-  buttonText: {
-    fontWeight: "bold",
-    textAlign: "center",
     fontSize: 16,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  detailsContainer: {
+    width: "100%",
+    gap: 10,
+  },
+  detailText: {
+    fontSize: 16,
+    color: "#1B2128",
   },
   modalView: {
+    flex: 1,
+    backgroundColor: "white",
     margin: 20,
-    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -318,90 +244,50 @@ container: {
     shadowRadius: 4,
     elevation: 5,
   },
-  // Stepper styles
-  stepStyle: {
-    backgroundColor: '#DFE4F0',
-    borderColor: '#1B2128',
-    borderWidth: 1,
-    width: 35,
-    height: 35,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  stepTextStyle: {
-    color: "#1B2128",
-    fontWeight: "bold",
-  },
-  activeStepTextStyle: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  activeStepStyle: {
-    backgroundColor: '#1B2128',
-  },
-  connectorStyle: {
-    backgroundColor: "#DFE4F0",
-    height: 2,
-  },
-  contentStyle: {
-    padding: 20,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    marginTop: 20, // Added top margin
-    shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 4,
-    // elevation: 3,
-  },
-  ConfirmationMessageContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  iconContainer: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1B2128",
-    marginBottom: 20,
-  },
-  dataContainer: {
-    marginBottom: 30,
-    alignItems: "center",
-  },
-  dataText: {
-    fontSize: 18,
-    color: "#1B2128",
-    marginVertical: 5,
-  },
-  label: {
-    fontWeight: "bold",
-    color: "#1B2128",
-  },
   button: {
     backgroundColor: "#1B2128",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    padding: 15,
     borderRadius: 10,
+    marginTop: 10,
   },
   buttonText: {
     color: "white",
-    fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  confirmationTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1B2128",
+    marginVertical: 20,
+  },
+  summaryContainer: {
+    width: "100%",
+    gap: 10,
+  },
+  summaryText: {
+    fontSize: 16,
+    color: "#1B2128",
+  },
+  stepStyle: {
+    backgroundColor: "#DFE4F0",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1B2128",
+  },
+  stepTextStyle: {
+    color: "#1B2128",
+  },
+  activeStepStyle: {
+    backgroundColor: "#1B2128",
+  },
+  activeStepTextStyle: {
+    color: "white",
   },
 });
+
+export default Purchases;

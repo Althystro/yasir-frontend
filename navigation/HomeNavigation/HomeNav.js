@@ -8,6 +8,7 @@ import AIRecomendation from "../../components/AIRecomendation";
 import VehicleDetails from "../../screens/VehicleDetails";
 import PdfGenerator from "../../components/PdfGenerator";
 import { Ionicons } from "@expo/vector-icons";
+import Purchases from "../../screens/Purchases";
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ const HomeNav = () => {
         <Stack.Screen name="Ai Recommendations" component={AIRecomendation} />
         <Stack.Screen name="Vehicle Details" component={VehicleDetails} />
         <Stack.Screen name="Pdf Generator" component={PdfGenerator} />
+        <Stack.Screen name="Purchases" component={Purchases} />
       </Stack.Navigator>
     </>
   );

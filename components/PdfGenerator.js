@@ -14,13 +14,20 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import FileUpload from "./FileUpload";
 
-const PdfGenerator = ({ route }) => {
-  const { vehicle } = route.params;
+const PdfGenerator = ({ vehicle }) => {
   const signatureRef = useRef();
   const [signature, setSignature] = useState(null);
   const [showSignature, setShowSignature] = useState(false);
   const [pdfUri, setPdfUri] = useState(null);
   const [showPdfPreview, setShowPdfPreview] = useState(false);
+
+  if (!vehicle) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Error: Vehicle data not available</Text>
+      </View>
+    );
+  }
 
   const handleSignature = (signature) => {
     setSignature(signature);
@@ -203,6 +210,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
   },
   header: {
     flexDirection: "row",
