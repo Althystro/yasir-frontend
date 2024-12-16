@@ -8,9 +8,9 @@ import TestDrive from "../components/TestDrive";
 import PdfGenerator from "../components/PdfGenerator";
 import Home from "../screens/Home";
 import VehicleDetails from "../screens/VehicleDetails";
-import AllVehiclesList from "../components/AllVehiclesCard";
 import HomeNav from "./HomeNavigation/HomeNav";
 import ProfileScreen from "../screens/Profile";
+import AllVehiclesList from "../components/AllVehiclesList";
 
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +40,7 @@ const MainNav = () => {
     >
       <Tab.Screen name="Home" component={HomeNav} />
       {/* <Tab.Screen name="AI Recommendations" component={AiRecomendation} /> */}
-      <Tab.Screen name="All Vehicles" component={AllVehicles} />
+      <Tab.Screen name="All Vehicles" component={AllVehiclesList} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

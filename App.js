@@ -17,7 +17,6 @@ import AllVehicles from "./screens/AllVehicles";
 import Purchases from "./screens/Purchases";
 import PdfGenerator from "./components/PdfGenerator";
 
-
 export default function App() {
   const queryClient = new QueryClient();
   const [user, setUser] = useState(false);
@@ -37,7 +36,7 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {/* {user ? <MainNav /> : <AuthNav />} */}
+          {user ? <MainNav /> : <AuthNav />}
 
           {/* <Home /> */}
           {/* <VehicleDetails /> */}
@@ -45,10 +44,7 @@ export default function App() {
           {/* <ProfileScreen /> */}
           {/* <AllVehicles /> */}
 
-          <Purchases/>
-
-
-          
+          {/* <Purchases/> */}
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
