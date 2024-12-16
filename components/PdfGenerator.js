@@ -12,6 +12,7 @@ import React, { useRef, useState } from "react";
 import SignatureScreen from "react-native-signature-canvas";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import FileUpload from "./FileUpload";
 
 const PdfGenerator = ({ route }) => {
   const { vehicle } = route.params;
@@ -158,6 +159,7 @@ const PdfGenerator = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <FileUpload />
       <Text style={styles.title}>Sign Here</Text>
       <View style={styles.signatureContainer}>
         <SignatureScreen

@@ -13,7 +13,6 @@ import ProfileScreen from "./screens/Profile";
 import checkBaseURL from "./api/CheckBaseURL";
 import instance from "./api";
 import AllVehiclesList from "./components/AllVehiclesList";
-import FileUpload from "./components/FileUpload";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -34,9 +33,9 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {/* {user ? <MainNav /> : <AuthNav />} */}
+          {user ? <MainNav /> : <AuthNav />}
 
-          <FileUpload />
+          {/* <Home /> */}
           {/* <VehicleDetails /> */}
           {/* <AuthNav /> */}
           {/* <ProfileScreen /> */}
