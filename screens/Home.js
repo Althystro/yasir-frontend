@@ -114,6 +114,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+
+    backgroundColor: "transparent",
+    width: "100%",
+  },
+  topSection: {
+    flex: 0.3,
     backgroundColor: "#ffffff",
   },
   // topSection: {

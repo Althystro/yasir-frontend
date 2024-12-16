@@ -21,14 +21,9 @@ const VehicleDetails = ({ route, navigation }) => {
 
     const carPrice = vehicle.price; // Price is already a number
     const principal = carPrice - parseInt(downPayment);
-    const monthlyInterest = 0.05 / 12; // 5% annual interest rate
     const numberOfPayments = parseInt(loanTerm) * 12;
 
-    const monthlyPayment =
-      (principal *
-        monthlyInterest *
-        Math.pow(1 + monthlyInterest, numberOfPayments)) /
-      (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+    const monthlyPayment = principal / numberOfPayments;
 
     return monthlyPayment.toFixed(2);
   };
@@ -70,29 +65,29 @@ const VehicleDetails = ({ route, navigation }) => {
             </View>
           </View>
 
-          <View style={styles.calculatorSection}>
-            <Text style={styles.calculatorTitle}>Finance Calculator</Text>
-            <View style={styles.calculatorInputs}>
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Down Payment (KWD)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={downPayment}
-                  onChangeText={setDownPayment}
-                  keyboardType="numeric"
-                  placeholder="1000"
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Loan Term (years)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={loanTerm}
-                  onChangeText={setLoanTerm}
-                  keyboardType="numeric"
-                  placeholder="5"
-                />
-              </View>
+
+        <View style={styles.calculatorSection}>
+          <Text style={styles.calculatorTitle}>Finance Calculator</Text>
+          <View style={styles.calculatorInputs}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Down Payment (KD)</Text>
+              <TextInput
+                style={styles.input}
+                value={downPayment}
+                onChangeText={setDownPayment}
+                keyboardType="numeric"
+                placeholder="1000"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Loan Term (years)</Text>
+              <TextInput
+                style={styles.input}
+                value={loanTerm}
+                onChangeText={setLoanTerm}
+                keyboardType="numeric"
+                placeholder="5"
+              />
             </View>
             {downPayment && loanTerm && (
               <Text style={styles.monthlyPayment}>
@@ -100,6 +95,13 @@ const VehicleDetails = ({ route, navigation }) => {
               </Text>
             )}
           </View>
+
+          {downPayment && loanTerm && (
+            <Text style={styles.monthlyPayment}>
+              Monthly Payment: KD {calculateMonthlyPayment()}
+            </Text>
+          )}
+        </View>
 
           <View style={styles.priceContainer}>
             <Text style={styles.labelPriceText}>Price:</Text>
