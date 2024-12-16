@@ -36,7 +36,7 @@ const MainNav = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeNav} />
-      <Tab.Screen name="AI Recommendations" component={AiRecomendation} />
+      {/* <Tab.Screen name="AI Recommendations" component={AiRecomendation} /> */}
       <Tab.Screen name="All Vehicles" component={AllVehicles} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
       <Tab.Screen name="Pdf Generator" component={PdfGenerator} />

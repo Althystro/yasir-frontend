@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import openAi from "../api/openAi";
 import { deleteToken } from "../api/storage";
 import UserContext from "../context/UserContext";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const useTypingAnimation = (text, speed = 1) => {
   const [displayedText, setDisplayedText] = useState("");
@@ -152,14 +153,49 @@ const AIRecomendation = () => {
     setUser(false);
   };
 
+  const renderProgressSteps = () => {
+    return (
+      <View style={styles.stepsContainer}>
+        {questions.map((_, index) => (
+          <View key={index} style={styles.stepRow}>
+            <View
+              style={[
+                styles.stepCircle,
+                index === currentQuestion && styles.activeStep,
+                index < currentQuestion && styles.completedStep,
+              ]}
+            >
+              {index < currentQuestion ? (
+                <Icon name="check" size={16} color="#fff" />
+              ) : (
+                <Text
+                  style={[
+                    styles.stepNumber,
+                    index === currentQuestion && styles.activeStepNumber,
+                  ]}
+                >
+                  {index + 1}
+                </Text>
+              )}
+            </View>
+            {index < questions.length - 1 && (
+              <View
+                style={[
+                  styles.stepLine,
+                  index < currentQuestion && styles.completedLine,
+                ]}
+              />
+            )}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            Question {currentQuestion + 1} of {questions.length}
-          </Text>
-        </View>
+        {renderProgressSteps()}
 
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>{currentQ.question}</Text>
@@ -252,7 +288,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 70,
   },
   progressContainer: {
     marginBottom: 20,
@@ -372,5 +407,51 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 20,
     alignItems: "center",
+  },
+  stepsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+    marginBottom: 20,
+  },
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stepCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#ddd",
+  },
+  activeStep: {
+    backgroundColor: "#007AFF",
+    borderColor: "#007AFF",
+  },
+  completedStep: {
+    backgroundColor: "#28a745",
+    borderColor: "#28a745",
+  },
+  stepNumber: {
+    color: "#666",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  activeStepNumber: {
+    color: "#fff",
+  },
+  stepLine: {
+    width: 30,
+    height: 2,
+    backgroundColor: "#ddd",
+    marginHorizontal: 5,
+  },
+  completedLine: {
+    backgroundColor: "#28a745",
   },
 });
