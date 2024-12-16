@@ -32,11 +32,9 @@ const Home = () => {
       <View style={styles.topSection}>
         {/* The search button and profile ? */}
 
-
         <View></View>
       </View>
       <View style={styles.midSection}>
-
         {/* Only for the logo moto */}
         <Text style={styles.midText}> Yessir | يسر </Text>
         <Text style={{ color: "white" }}>Vroom</Text>
@@ -44,7 +42,6 @@ const Home = () => {
 
       {/* Containes all cards */}
       <ScrollView style={styles.bottomSection}>
-        
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -89,6 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "transparent",
+    width: "100%",
   },
   topSection: {
     flex: 0.3,
