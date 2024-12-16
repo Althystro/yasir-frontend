@@ -2,13 +2,13 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AiRecomendation from "../components/AIRecomendation";
-import AllVehicles from "../components/AllVehiclesList";
+import AllVehicles from "../components/AllVehiclesCard";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons if not already installed
 import TestDrive from "../components/TestDrive";
 import PdfGenerator from "../components/PdfGenerator";
 import Home from "../screens/Home";
 import VehicleDetails from "../screens/VehicleDetails";
-import AllVehiclesList from "../components/AllVehiclesList";
+import AllVehiclesList from "../components/AllVehiclesCard";
 import HomeNav from "./HomeNavigation/HomeNav";
 import ProfileScreen from "../screens/Profile";
 

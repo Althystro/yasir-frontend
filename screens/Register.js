@@ -48,62 +48,6 @@ export default function Register({ navigation }) {
   };
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.title}>Register</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="First Name"
-    //     value={firstName}
-    //     onChangeText={setFirstName}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Last Name"
-    //     value={lastName}
-    //     onChangeText={setLastName}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Civil ID"
-    //     value={civilId}
-    //     onChangeText={setCivilId}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Phone Number"
-    //     value={phoneNumber}
-    //     onChangeText={setPhoneNumber}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Email"
-    //     value={email}
-    //     onChangeText={setEmail}
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Password"
-    //     value={password}
-    //     onChangeText={setPassword}
-    //     secureTextEntry
-    //   />
-
-    //   <TouchableOpacity style={styles.button} onPress={handleRegister}>
-    //     <Text style={styles.buttonText}>Register</Text>
-    //   </TouchableOpacity>
-
-    //   <TouchableOpacity
-    //     style={styles.linkButton}
-    //     onPress={() => navigation.navigate("Login")}
-    //   >
-    //     <Text style={styles.linkText}>Already have an account? Login</Text>
-    //   </TouchableOpacity>
-    // </View>
-
     <View style={styles.container}>
       <View style={styles.topSection}>{/* Nothing added here? */}</View>
       <View style={styles.midSection}>
@@ -176,7 +120,7 @@ export default function Register({ navigation }) {
 
 const styles = StyleSheet.create({
   registerContainer: {
-    // flex: 1,
+    flex: 2.5,
     // backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
@@ -189,6 +133,27 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  firstNameInput: {
+    // width: "40%",
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  lastNameInput: {
+    // width: "40%",
+    flex: 1,
     height: 40,
     borderWidth: 1,
     borderColor: "#ddd",
@@ -216,46 +181,66 @@ const styles = StyleSheet.create({
     color: "#1B2128",
     fontSize: 16,
   },
+  registerText: {
+    color: "gray",
+    fontSize: 16,
+    fontWeight: "400",
+  },
   container: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "transparent",
   },
-  topSection: {
-    flex: 0.7,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "red",
-  },
   midSection: {
-    flex: 1,
+    flex: 0.8,
     backgroundColor: "#1B2128",
     // backgroundColor: "blue",
-    marginTop: -40,
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
+    // marginTop: 40,
+    borderBottomRightRadius: 65,
+    borderBottomLeftRadius: 65,
     justifyContent: "center",
     alignItems: "center",
   },
-  bottomSection: {
-    flex: 3.5,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "yellow",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    marginTop: -30,
-    // justifyContent: "center",
-    // alignItems: "center",
-    alignContent: "flex-start",
-  },
   midText: {
     color: "white",
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
+    marginTop: 80,
+  },
+  welcomeText: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 5,
   },
   sectionContainer: {
     width: "100%",
     maxWidth: 400,
     paddingHorizontal: 20,
     marginVertical: 15,
+  },
+  firstText: {
+    color: "#1B2128",
+    fontSize: 15,
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    marginRight: 80,
+    marginLeft: 8,
+  },
+  secText: {
+    color: "#1B2128",
+    fontSize: 15,
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    marginBottom: 3,
+    marginRight: 70,
+    marginLeft: 20,
+  },
+  inputText: {
+    color: "#1B2128",
+    fontSize: 15,
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    marginBottom: 3,
   },
 });

@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   Animated,
+  ScrollView,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#404040",
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
   },
   priceContainer: {
@@ -377,5 +378,53 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 4,
+  },
+  button: {
+    width: 150,
+    height: 50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  testButton: {
+    width: 150,
+    height: 50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+    marginLeft: 60,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  button: {
+    width: 150,
+    height: 50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  testButton: {
+    width: 150,
+    height: 50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+    marginLeft: 60,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
