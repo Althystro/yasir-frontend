@@ -12,8 +12,10 @@ import React, { useRef, useState } from "react";
 import SignatureScreen from "react-native-signature-canvas";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import FileUpload from "./FileUpload";
 
-const PdfGenerator = () => {
+const PdfGenerator = ({ route }) => {
+  const { vehicle } = route.params;
   const signatureRef = useRef();
   const [signature, setSignature] = useState(null);
   const [showSignature, setShowSignature] = useState(false);
@@ -57,13 +59,34 @@ const PdfGenerator = () => {
     try {
       const html = `
         <html>
-          <body style="margin: 0; padding: 20px;">
-            <h1 style="text-align: center;">Generated Document</h1>
-            <p style="text-align: center;">Signature:</p>
-            <div style="text-align: center; background-color: white; padding: 20px;">
-              <img src="${signature}" style="max-width: 100%; height: auto;" />
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body { font-family: Arial, sans-serif; }
+              .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+              .signature-container { text-align: center; margin: 20px 0; }
+              .signature-image { max-width: 100%; height: auto; border: 1px solid #ccc; }
+              .details { margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1 style="text-align: center;">Vehicle Inspection Document</h1>
+              <div class="details">
+                <p><strong>Vehicle Details:</strong></p>
+                <ul>
+                  <li>Brand: ${vehicle.brand}</li>
+                  <li>Model: ${vehicle.model}</li>
+                  <li>Year: ${vehicle.year}</li>
+                </ul>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+              </div>
+              <div class="signature-container">
+                <p><strong>Signature:</strong></p>
+                <img src="${signature}" class="signature-image" />
+              </div>
             </div>
-            <p style="text-align: center;">Date: ${new Date().toLocaleDateString()}</p>
           </body>
         </html>
       `;
@@ -108,7 +131,18 @@ const PdfGenerator = () => {
         </View>
         <ScrollView style={styles.previewScroll}>
           <View style={styles.previewContent}>
-            <Text style={styles.previewHeader}>Generated Document</Text>
+            <Text style={styles.previewHeader}>
+              Vehicle Inspection Document
+            </Text>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.previewText}>Vehicle Details:</Text>
+              <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
+              <Text style={styles.detailText}>Model: {vehicle.model}</Text>
+              <Text style={styles.detailText}>Year: {vehicle.year}</Text>
+              <Text style={styles.previewText}>
+                Date: {new Date().toLocaleDateString()}
+              </Text>
+            </View>
             <Text style={styles.previewText}>Signature:</Text>
             {signature && (
               <Image
@@ -117,9 +151,6 @@ const PdfGenerator = () => {
                 resizeMode="contain"
               />
             )}
-            <Text style={styles.previewText}>
-              Date: {new Date().toLocaleDateString()}
-            </Text>
           </View>
         </ScrollView>
       </View>
@@ -128,6 +159,7 @@ const PdfGenerator = () => {
 
   return (
     <View style={styles.container}>
+      <FileUpload />
       <Text style={styles.title}>Sign Here</Text>
       <View style={styles.signatureContainer}>
         <SignatureScreen
@@ -234,5 +266,16 @@ const styles = StyleSheet.create({
     height: 200,
     marginVertical: 20,
     backgroundColor: "white",
+  },
+  detailsContainer: {
+    width: "100%",
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 5,
+  },
+  detailText: {
+    fontSize: 14,
+    marginVertical: 2,
   },
 });
