@@ -5,49 +5,31 @@ import {
   SafeAreaView,
   TextInput,
   searchInput,
-  ScrollView,
   Modal,
   TouchableOpacity,
   Pressable,
+  Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
 import AIRecomendation from "../components/AIRecomendation";
+import AnimatedHeader from "../components/AnimatedHeader";
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
-
-  // Edit the restaurant data to whats used  here
-
-  //     const [searchInput, setSearchInput] = useState("");
-  //   const [filteredVehicles, setFilteredVehicles] = useState(restaurants);
-
-  //   const handleSearch = (text) => {
-  //     setSearchInput(text);
-  //     const filtered = restaurants.filter((restaurant) =>
-  //       restaurant.name.toLowerCase().includes(text.toLowerCase())
-  //     );
-  //     setFilteredVehicles(filtered);
-  //   };
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-      <View style={styles.topSection}>
-        {/* The search button and profile ? */}
-
-        <View></View>
-      </View>
-      <View style={styles.midSection}>
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white" }}>Vroom</Text>
-      </View>
-
-      {/* Containes all cards */}
-      <ScrollView style={styles.bottomSection}>
+      <AnimatedHeader
+        scrollY={scrollY}
+        title="Yessir | يسر"
+        subtitle="Vroom"
+        backgroundColor="#1B2128"
+        textColor="white"
+      >
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -60,7 +42,6 @@ const Home = () => {
             placeholder="Search"
             style={styles.searchInput}
             value={searchInput}
-            // onChangeText={handleSearch}
           />
         </View>
         {/* Brands categories List */}
@@ -71,9 +52,13 @@ const Home = () => {
         <View>
           <PopularCars />
         </View>
-      </ScrollView>
+        <View>
+          <PopularCars />
+        </View>
 
-      {/* AI Assistant Floating Button */}
+        <View style={{ height: 100 }} />
+      </AnimatedHeader>
+
       <TouchableOpacity
         style={styles.floatingAiButton}
         onPress={() => setModalVisible(true)}
@@ -81,9 +66,8 @@ const Home = () => {
         <Icon name="robot" size={30} color="#fff" />
       </TouchableOpacity>
 
-      {/* AI Modal */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -96,14 +80,13 @@ const Home = () => {
                 onPress={() => setModalVisible(false)}
                 style={styles.closeButton}
               >
-                <Icon name="close" size={24} color="#1B2128" />
+                <Icon name="close" size={24} color="#fff" />
               </Pressable>
             </View>
             <AIRecomendation setModalVisible={setModalVisible} />
           </View>
         </View>
       </Modal>
-      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -113,42 +96,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-
-    backgroundColor: "transparent",
-    width: "100%",
-  },
-  // topSection: {
-  //   flex: 0.3,
-  //   backgroundColor: "#ffffff",
-  // },
-  // topSection: {
-  //   // height: 120,
-  //   backgroundColor: "#ffffff",
-  //   paddingHorizontal: 20,
-  //   paddingTop: 20,
-  // },
-  midSection: {
-    height: 180,
     backgroundColor: "#1B2128",
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 20,
-  },
-  bottomSection: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
+    width: "100%",
     marginTop: -40,
-    paddingTop: 20,
-  },
-  midText: {
-    color: "white",
-    fontSize: 35,
-    fontWeight: "bold",
   },
   sectionContainer: {
     width: "100%",
@@ -199,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: "#1B2128",
     borderRadius: 20,
     width: "90%",
     maxHeight: "80%",
@@ -218,11 +168,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: "#1B2128",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1B2128",
+    color: "#ffffff",
   },
   closeButton: {
     padding: 5,

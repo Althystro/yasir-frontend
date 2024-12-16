@@ -6,13 +6,10 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useState, useContext } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import openAi from "../api/openAi";
-import { deleteToken } from "../api/storage";
-import UserContext from "../context/UserContext";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { getVehicleById } from "../api/vehicles";
 import RecomendationCard from "./RecomendationCard";
 
 const questions = [
@@ -55,7 +52,6 @@ const questions = [
 ];
 
 const AIRecomendation = ({ setModalVisible }) => {
-  const [user, setUser] = useContext(UserContext);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [inputs, setInputs] = useState({
     salary: "",
@@ -116,11 +112,6 @@ const AIRecomendation = ({ setModalVisible }) => {
   });
 
   const currentQ = questions[currentQuestion];
-
-  const handleLogout = () => {
-    deleteToken();
-    setUser(false);
-  };
 
   const renderProgressSteps = () => {
     return (
@@ -217,10 +208,6 @@ const AIRecomendation = ({ setModalVisible }) => {
             />
           )}
         </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -232,10 +219,14 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: "white",
+    borderRadius: 15,
   },
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: "white",
+    marginTop: 10,
+    borderRadius: 15,
   },
   progressContainer: {
     marginBottom: 20,
@@ -288,13 +279,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-  },
-  logoutButton: {
-    backgroundColor: "red",
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 20,
-    alignItems: "center",
   },
   stepsContainer: {
     flexDirection: "row",

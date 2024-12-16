@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -15,8 +15,12 @@ import {
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateProfile } from "../api/auth";
+import { Ionicons } from "@expo/vector-icons";
+import { deleteToken } from "../api/storage";
+import UserContext from "../context/UserContext";
 
 export default function ProfileScreen() {
+  const [user, setUser] = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -69,6 +73,11 @@ export default function ProfileScreen() {
     mutate({ address, phoneNumber });
   };
 
+  const handleLogout = () => {
+    deleteToken();
+    setUser(false);
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
@@ -87,55 +96,64 @@ export default function ProfileScreen() {
     );
   }
 
+  const renderProfileInfo = (icon, label, value) => (
+    <View style={styles.infoCard}>
+      <View style={styles.iconContainer}>
+        <Ionicons name={icon} size={24} color="#1B2128" />
+      </View>
+      <View style={styles.infoContent}>
+        <Text style={styles.infoLabel}>{label}</Text>
+        <Text style={styles.infoValue}>{value}</Text>
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome Back, {profile.name}</Text>
+        <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={styles.headerSubtitle}>
+          Welcome back, {profile.firstName}
+        </Text>
       </View>
 
       <View style={styles.content}>
-        <Image
-          source={{
-            uri:
-              profile.image ||
-              "https://png.pngtree.com/png-clipart/20220719/original/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_8385663.png",
-          }}
-          style={styles.profileImage}
-        />
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Name:</Text>
-          <Text style={styles.value}>
+        <View style={styles.profileImageContainer}>
+          <Image
+            source={{
+              uri:
+                profile.image ||
+                "https://png.pngtree.com/png-clipart/20220719/original/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_8385663.png",
+            }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.userName}>
             {profile.firstName + " " + profile.lastName}
           </Text>
         </View>
 
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.value}>{profile.email}</Text>
+        <View style={styles.infoSection}>
+          {renderProfileInfo("mail", "Email", profile.email)}
+          {renderProfileInfo("card", "Civil ID", profile.civilId)}
+          {renderProfileInfo("location", "Address", profile.address)}
+          {renderProfileInfo("call", "Phone", profile.phoneNumber)}
         </View>
 
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Civil ID:</Text>
-          <Text style={styles.value}>{profile.civilId}</Text>
-        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.updateButton]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
 
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Address:</Text>
-          <Text style={styles.value}>{profile.address}</Text>
+          <TouchableOpacity
+            style={[styles.button, styles.logoutButton]}
+            onPress={handleLogout}
+          >
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Phone Number:</Text>
-          <Text style={styles.value}>{profile.phoneNumber}</Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.updateButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.updateButtonText}>Update Profile</Text>
-        </TouchableOpacity>
       </View>
 
       <Modal
@@ -192,62 +210,132 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: "#1B2128",
+    marginTop: -40,
   },
   header: {
-    backgroundColor: "#1a1a1a",
-    height: 150,
-    justifyContent: "center",
+    backgroundColor: "#1B2128",
+    paddingTop: 60,
+    paddingBottom: 20,
     alignItems: "center",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
   },
-  headerText: {
-    color: "#fff",
-    fontSize: 24,
+  headerTitle: {
+    fontSize: 35,
     fontWeight: "bold",
+    color: "white",
+    marginBottom: 5,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "white",
+    opacity: 0.9,
   },
   content: {
     flex: 1,
-    padding: 20,
-    alignItems: "center",
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
-  },
-  fieldContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 15,
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
     paddingHorizontal: 20,
   },
-  label: {
-    width: 100,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
+  profileImageContainer: {
+    alignItems: "center",
+    marginTop: 30,
+    marginBottom: 30,
   },
-  value: {
-    flex: 1,
-    fontSize: 16,
-    color: "#666",
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
+    borderColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
-  updateButton: {
-    backgroundColor: "#1a1a1a",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+  userName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1B2128",
+    marginTop: 15,
+  },
+  infoSection: {
     marginTop: 20,
   },
-  updateButtonText: {
-    color: "#fff",
+  infoCard: {
+    flexDirection: "row",
+    backgroundColor: "#f8f9fa",
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  infoContent: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  infoLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 16,
+    color: "#1B2128",
+    fontWeight: "500",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  updateButton: {
+    backgroundColor: "#1B2128",
+  },
+  logoutButton: {
+    backgroundColor: "#DC3545",
+  },
+  buttonText: {
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
@@ -256,10 +344,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     width: "90%",
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 20,
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: {
@@ -270,41 +358,43 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#1B2128",
   },
   inputContainer: {
     marginBottom: 15,
   },
   inputLabel: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: "#333",
+    fontSize: 14,
+    marginBottom: 8,
+    color: "#666",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
+    borderColor: "#e1e1e1",
+    borderRadius: 12,
     padding: 12,
     fontSize: 16,
+    backgroundColor: "#f8f9fa",
   },
   submitButton: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 20,
   },
   submitButtonText: {
-    color: "#fff",
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
   },
   cancelButton: {
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
   },
@@ -316,9 +406,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+    color: "#666",
   },
 });
