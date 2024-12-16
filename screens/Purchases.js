@@ -8,13 +8,18 @@ import {
   Modal,
   Pressable,
   SafeAreaView,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import React, { useState } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
+import { LinearGradient } from "expo-linear-gradient";
 
-const Purchases = ({ route }) => {
+const { width } = Dimensions.get("window");
+
+const Purchases = ({ route, navigation }) => {
   const { vehicle } = route.params;
   const [active, setActive] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,7 +40,12 @@ const Purchases = ({ route }) => {
             ]}
             onPress={() => setSelectedDuration(year)}
           >
-            <Text style={styles.durationButtonText}>
+            <Text
+              style={[
+                styles.durationButtonText,
+                selectedDuration === year && styles.selectedButtonText,
+              ]}
+            >
               {year} Year{year > 1 ? "s" : ""}
             </Text>
           </TouchableOpacity>
@@ -48,13 +58,17 @@ const Purchases = ({ route }) => {
   const DownPaymentStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Set Down Payment Amount</Text>
-      <TextInput
-        style={styles.input}
-        value={downPayment}
-        onChangeText={setDownPayment}
-        placeholder="Enter amount"
-        keyboardType="numeric"
-      />
+      <View style={styles.inputContainer}>
+        <Text style={styles.currencyPrefix}>KD</Text>
+        <TextInput
+          style={styles.input}
+          value={downPayment}
+          onChangeText={setDownPayment}
+          placeholder="Enter amount"
+          keyboardType="numeric"
+          placeholderTextColor="#999"
+        />
+      </View>
     </View>
   );
 
@@ -63,10 +77,22 @@ const Purchases = ({ route }) => {
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Vehicle Details</Text>
       <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
-        <Text style={styles.detailText}>Model: {vehicle.model}</Text>
-        <Text style={styles.detailText}>Year: {vehicle.year}</Text>
-        <Text style={styles.detailText}>Price: KD {vehicle.price}</Text>
+        <View style={styles.detailRow}>
+          <Icon name="car-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="speedometer-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>Model: {vehicle.model}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="calendar-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>Year: {vehicle.year}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="pricetag-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>Price: KD {vehicle.price}</Text>
+        </View>
       </View>
     </View>
   );
@@ -93,19 +119,23 @@ const Purchases = ({ route }) => {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalView}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Sign Document</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon name="close" size={24} color="#1B2128" />
+              </TouchableOpacity>
+            </View>
             <PdfGenerator vehicle={vehicle} />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
           </View>
         </Modal>
         <TouchableOpacity
-          style={styles.button}
+          style={styles.signatureButton}
           onPress={() => setModalVisible(true)}
         >
+          <Icon name="create-outline" size={24} color="#FFF" />
           <Text style={styles.buttonText}>Open Signature</Text>
         </TouchableOpacity>
       </View>
@@ -115,14 +145,22 @@ const Purchases = ({ route }) => {
   // Step 5: Confirmation Component
   const ConfirmationStep = () => (
     <View style={styles.stepContainer}>
-      <Icon name="checkmark-circle" size={80} color="#1B2128" />
+      <View style={styles.confirmationIconContainer}>
+        <Icon name="checkmark-circle" size={80} color="#1B2128" />
+      </View>
       <Text style={styles.confirmationTitle}>Purchase Confirmed!</Text>
       <View style={styles.summaryContainer}>
-        <Text style={styles.summaryText}>
-          Financing Duration: {selectedDuration} Year
-          {selectedDuration > 1 ? "s" : ""}
-        </Text>
-        <Text style={styles.summaryText}>Down Payment: KD {downPayment}</Text>
+        <View style={styles.summaryRow}>
+          <Icon name="time-outline" size={24} color="#1B2128" />
+          <Text style={styles.summaryText}>
+            Financing Duration: {selectedDuration} Year
+            {selectedDuration > 1 ? "s" : ""}
+          </Text>
+        </View>
+        <View style={styles.summaryRow}>
+          <Icon name="cash-outline" size={24} color="#1B2128" />
+          <Text style={styles.summaryText}>Down Payment: KD {downPayment}</Text>
+        </View>
       </View>
     </View>
   );
@@ -136,10 +174,28 @@ const Purchases = ({ route }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Confirm Purchase</Text>
-      </View>
+    <View style={styles.container}>
+      <ImageBackground
+        source={{ uri: vehicle.image2 }}
+        style={styles.headerBackground}
+      >
+        <LinearGradient
+          colors={["rgba(27, 33, 40, 0.7)", "rgba(27, 33, 40, 0.9)"]}
+          style={styles.gradient}
+        >
+          <SafeAreaView style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Icon name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Confirm Purchase</Text>
+            <View style={styles.backButton} />
+          </SafeAreaView>
+        </LinearGradient>
+      </ImageBackground>
+
       <View style={styles.stepperContainer}>
         <Stepper
           active={active}
@@ -151,9 +207,10 @@ const Purchases = ({ route }) => {
           stepTextStyle={styles.stepTextStyle}
           activeStepStyle={styles.activeStepStyle}
           activeStepTextStyle={styles.activeStepTextStyle}
+          connectorStyle={styles.connectorStyle}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -162,12 +219,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
   },
+  headerBackground: {
+    height: 200,
+    width: width,
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   header: {
-    backgroundColor: "#1B2128",
-    padding: 20,
-    borderBottomRightRadius: 30,
-    borderBottomLeftRadius: 30,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   headerText: {
     color: "white",
@@ -177,64 +250,101 @@ const styles = StyleSheet.create({
   stepperContainer: {
     flex: 1,
     padding: 20,
+    marginTop: -40,
+    backgroundColor: "#F5F5F5",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
   },
   stepContainer: {
     padding: 20,
     backgroundColor: "white",
-    borderRadius: 15,
-    alignItems: "center",
+    borderRadius: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   stepTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 25,
     color: "#1B2128",
+    textAlign: "center",
   },
   durationButtons: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 10,
+    gap: 15,
   },
   durationButton: {
     width: "45%",
     padding: 15,
-    backgroundColor: "#DFE4F0",
-    borderRadius: 10,
+    backgroundColor: "#F5F7FA",
+    borderRadius: 15,
     alignItems: "center",
     margin: 5,
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   selectedButton: {
     backgroundColor: "#1B2128",
   },
   durationButtonText: {
     color: "#1B2128",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  selectedButtonText: {
+    color: "#FFFFFF",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: "#F5F7FA",
+    borderRadius: 15,
+    paddingHorizontal: 15,
+  },
+  currencyPrefix: {
+    fontSize: 16,
+    color: "#1B2128",
+    fontWeight: "600",
+    marginRight: 10,
   },
   input: {
-    width: "80%",
+    flex: 1,
     height: 50,
-    borderWidth: 1,
-    borderColor: "#DFE4F0",
-    borderRadius: 10,
-    padding: 15,
     fontSize: 16,
+    color: "#1B2128",
   },
   detailsContainer: {
     width: "100%",
-    gap: 10,
+    gap: 15,
+  },
+  detailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F7FA",
+    padding: 15,
+    borderRadius: 12,
+    gap: 15,
   },
   detailText: {
     fontSize: 16,
     color: "#1B2128",
+    flex: 1,
   },
   modalView: {
     flex: 1,
     backgroundColor: "white",
     margin: 20,
     borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
+    padding: 0,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -244,49 +354,106 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
+  signatureButton: {
     backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 10,
-    marginTop: 10,
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    width: "100%",
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: 16,
     textAlign: "center",
   },
+  confirmationIconContainer: {
+    backgroundColor: "#F5F7FA",
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
   confirmationTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#1B2128",
     marginVertical: 20,
+    textAlign: "center",
   },
   summaryContainer: {
     width: "100%",
-    gap: 10,
+    gap: 15,
+  },
+  summaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F7FA",
+    padding: 15,
+    borderRadius: 12,
+    gap: 15,
   },
   summaryText: {
     fontSize: 16,
     color: "#1B2128",
+    flex: 1,
   },
   stepStyle: {
-    backgroundColor: "#DFE4F0",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    backgroundColor: "#F5F7FA",
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#1B2128",
+    borderWidth: 2,
+    borderColor: "#DFE4F0",
   },
   stepTextStyle: {
     color: "#1B2128",
+    fontSize: 16,
+    fontWeight: "600",
   },
   activeStepStyle: {
     backgroundColor: "#1B2128",
+    borderColor: "#1B2128",
   },
   activeStepTextStyle: {
     color: "white",
+  },
+  connectorStyle: {
+    backgroundColor: "#DFE4F0",
+    height: 2,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#DFE4F0",
+    backgroundColor: "#F5F7FA",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1B2128",
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#DFE4F0",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
