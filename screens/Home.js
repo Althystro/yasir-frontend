@@ -6,13 +6,18 @@ import {
   TextInput,
   searchInput,
   ScrollView,
+  Modal,
+  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React from "react";
+import React, { useState } from "react";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
 
 const Home = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   // Edit the restaurant data to whats used  here
 
   //     const [searchInput, setSearchInput] = useState("");
@@ -32,11 +37,9 @@ const Home = () => {
       <View style={styles.topSection}>
         {/* The search button and profile ? */}
 
-
         <View></View>
       </View>
       <View style={styles.midSection}>
-
         {/* Only for the logo moto */}
         <Text style={styles.midText}> Yessir | يسر </Text>
         <Text style={{ color: "white" }}>Vroom</Text>
@@ -44,7 +47,6 @@ const Home = () => {
 
       {/* Containes all cards */}
       <ScrollView style={styles.bottomSection}>
-        
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -72,9 +74,67 @@ const Home = () => {
         {/* The Ai / calculater card this is will be changed later */}
         <View style={{ flexDirection: "row" }}>
           {/* Ai card */}
-          <View style={styles.aiSection}></View>
+          <TouchableOpacity
+            style={styles.aiSection}
+            onPress={() => setModalVisible(true)}
+          >
+            <Icon name="robot" size={40} color="#fff" />
+            <Text style={styles.aiText}>AI Assistant</Text>
+            <Text style={styles.aiSubText}>Get smart suggestions</Text>
+          </TouchableOpacity>
+
+          {/* AI Modal */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalView}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>AI Suggestions</Text>
+                  <Pressable
+                    onPress={() => setModalVisible(false)}
+                    style={styles.closeButton}
+                  >
+                    <Icon name="close" size={24} color="#1B2128" />
+                  </Pressable>
+                </View>
+
+                <ScrollView style={styles.suggestionsList}>
+                  <View style={styles.suggestionItem}>
+                    <Icon name="car-info" size={24} color="#1B2128" />
+                    <Text style={styles.suggestionText}>
+                      Compare car prices across different dealerships
+                    </Text>
+                  </View>
+
+                  <View style={styles.suggestionItem}>
+                    <Icon name="calculator" size={24} color="#1B2128" />
+                    <Text style={styles.suggestionText}>
+                      Calculate monthly payments and financing options
+                    </Text>
+                  </View>
+
+                  <View style={styles.suggestionItem}>
+                    <Icon name="map-marker" size={24} color="#1B2128" />
+                    <Text style={styles.suggestionText}>
+                      Find nearest dealerships with your preferred car
+                    </Text>
+                  </View>
+
+                  <View style={styles.suggestionItem}>
+                    <Icon name="star" size={24} color="#1B2128" />
+                    <Text style={styles.suggestionText}>
+                      Get personalized car recommendations
+                    </Text>
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
           {/* Calculater card */}
-          <View style={styles.calculaterSection}></View>
         </View>
       </ScrollView>
       {/* </ScrollView> */}
@@ -149,6 +209,7 @@ const styles = StyleSheet.create({
   aiSection: {
     backgroundColor: "#1B2128",
     alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
     marginRight: 15,
     padding: 20,
@@ -157,25 +218,69 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 250,
     height: 300,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 3},
-    // shadowOpacity: 0.1,
-    // shadowRadius: 8,
   },
-  calculaterSection: {
-    backgroundColor: "#EEEAE5",
+  aiText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 15,
+  },
+  aiSubText: {
+    color: "#fff",
+    fontSize: 14,
+    marginTop: 5,
+    opacity: 0.8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
-    marginRight: 15,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
+  },
+  modalView: {
+    backgroundColor: "white",
     borderRadius: 20,
-    width: 250,
-    height: 300,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 3},
-    // shadowOpacity: 0.1,
-    // shadowRadius: 8,
+    width: "90%",
+    maxHeight: "80%",
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1B2128",
+  },
+  closeButton: {
+    padding: 5,
+  },
+  suggestionsList: {
+    maxHeight: "90%",
+  },
+  suggestionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  suggestionText: {
+    marginLeft: 15,
+    fontSize: 16,
+    color: "#1B2128",
+    flex: 1,
   },
 });

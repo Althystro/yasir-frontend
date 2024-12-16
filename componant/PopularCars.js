@@ -47,7 +47,7 @@ const PopularCars = () => {
     >
       <Image
         source={{
-          uri: "https://via.placeholder.com/150",
+          uri: item.image,
         }}
         style={styles.image}
       />
