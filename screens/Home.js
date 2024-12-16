@@ -99,7 +99,7 @@ const Home = () => {
                 <Icon name="close" size={24} color="#1B2128" />
               </Pressable>
             </View>
-            <AIRecomendation />
+            <AIRecomendation setModalVisible={setModalVisible} />
           </View>
         </View>
       </Modal>

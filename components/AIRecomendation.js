@@ -6,42 +6,14 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
-import { useMutation } from "@tanstack/react-query";
+import React, { useState, useContext } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import openAi from "../api/openAi";
 import { deleteToken } from "../api/storage";
 import UserContext from "../context/UserContext";
 import Icon from "react-native-vector-icons/FontAwesome";
-
-const useTypingAnimation = (text, speed = 1) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    if (!text) {
-      setDisplayedText("");
-      return;
-    }
-
-    setIsTyping(true);
-    let index = 0;
-    setDisplayedText("");
-
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText((current) => current + text.charAt(index));
-        index++;
-      } else {
-        setIsTyping(false);
-        clearInterval(timer);
-      }
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [text, speed]);
-
-  return { displayedText, isTyping };
-};
+import { getVehicleById } from "../api/vehicles";
+import RecomendationCard from "./RecomendationCard";
 
 const questions = [
   {
@@ -82,7 +54,7 @@ const questions = [
   },
 ];
 
-const AIRecomendation = () => {
+const AIRecomendation = ({ setModalVisible }) => {
   const [user, setUser] = useContext(UserContext);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [inputs, setInputs] = useState({
@@ -94,9 +66,6 @@ const AIRecomendation = () => {
     purpose: "",
   });
   const [aiResponse, setAiResponse] = useState(null);
-  const { displayedText, isTyping } = useTypingAnimation(
-    aiResponse?.reasons || ""
-  );
 
   const promptString =
     `Current salary: ${inputs.salary}\n` +
@@ -242,31 +211,10 @@ const AIRecomendation = () => {
           </View>
 
           {aiResponse && (
-            <View style={styles.responseContainer}>
-              <Text style={styles.responseTitle}>
-                Recommended Car
-                {isTyping && <Text style={styles.typingIndicator}>...</Text>}
-              </Text>
-
-              <View style={styles.carInfoContainer}>
-                <Text style={styles.carName}>{aiResponse.carName}</Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.priceLabel}>Price:</Text>
-                  <Text style={styles.carPrice}>
-                    ${Number(aiResponse.price).toLocaleString()}
-                  </Text>
-                </View>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.priceLabel}>Monthly Installment:</Text>
-                  <Text style={styles.carPrice}>
-                    ${Number(aiResponse.installments).toLocaleString()}
-                  </Text>
-                </View>
-              </View>
-
-              <Text style={styles.reasonsTitle}>Why this car?</Text>
-              <Text style={styles.responseText}>{displayedText}</Text>
-            </View>
+            <RecomendationCard
+              aiResponse={aiResponse}
+              setModalVisible={setModalVisible}
+            />
           )}
         </View>
 
@@ -340,66 +288,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-  },
-  responseContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  carInfoContainer: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "#eee",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 5,
-  },
-  priceLabel: {
-    fontSize: 16,
-    color: "#666",
-  },
-  carName: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#333",
-    marginBottom: 10,
-  },
-  carPrice: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#28a745",
-  },
-  reasonsTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  responseTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 10,
-    color: "#333",
-  },
-  responseText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#444",
-  },
-  typingIndicator: {
-    color: "#666",
-    fontSize: 24,
-    marginLeft: 4,
   },
   logoutButton: {
     backgroundColor: "red",

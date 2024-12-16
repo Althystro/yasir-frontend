@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import React from "react";
-import getAllVehicles from "../api/vehicles";
+import { getAllVehicles } from "../api/vehicles";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
 
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "60%",
     borderRadius: 8,
+    objectFit: "contain",
   },
   carName: {
     fontSize: 16,
