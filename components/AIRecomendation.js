@@ -6,41 +6,11 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import openAi from "../api/openAi";
-import { deleteToken } from "../api/storage";
-import UserContext from "../context/UserContext";
-
-const useTypingAnimation = (text, speed = 1) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    if (!text) {
-      setDisplayedText("");
-      return;
-    }
-
-    setIsTyping(true);
-    let index = 0;
-    setDisplayedText("");
-
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText((current) => current + text.charAt(index));
-        index++;
-      } else {
-        setIsTyping(false);
-        clearInterval(timer);
-      }
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [text, speed]);
-
-  return { displayedText, isTyping };
-};
+import Icon from "react-native-vector-icons/FontAwesome";
+import RecomendationCard from "./RecomendationCard";
 
 const questions = [
   {
@@ -81,8 +51,7 @@ const questions = [
   },
 ];
 
-const AIRecomendation = () => {
-  const [user, setUser] = useContext(UserContext);
+const AIRecomendation = ({ setModalVisible }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [inputs, setInputs] = useState({
     salary: "",
@@ -93,9 +62,6 @@ const AIRecomendation = () => {
     purpose: "",
   });
   const [aiResponse, setAiResponse] = useState(null);
-  const { displayedText, isTyping } = useTypingAnimation(
-    aiResponse?.reasons || ""
-  );
 
   const promptString =
     `Current salary: ${inputs.salary}\n` +
@@ -147,19 +113,49 @@ const AIRecomendation = () => {
 
   const currentQ = questions[currentQuestion];
 
-  const handleLogout = () => {
-    deleteToken();
-    setUser(false);
+  const renderProgressSteps = () => {
+    return (
+      <View style={styles.stepsContainer}>
+        {questions.map((_, index) => (
+          <View key={index} style={styles.stepRow}>
+            <View
+              style={[
+                styles.stepCircle,
+                index === currentQuestion && styles.activeStep,
+                index < currentQuestion && styles.completedStep,
+              ]}
+            >
+              {index < currentQuestion ? (
+                <Icon name="check" size={16} color="#fff" />
+              ) : (
+                <Text
+                  style={[
+                    styles.stepNumber,
+                    index === currentQuestion && styles.activeStepNumber,
+                  ]}
+                >
+                  {index + 1}
+                </Text>
+              )}
+            </View>
+            {index < questions.length - 1 && (
+              <View
+                style={[
+                  styles.stepLine,
+                  index < currentQuestion && styles.completedLine,
+                ]}
+              />
+            )}
+          </View>
+        ))}
+      </View>
+    );
   };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            Question {currentQuestion + 1} of {questions.length}
-          </Text>
-        </View>
+        {renderProgressSteps()}
 
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>{currentQ.question}</Text>
@@ -206,37 +202,12 @@ const AIRecomendation = () => {
           </View>
 
           {aiResponse && (
-            <View style={styles.responseContainer}>
-              <Text style={styles.responseTitle}>
-                Recommended Car
-                {isTyping && <Text style={styles.typingIndicator}>...</Text>}
-              </Text>
-
-              <View style={styles.carInfoContainer}>
-                <Text style={styles.carName}>{aiResponse.carName}</Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.priceLabel}>Price:</Text>
-                  <Text style={styles.carPrice}>
-                    ${Number(aiResponse.price).toLocaleString()}
-                  </Text>
-                </View>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.priceLabel}>Monthly Installment:</Text>
-                  <Text style={styles.carPrice}>
-                    ${Number(aiResponse.installments).toLocaleString()}
-                  </Text>
-                </View>
-              </View>
-
-              <Text style={styles.reasonsTitle}>Why this car?</Text>
-              <Text style={styles.responseText}>{displayedText}</Text>
-            </View>
+            <RecomendationCard
+              aiResponse={aiResponse}
+              setModalVisible={setModalVisible}
+            />
           )}
         </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -248,11 +219,14 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: "white",
+    borderRadius: 15,
   },
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 70,
+    backgroundColor: "white",
+    marginTop: 10,
+    borderRadius: 15,
   },
   progressContainer: {
     marginBottom: 20,
@@ -306,71 +280,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-  responseContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    borderWidth: 1,
+  stepsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+    marginBottom: 20,
+  },
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stepCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
     borderColor: "#ddd",
   },
-  carInfoContainer: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "#eee",
+  activeStep: {
+    backgroundColor: "#007AFF",
+    borderColor: "#007AFF",
   },
-  priceContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 5,
+  completedStep: {
+    backgroundColor: "#28a745",
+    borderColor: "#28a745",
   },
-  priceLabel: {
-    fontSize: 16,
+  stepNumber: {
     color: "#666",
-  },
-  carName: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#333",
-    marginBottom: 10,
-  },
-  carPrice: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#28a745",
   },
-  reasonsTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
-    marginTop: 10,
-    marginBottom: 5,
+  activeStepNumber: {
+    color: "#fff",
   },
-  responseTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 10,
-    color: "#333",
+  stepLine: {
+    width: 30,
+    height: 2,
+    backgroundColor: "#ddd",
+    marginHorizontal: 5,
   },
-  responseText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#444",
-  },
-  typingIndicator: {
-    color: "#666",
-    fontSize: 24,
-    marginLeft: 4,
-  },
-  logoutButton: {
-    backgroundColor: "red",
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 20,
-    alignItems: "center",
+  completedLine: {
+    backgroundColor: "#28a745",
   },
 });

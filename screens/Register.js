@@ -37,7 +37,7 @@ export default function Register({ navigation }) {
     },
     onError: () => {
       Alert.alert(
-        "Login Failed",
+        "Registration Failed",
         "Please check your credentials and try again"
       );
     },
@@ -49,90 +49,70 @@ export default function Register({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.topSection}>{/* Nothing added here? */}</View>
       <View style={styles.midSection}>
         {/* Only for the logo moto */}
         <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={styles.welcomeText}>Join Yessir</Text>
+        <Text style={{ color: "white", fontSize: 30 }}>Join Yessir</Text>
       </View>
 
       {/* The inputs */}
-      <View style={styles.registerContainer}>
-        {/* Name Labels */}
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.firstText}>First Name: </Text>
-
-          <Text style={styles.secText}>Second Name: </Text>
-        </View>
-        {/* Name inputs */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
+      <View style={styles.bottomSection}>
+        <View style={styles.registerContainer}>
+          <Text style={styles.title}>Register</Text>
           <TextInput
-            style={styles.firstNameInput}
+            style={styles.input}
             placeholder="First Name"
             value={firstName}
             onChangeText={setFirstName}
             autoCapitalize="none"
           />
           <TextInput
-            style={styles.lastNameInput}
+            style={styles.input}
             placeholder="Last Name"
             value={lastName}
             onChangeText={setLastName}
             autoCapitalize="none"
           />
+          <TextInput
+            style={styles.input}
+            placeholder="Civil ID"
+            value={civilId}
+            onChangeText={setCivilId}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.linkText}>Already have an account? Login</Text>
+          </TouchableOpacity>
         </View>
-
-        <Text style={styles.inputText}>Civil ID: </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Civil ID"
-          value={civilId}
-          onChangeText={setCivilId}
-          autoCapitalize="none"
-        />
-        <Text style={styles.inputText}>Phone Number: </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          autoCapitalize="none"
-        />
-
-        <Text style={styles.inputText}>E-mail: </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.inputText}>Password: </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.linkButton}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.linkText}>
-            Don't have an account? {""}
-            <Text style={styles.registerText}>Login</Text>
-          </Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -145,7 +125,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    marginBottom: 70,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
   },
   input: {
     width: "100%",
