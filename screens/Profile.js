@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -16,8 +16,11 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateProfile } from "../api/auth";
 import { Ionicons } from "@expo/vector-icons";
+import { deleteToken } from "../api/storage";
+import UserContext from "../context/UserContext";
 
 export default function ProfileScreen() {
+  const [user, setUser] = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -68,6 +71,11 @@ export default function ProfileScreen() {
 
   const handleUpdateProfile = () => {
     mutate({ address, phoneNumber });
+  };
+
+  const handleLogout = () => {
+    deleteToken();
+    setUser(false);
   };
 
   if (isLoading) {
@@ -131,12 +139,21 @@ export default function ProfileScreen() {
           {renderProfileInfo("call", "Phone", profile.phoneNumber)}
         </View>
 
-        <TouchableOpacity
-          style={styles.updateButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.updateButtonText}>Update Profile</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.updateButton]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.logoutButton]}
+            onPress={handleLogout}
+          >
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal
@@ -287,13 +304,18 @@ const styles = StyleSheet.create({
     color: "#1B2128",
     fontWeight: "500",
   },
-  updateButton: {
-    backgroundColor: "#1B2128",
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  button: {
+    flex: 1,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 12,
-    marginTop: 30,
-    marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -303,7 +325,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  updateButtonText: {
+  updateButton: {
+    backgroundColor: "#1B2128",
+  },
+  logoutButton: {
+    backgroundColor: "#DC3545",
+  },
+  buttonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",

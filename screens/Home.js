@@ -67,7 +67,7 @@ const Home = () => {
       </TouchableOpacity>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -80,7 +80,7 @@ const Home = () => {
                 onPress={() => setModalVisible(false)}
                 style={styles.closeButton}
               >
-                <Icon name="close" size={24} color="#1B2128" />
+                <Icon name="close" size={24} color="#fff" />
               </Pressable>
             </View>
             <AIRecomendation setModalVisible={setModalVisible} />
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: "#1B2128",
     borderRadius: 20,
     width: "90%",
     maxHeight: "80%",
@@ -168,11 +168,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: "#1B2128",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1B2128",
+    color: "#ffffff",
   },
   closeButton: {
     padding: 5,
