@@ -118,10 +118,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     width: "100%",
   },
-  topSection: {
-    flex: 0.3,
-    backgroundColor: "#ffffff",
-  },
+  // topSection: {
+  //   flex: 0.3,
+  //   backgroundColor: "#ffffff",
+  // },
   // topSection: {
   //   // height: 120,
   //   backgroundColor: "#ffffff",
