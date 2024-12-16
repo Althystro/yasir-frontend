@@ -58,7 +58,16 @@ const AnimatedHeader = ({
   const titleMarginTop = headerImage ? 40 : 80;
 
   return (
-    <View style={[styles.container, { backgroundColor }, containerStyle]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor,
+          marginTop: headerImage ? 0 : -40,
+        },
+        containerStyle,
+      ]}
+    >
       <Animated.View
         style={[
           styles.header,
@@ -104,7 +113,10 @@ const AnimatedHeader = ({
       </Animated.View>
 
       <Animated.ScrollView
-        style={[styles.scrollView, { marginTop: headerImage ? -40 : -20 }]}
+        style={[
+          styles.scrollView,
+          { marginTop: headerImage ? -40 : 0 }, // Only apply negative margin if there's an image
+        ]}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
@@ -120,7 +132,6 @@ const AnimatedHeader = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: -40,
   },
   header: {
     justifyContent: "center",
