@@ -19,14 +19,9 @@ const VehicleDetails = ({ route, navigation }) => {
 
     const carPrice = vehicle.price; // Price is already a number
     const principal = carPrice - parseInt(downPayment);
-    const monthlyInterest = 0.05 / 12; // 5% annual interest rate
     const numberOfPayments = parseInt(loanTerm) * 12;
 
-    const monthlyPayment =
-      (principal *
-        monthlyInterest *
-        Math.pow(1 + monthlyInterest, numberOfPayments)) /
-      (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+    const monthlyPayment = principal / numberOfPayments;
 
     return monthlyPayment.toFixed(2);
   };
@@ -70,7 +65,7 @@ const VehicleDetails = ({ route, navigation }) => {
           <Text style={styles.calculatorTitle}>Finance Calculator</Text>
           <View style={styles.calculatorInputs}>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Down Payment ($)</Text>
+              <Text style={styles.inputLabel}>Down Payment (KD)</Text>
               <TextInput
                 style={styles.input}
                 value={downPayment}
@@ -92,7 +87,7 @@ const VehicleDetails = ({ route, navigation }) => {
           </View>
           {downPayment && loanTerm && (
             <Text style={styles.monthlyPayment}>
-              Monthly Payment: ${calculateMonthlyPayment()}
+              Monthly Payment: KD {calculateMonthlyPayment()}
             </Text>
           )}
         </View>
