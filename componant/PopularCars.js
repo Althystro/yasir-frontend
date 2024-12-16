@@ -55,7 +55,7 @@ const PopularCars = () => {
         {item.brand} {item.model}
       </Text>
       <Text style={styles.carYear}>{item.year}</Text>
-      <Text style={styles.carPrice}>${item.price.toLocaleString()}</Text>
+      <Text style={styles.carPrice}>KD {item.price.toLocaleString()}</Text>
     </TouchableOpacity>
   );
 
