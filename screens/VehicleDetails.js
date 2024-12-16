@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TextInput,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import cars from "../data/cars";
@@ -40,7 +41,27 @@ const VehicleDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topSection}>
+      <View style={styles.midSection}>
+        {selectedCar ? (
+          <>
+            <Text style={styles.midText}>{selectedCar.name}</Text>
+            {/* <View style={styles.detailsContainer}>
+              <View style={styles.detailItem}>
+                <Ionicons name="car-sport" size={24} color="white" />
+                <Text style={styles.detailText}>{selectedCar.engine}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Ionicons name="speedometer" size={24} color="white" />
+                <Text style={styles.detailText}>
+                  {selectedCar.fuelEfficiency}
+                </Text>
+              </View>
+            </View> */}
+          </>
+        ) : (
+          <Text style={styles.midText}>Choose a car</Text>
+        )}
+
         <FlatList
           data={cars}
           keyExtractor={(item) => item.id.toString()}
@@ -62,29 +83,7 @@ const VehicleDetails = () => {
         />
       </View>
 
-      <View style={styles.midSection}>
-        {selectedCar ? (
-          <>
-            <Text style={styles.midText}>{selectedCar.name}</Text>
-            <View style={styles.detailsContainer}>
-              <View style={styles.detailItem}>
-                <Ionicons name="car-sport" size={24} color="white" />
-                <Text style={styles.detailText}>{selectedCar.engine}</Text>
-              </View>
-              <View style={styles.detailItem}>
-                <Ionicons name="speedometer" size={24} color="white" />
-                <Text style={styles.detailText}>
-                  {selectedCar.fuelEfficiency}
-                </Text>
-              </View>
-            </View>
-          </>
-        ) : (
-          <Text style={styles.midText}>Choose a car</Text>
-        )}
-      </View>
-
-      <View style={styles.bottomSection}>
+      <ScrollView style={styles.cardContainer}>
         {selectedCar ? (
           <>
             <Text style={styles.labelText}>Features</Text>
@@ -142,13 +141,27 @@ const VehicleDetails = () => {
               <Text style={styles.labelPriceText}>Starting From:</Text>
               <Text style={styles.priceText}>{selectedCar.price}</Text>
             </View>
+
+            <View style={{flexDirection:'row',marginTop:30}}>
+
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Get the Car</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.testButton} >
+          <Text style={styles.buttonText}>Book Test Drive</Text>
+        </TouchableOpacity>
+
+
+            </View>
           </>
         ) : (
           <Text style={styles.placeHolderText}>
             Select a car to see details
           </Text>
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -160,85 +173,67 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  topSection: {
-    height: 200,
-    paddingTop: 20,
-    paddingBottom: 10,
-    backgroundColor: "#ffffff",
-  },
-  midSection: {
-    flex: 1,
-    backgroundColor: "#1B2128",
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
-    paddingTop: 20,
-    paddingRight: 20,
-    paddingLeft: 20,
-    zIndex: 1,
-  },
-  bottomSection: {
-    flex: 3.5,
-    backgroundColor: "#ffffff",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    marginTop: -30,
+  cardContainer: {
+    backgroundColor: "white",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
+
+  midSection: {
+    flex: 0.8, 
+    backgroundColor: "#1B2128",
+    backgroundColor: "red",
+    borderBottomRightRadius: 65,
+    borderBottomLeftRadius: 65,
+    paddingHorizontal: 20,
+    marginTop:50
+    
+  },
   carButton: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "yellow",
     padding: 15,
     marginHorizontal: 10,
     marginVertical: 5,
     borderRadius: 20,
-    width: 200,
+    width: 100,
+    height: 50,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   selectedCarButton: {
     backgroundColor: "#e8f0fe",
     borderColor: "#1B2128",
     borderWidth: 2,
-  },
-  carImage: {
-    width: 160,
-    height: 90,
-    borderRadius: 10,
-    marginBottom: 8,
+
   },
   carButtonText: {
-    fontSize: 16,
+    fontSize: 10,
     fontWeight: "bold",
     marginBottom: 5,
   },
   carButtonPrice: {
-    fontSize: 14,
+    fontSize: 10,
     color: "#666",
   },
   midText: {
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 15,
   },
-  detailsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 20,
-  },
-  detailItem: {
-    alignItems: "center",
-  },
-  detailText: {
-    color: "white",
-    marginTop: 5,
-    fontSize: 12,
-    textAlign: "center",
-  },
+  // detailsContainer: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-around",
+  //   marginTop: 20,
+  // },
+  // detailItem: {
+  //   alignItems: "center",
+  // },
+  // detailText: {
+  //   color: "white",
+  //   marginTop: 5,
+  //   fontSize: 12,
+  //   textAlign: "center",
+  // },
   featuresContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -305,7 +300,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#404040",
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
   },
   priceContainer: {
@@ -325,5 +320,29 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
     color: "#666",
+  },
+  button: {
+    width: 150,
+    height:50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  testButton: {
+    width: 150,
+    height:50,
+    backgroundColor: "#1B2128",
+    padding: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 10,
+    marginLeft:60
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });

@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomRightRadius: 65,
+    borderBottomLeftRadius: 65,
   },
   headerText: {
     color: "#fff",
