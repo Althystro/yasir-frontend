@@ -5,6 +5,8 @@ import {
   View,
   SafeAreaView,
   TextInput,
+  ScrollView,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,38 +30,41 @@ const VehicleDetails = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.midSection}>
-        <Text
-          style={styles.midText}
-        >{`${vehicle.brand} ${vehicle.model}`}</Text>
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <Ionicons name="car-sport" size={24} color="white" />
-            <Text style={styles.detailText}>{vehicle.type}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="calendar" size={24} color="white" />
-            <Text style={styles.detailText}>{vehicle.year}</Text>
-          </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.midSection}>
+          <Text
+            style={styles.midText}
+          >{`${vehicle.brand} ${vehicle.model}`}</Text>
+          {/* <View style={styles.detailsContainer}>
+            <View style={styles.detailItem}>
+              <Ionicons name="car-sport" size={24} color="white" />
+              <Text style={styles.detailText}>{vehicle.type}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="calendar" size={24} color="white" />
+              <Text style={styles.detailText}>{vehicle.year}</Text>
+            </View>
+          </View> */}
+          <Image source={{ uri: vehicle.image2 }} style={styles.vehicleImage} />
         </View>
-      </View>
 
-      <View style={styles.bottomSection}>
-        <Text style={styles.labelText}>Vehicle Information</Text>
-        <View style={styles.featuresContainer}>
-          <View style={styles.featuresCard}>
-            <Ionicons name="car" size={24} color="#1B2128" />
-            <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
+        <View style={styles.bottomSection}>
+          <Text style={styles.labelText}>Vehicle Information</Text>
+          <View style={styles.featuresContainer}>
+            <View style={styles.featuresCard}>
+              <Ionicons name="car" size={24} color="#1B2128" />
+              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
+            </View>
+            <View style={styles.featuresCard}>
+              <Ionicons name="business" size={24} color="#1B2128" />
+              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
+            </View>
+            <View style={styles.featuresCard}>
+              <Ionicons name="calendar" size={24} color="#1B2128" />
+              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
+            </View>
           </View>
-          <View style={styles.featuresCard}>
-            <Ionicons name="business" size={24} color="#1B2128" />
-            <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
-          </View>
-          <View style={styles.featuresCard}>
-            <Ionicons name="speedometer" size={24} color="#1B2128" />
-            <Text style={styles.featuresText}>Model: {vehicle.model}</Text>
-          </View>
-        </View>
+
 
         <View style={styles.calculatorSection}>
           <Text style={styles.calculatorTitle}>Finance Calculator</Text>
@@ -84,7 +89,13 @@ const VehicleDetails = ({ route, navigation }) => {
                 placeholder="5"
               />
             </View>
+            {downPayment && loanTerm && (
+              <Text style={styles.monthlyPayment}>
+                Monthly Payment: ${calculateMonthlyPayment()}
+              </Text>
+            )}
           </View>
+
           {downPayment && loanTerm && (
             <Text style={styles.monthlyPayment}>
               Monthly Payment: KD {calculateMonthlyPayment()}
@@ -92,43 +103,44 @@ const VehicleDetails = ({ route, navigation }) => {
           )}
         </View>
 
-        <View style={styles.priceContainer}>
-          <Text style={styles.labelPriceText}>Price:</Text>
-          <Text style={styles.priceText}>
-            KD {vehicle.price.toLocaleString()}
-          </Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.testDriveButton]}
-              onPress={() =>
-                navigation.navigate("Test Drive", { vehicle: vehicle })
-              }
-            >
-              <Ionicons
-                name="car-sport"
-                size={20}
-                color="#ffffff"
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.buttonText}>Book A Test Drive</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.buyNowButton]}
-              onPress={() =>
-                navigation.navigate("Pdf Generator", { vehicle: vehicle })
-              }
-            >
-              <Ionicons
-                name="cart"
-                size={20}
-                color="#ffffff"
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.buttonText}>Buy Now</Text>
-            </TouchableOpacity>
+          <View style={styles.priceContainer}>
+            <Text style={styles.labelPriceText}>Price:</Text>
+            <Text style={styles.priceText}>
+              KD {vehicle.price.toLocaleString()}
+            </Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.testDriveButton]}
+                onPress={() =>
+                  navigation.navigate("Test Drive", { vehicle: vehicle })
+                }
+              >
+                <Ionicons
+                  name="car-sport"
+                  size={20}
+                  color="#ffffff"
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.buttonText}>Test Drive</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buyNowButton]}
+                onPress={() =>
+                  navigation.navigate("Pdf Generator", { vehicle: vehicle })
+                }
+              >
+                <Ionicons
+                  name="cart"
+                  size={20}
+                  color="#blck"
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.buttonBuyNowText}>Buy Now</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -149,12 +161,14 @@ const styles = StyleSheet.create({
   midSection: {
     flex: 1,
     backgroundColor: "#1B2128",
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
+    // borderTopRightRadius: 60,
+    // borderTopLeftRadius: 60,
     paddingTop: 20,
     paddingRight: 20,
     paddingLeft: 20,
     zIndex: 1,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
   },
   bottomSection: {
     flex: 3.5,
@@ -164,6 +178,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 40,
   },
   carButton: {
     backgroundColor: "#f5f5f5",
@@ -308,6 +323,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 10,
   },
   button: {
@@ -317,6 +334,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     marginVertical: 5,
+    flex: 1,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -330,7 +348,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1B2128",
   },
   buyNowButton: {
-    backgroundColor: "#2E5BE3",
+    backgroundColor: "#DFE4F0",
   },
   buttonText: {
     color: "#ffffff",
@@ -338,7 +356,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 8,
   },
+  buttonBuyNowText: {
+    color: "#1B2128",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
   buttonIcon: {
     marginRight: 4,
+  },
+  vehicleImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 15,
+    marginBottom: 20,
   },
 });

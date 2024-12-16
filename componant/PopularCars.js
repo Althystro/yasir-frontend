@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import React from "react";
-import getAllVehicles from "../api/vehicles";
+import { getAllVehicles } from "../api/vehicles";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
 
@@ -47,7 +47,7 @@ const PopularCars = () => {
     >
       <Image
         source={{
-          uri: "https://via.placeholder.com/150",
+          uri: item.image,
         }}
         style={styles.image}
       />
@@ -55,7 +55,7 @@ const PopularCars = () => {
         {item.brand} {item.model}
       </Text>
       <Text style={styles.carYear}>{item.year}</Text>
-      <Text style={styles.carPrice}>${item.price.toLocaleString()}</Text>
+      <Text style={styles.carPrice}>KD {item.price.toLocaleString()}</Text>
     </TouchableOpacity>
   );
 
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "60%",
     borderRadius: 8,
+    objectFit: "contain",
   },
   carName: {
     fontSize: 16,
