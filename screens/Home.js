@@ -9,45 +9,87 @@ import {
   Modal,
   TouchableOpacity,
   Pressable,
+  Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
 import AIRecomendation from "../components/AIRecomendation";
 
+const HEADER_MAX_HEIGHT = 180;
+const HEADER_MIN_HEIGHT = 85;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
-  // Edit the restaurant data to whats used  here
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
 
-  //     const [searchInput, setSearchInput] = useState("");
-  //   const [filteredVehicles, setFilteredVehicles] = useState(restaurants);
+  const titleScale = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.75],
+    extrapolate: "clamp",
+  });
 
-  //   const handleSearch = (text) => {
-  //     setSearchInput(text);
-  //     const filtered = restaurants.filter((restaurant) =>
-  //       restaurant.name.toLowerCase().includes(text.toLowerCase())
-  //     );
-  //     setFilteredVehicles(filtered);
-  //   };
+  const titleTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -15],
+    extrapolate: "clamp",
+  });
+
+  const titleTranslateX = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 20],
+    extrapolate: "clamp",
+  });
+
+  const headerSubtitleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-      <View style={styles.topSection}>
-        {/* The search button and profile ? */}
+      <Animated.View style={[styles.midSection, { height: headerHeight }]}>
+        <Animated.View
+          style={[
+            styles.headerContent,
+            {
+              transform: [
+                { scale: titleScale },
+                { translateY: titleTranslateY },
+                { translateX: titleTranslateX },
+              ],
+            },
+          ]}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.midText}>Yessir</Text>
+            <Text style={styles.arabicText}>يسر</Text>
+          </View>
+          <Animated.Text
+            style={[styles.subText, { opacity: headerSubtitleOpacity }]}
+          >
+            Your Premium Car Experience
+          </Animated.Text>
+        </Animated.View>
+      </Animated.View>
 
-        <View></View>
-      </View>
-      <View style={styles.midSection}>
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white" }}>Vroom</Text>
-      </View>
-
-      {/* Containes all cards */}
-      <ScrollView style={styles.bottomSection}>
+      <Animated.ScrollView
+        style={styles.bottomSection}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -60,7 +102,6 @@ const Home = () => {
             placeholder="Search"
             style={styles.searchInput}
             value={searchInput}
-            // onChangeText={handleSearch}
           />
         </View>
         {/* Brands categories List */}
@@ -71,7 +112,13 @@ const Home = () => {
         <View>
           <PopularCars />
         </View>
-      </ScrollView>
+        <View>
+          <PopularCars />
+        </View>
+
+        {/* Add extra padding at bottom for scrolling */}
+        <View style={{ height: 100 }} />
+      </Animated.ScrollView>
 
       {/* AI Assistant Floating Button */}
       <TouchableOpacity
@@ -103,7 +150,6 @@ const Home = () => {
           </View>
         </View>
       </Modal>
-      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -114,28 +160,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-
-    backgroundColor: "transparent",
-    width: "100%",
-  },
-  // topSection: {
-  //   flex: 0.3,
-  //   backgroundColor: "#ffffff",
-  // },
-  // topSection: {
-  //   // height: 120,
-  //   backgroundColor: "#ffffff",
-  //   paddingHorizontal: 20,
-  //   paddingTop: 20,
-  // },
-  midSection: {
-    height: 180,
     backgroundColor: "#1B2128",
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
+    width: "100%",
+    marginTop: -10,
+  },
+  midSection: {
+    backgroundColor: "#1B2128",
     justifyContent: "center",
+    paddingHorizontal: 25,
+  },
+  headerContent: {
+    alignSelf: "flex-start",
+    justifyContent: "center",
+  },
+  titleContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 20,
+    gap: 15,
+  },
+  midText: {
+    color: "white",
+    fontSize: 42,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+  },
+  arabicText: {
+    color: "white",
+    fontSize: 38,
+    fontWeight: "600",
+    fontFamily: "System",
+  },
+  subText: {
+    color: "#9EA3AE",
+    fontSize: 16,
+    marginTop: 8,
+    letterSpacing: 0.3,
   },
   bottomSection: {
     flex: 1,
@@ -144,11 +203,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     marginTop: -40,
     paddingTop: 20,
-  },
-  midText: {
-    color: "white",
-    fontSize: 35,
-    fontWeight: "bold",
   },
   sectionContainer: {
     width: "100%",
