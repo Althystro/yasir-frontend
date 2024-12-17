@@ -64,13 +64,17 @@ const VehicleDetails = ({ route, navigation }) => {
 
           <View style={styles.descriptionSection}>
             <View style={styles.infoCard}>
-              <Ionicons name="information-circle" size={24} color="#1B2128" />
-              <Text style={styles.infoTitle}>Description</Text>
+              <View style={styles.infoHeaderContainer}>
+                <Ionicons name="information-circle" size={24} color="#1B2128" />
+                <Text style={styles.infoTitle}>Description</Text>
+              </View>
               <Text style={styles.infoText}>{vehicle.description}</Text>
             </View>
             <View style={styles.infoCard}>
-              <Ionicons name="speedometer" size={24} color="#1B2128" />
-              <Text style={styles.infoTitle}>Engine</Text>
+              <View style={styles.infoHeaderContainer}>
+                <Ionicons name="speedometer" size={24} color="#1B2128" />
+                <Text style={styles.infoTitle}>Engine</Text>
+              </View>
               <Text style={styles.infoText}>{vehicle.engine}</Text>
             </View>
           </View>
@@ -305,7 +309,7 @@ const styles = StyleSheet.create({
   },
   infoCard: {
     backgroundColor: "#f8f9fa",
-    padding: 15,
+    padding: 20,
     borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -313,16 +317,24 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  infoHeaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    paddingBottom: 8,
+  },
   infoTitle: {
-    fontSize: 25,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "700",
     color: "#1B2128",
-    marginTop: 8,
-    marginBottom: 4,
+    marginLeft: 8,
   },
   infoText: {
-    fontSize: 19,
-    color: "#404040",
-    lineHeight: 20,
+    fontSize: 15,
+    color: "#4B5563",
+    lineHeight: 24,
+    letterSpacing: 0.3,
   },
 });
