@@ -7,14 +7,15 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { getAllVehicles } from "../api/vehicles";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
 
-const PopularCars = () => {
+const PopularCars = ({ carosel }) => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
+
   const {
     data: vehicles,
     isLoading,
@@ -23,6 +24,22 @@ const PopularCars = () => {
     queryKey: ["vehicles"],
     queryFn: getAllVehicles,
   });
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Filter vehicles to get one car per brand
+  const uniqueBrandVehicles = useMemo(() => {
+    if (!vehicles?.vehicles) return [];
+    const brandMap = new Map();
+
+    vehicles.vehicles.forEach((vehicle) => {
+      if (!brandMap.has(vehicle.brand)) {
+        brandMap.set(vehicle.brand, vehicle);
+      }
+    });
+
+    return Array.from(brandMap.values());
+  }, [vehicles]);
 
   if (isLoading) {
     return (
@@ -40,9 +57,27 @@ const PopularCars = () => {
     );
   }
 
+  const handleScroll = (event) => {
+    if (carosel) {
+      const scrollPosition = event.nativeEvent.contentOffset.x;
+      const index = Math.round(scrollPosition / width);
+      setCurrentIndex(index);
+    }
+  };
+
   const renderCars = ({ item }) => (
     <TouchableOpacity
-      style={styles.container}
+      style={
+        carosel
+          ? [
+              styles.container,
+              {
+                width: width - 20,
+                marginHorizontal: 10,
+              },
+            ]
+          : styles.container
+      }
       onPress={() => navigation.navigate("Vehicle Details", { vehicle: item })}
     >
       <Image
@@ -59,17 +94,45 @@ const PopularCars = () => {
     </TouchableOpacity>
   );
 
+  const renderDotIndicator = () => {
+    return (
+      <View style={styles.paginationDots}>
+        {uniqueBrandVehicles.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              { backgroundColor: currentIndex === index ? "#000" : "#ccc" },
+            ]}
+          />
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.outerContainer}>
       <Text style={styles.headerText}>Popular Cars:</Text>
       <FlatList
-        data={vehicles?.vehicles || []}
+        data={uniqueBrandVehicles}
         renderItem={renderCars}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingHorizontal: 10 }}
+        contentContainerStyle={carosel ? null : { paddingHorizontal: 10 }}
+        pagingEnabled={carosel}
+        snapToAlignment="center"
+        snapToInterval={carosel ? width : undefined}
+        decelerationRate="fast"
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        getItemLayout={(data, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
       />
+      {carosel && renderDotIndicator()}
     </View>
   );
 };
@@ -124,5 +187,17 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#28a745",
     marginTop: 5,
+  },
+  paginationDots: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
   },
 });

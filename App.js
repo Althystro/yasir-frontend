@@ -16,6 +16,7 @@ import AllVehiclesList from "./components/AllVehiclesCard";
 import AllVehicles from "./screens/AllVehicles";
 import Purchases from "./screens/Purchases";
 import PdfGenerator from "./components/PdfGenerator";
+import HomeNav from "./navigation/HomeNavigation/HomeNav";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -36,7 +37,7 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {user ? <MainNav /> : <AuthNav />}
+          {user ? <HomeNav /> : <AuthNav />}
 
           {/* <Home /> */}
           {/* <VehicleDetails /> */}
