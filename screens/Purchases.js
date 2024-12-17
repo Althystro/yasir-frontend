@@ -8,14 +8,14 @@ import {
   Modal,
   Pressable,
   SafeAreaView,
-  ImageBackground,
   Dimensions,
+  Animated,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
-import { LinearGradient } from "expo-linear-gradient";
+import AnimatedHeader from "../components/AnimatedHeader";
 
 const { width } = Dimensions.get("window");
 
@@ -25,6 +25,7 @@ const Purchases = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [downPayment, setDownPayment] = useState("");
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   // Step 1: Financing Duration Component
   const FinancingDurationStep = () => (
@@ -174,89 +175,52 @@ const Purchases = ({ route, navigation }) => {
   ];
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={{ uri: vehicle.image2 }}
-        style={styles.headerBackground}
+    <SafeAreaView style={styles.container}>
+      <AnimatedHeader
+        scrollY={scrollY}
+        title="Confirm Purchase"
+        subtitle={`${vehicle.brand} ${vehicle.model}`}
+        backgroundColor="#1B2128"
+        textColor="white"
+        headerImage={vehicle.image2}
       >
-        <LinearGradient
-          colors={["rgba(27, 33, 40, 0.7)", "rgba(27, 33, 40, 0.9)"]}
-          style={styles.gradient}
-        >
-          <SafeAreaView style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Icon name="arrow-back" size={24} color="#FFF" />
-            </TouchableOpacity>
-            <Text style={styles.headerText}>Confirm Purchase</Text>
-            <View style={styles.backButton} />
-          </SafeAreaView>
-        </LinearGradient>
-      </ImageBackground>
-
-      <View style={styles.stepperContainer}>
-        <Stepper
-          active={active}
-          content={content}
-          onBack={() => setActive((p) => p - 1)}
-          onNext={() => setActive((p) => p + 1)}
-          onFinish={() => Alert.alert("Purchase Complete!")}
-          stepStyle={styles.stepStyle}
-          stepTextStyle={styles.stepTextStyle}
-          activeStepStyle={styles.activeStepStyle}
-          activeStepTextStyle={styles.activeStepTextStyle}
-          connectorStyle={styles.connectorStyle}
-        />
-      </View>
-    </View>
+        <View style={styles.stepperContainer}>
+          <Stepper
+            active={active}
+            content={content}
+            onBack={() => setActive((p) => p - 1)}
+            onNext={() => setActive((p) => p + 1)}
+            onFinish={() => Alert.alert("Purchase Complete!")}
+            stepStyle={styles.stepStyle}
+            stepTextStyle={styles.stepTextStyle}
+            activeStepStyle={styles.activeStepStyle}
+            activeStepTextStyle={styles.activeStepTextStyle}
+            connectorStyle={styles.connectorStyle}
+          />
+        </View>
+      </AnimatedHeader>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
-  },
-  headerBackground: {
-    height: 200,
-    width: width,
-  },
-  gradient: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-  },
-  headerText: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
+    backgroundColor: "#1B2128",
+    marginTop: -40,
   },
   stepperContainer: {
     flex: 1,
-    padding: 20,
-    marginTop: -40,
+    paddingHorizontal: 20,
     backgroundColor: "#F5F5F5",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
+    marginTop: -20,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   stepContainer: {
-    padding: 20,
+    padding: 16,
     backgroundColor: "white",
     borderRadius: 20,
     elevation: 2,
@@ -264,40 +228,39 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
+    marginTop: 20,
   },
   stepTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 25,
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 20,
     color: "#1B2128",
     textAlign: "center",
   },
   durationButtons: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 15,
+    justifyContent: "space-between",
+    paddingHorizontal: 4,
   },
   durationButton: {
-    width: "45%",
-    padding: 15,
+    width: "48%",
+    padding: 16,
     backgroundColor: "#F5F7FA",
-    borderRadius: 15,
+    borderRadius: 12,
     alignItems: "center",
-    margin: 5,
-    elevation: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E9F0",
   },
   selectedButton: {
     backgroundColor: "#1B2128",
+    borderColor: "#1B2128",
   },
   durationButtonText: {
     color: "#1B2128",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 15,
   },
   selectedButtonText: {
     color: "#FFFFFF",
@@ -307,8 +270,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     backgroundColor: "#F5F7FA",
-    borderRadius: 15,
-    paddingHorizontal: 15,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#E5E9F0",
+    marginTop: 8,
   },
   currencyPrefix: {
     fontSize: 16,
@@ -330,9 +296,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F7FA",
-    padding: 15,
+    padding: 16,
     borderRadius: 12,
-    gap: 15,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E9F0",
   },
   detailText: {
     fontSize: 16,
@@ -356,18 +324,19 @@ const styles = StyleSheet.create({
   },
   signatureButton: {
     backgroundColor: "#1B2128",
-    padding: 15,
-    borderRadius: 15,
+    padding: 16,
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 8,
     width: "100%",
+    marginTop: 8,
   },
   buttonText: {
     color: "white",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 15,
     textAlign: "center",
   },
   confirmationIconContainer: {
@@ -394,9 +363,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F7FA",
-    padding: 15,
+    padding: 16,
     borderRadius: 12,
-    gap: 15,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E9F0",
   },
   summaryText: {
     fontSize: 16,
