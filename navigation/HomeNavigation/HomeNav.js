@@ -7,6 +7,7 @@ import TestDrive from "../../components/TestDrive";
 import AIRecomendation from "../../components/AIRecomendation";
 import VehicleDetails from "../../screens/VehicleDetails";
 import PdfGenerator from "../../components/PdfGenerator";
+import Payment from "../../screens/Payment";
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ const HomeNav = () => {
       <Stack.Screen name="Ai Recommendations" component={AIRecomendation} />
       <Stack.Screen name="Vehicle Details" component={VehicleDetails} />
       <Stack.Screen name="Pdf Generator" component={PdfGenerator} />
+      <Stack.Screen name="Payment" component={Payment} />
     </Stack.Navigator>
   );
 };

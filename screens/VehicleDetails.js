@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 const VehicleDetails = ({ route, navigation }) => {
   const { vehicle } = route.params;
@@ -49,7 +50,7 @@ const VehicleDetails = ({ route, navigation }) => {
         </View>
       </View>
 
-      <View style={styles.bottomSection}>
+      <ScrollView style={styles.bottomSection}>
         <Text style={styles.labelText}>Vehicle Information</Text>
         <View style={styles.featuresContainer}>
           <View style={styles.featuresCard}>
@@ -131,9 +132,12 @@ const VehicleDetails = ({ route, navigation }) => {
               />
               <Text style={styles.buttonText}>Buy Now</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Finance IT!</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   midSection: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "#1B2128",
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   bottomSection: {
-    flex: 3.5,
+    //flex: 3.5,
     backgroundColor: "#ffffff",
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
