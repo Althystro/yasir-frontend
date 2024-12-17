@@ -41,73 +41,46 @@ export default function Login({ navigation }) {
   };
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.title}>Login</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Email"
-    //     value={email}
-    //     onChangeText={setEmail}
-    //     keyboardType="email-address"
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Password"
-    //     value={password}
-    //     onChangeText={setPassword}
-    //     secureTextEntry
-    //   />
-    //   <TouchableOpacity style={styles.button} onPress={handleLogin}>
-    //     <Text style={styles.buttonText}>Login</Text>
-    //   </TouchableOpacity>
-
-    //   <TouchableOpacity
-    //     style={styles.linkButton}
-    //     onPress={() => navigation.navigate("Register")}
-    //   >
-    //     <Text style={styles.linkText}>Don't have an account? Register</Text>
-    //   </TouchableOpacity>
-    // </View>
-
     <View style={styles.container}>
-      <View style={styles.topSection}>{/* Nothing added here? */}</View>
+      {/* <View style={styles.topSection}></View> */}
       <View style={styles.midSection}>
         {/* Only for the logo moto */}
         <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white", fontSize: 30 }}>Welcome Back!</Text>
+        <Text style={styles.welcomeText}>Welcome Back!</Text>
       </View>
 
       {/* The inputs */}
-      <View style={styles.bottomSection}>
-        <View style={styles.loginContainer}>
-          {/* <Text style={styles.title}>Login</Text> */}
-          <TextInput
-            style={styles.emailInput}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+      <View style={styles.loginContainer}>
+        <Text style={styles.firstText}>E-mail:</Text>
+        <TextInput
+          style={styles.emailInput}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text style={styles.secText}>Password:</Text>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => navigation.navigate("Register")}
-          >
-            <Text style={styles.linkText}>Don't have an account? Register</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.linkText}>
+            Don't have an account? {""}
+            <Text style={styles.registerText}>Register</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -115,16 +88,11 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
   loginContainer: {
-    // flex: 1,
-    // backgroundColor: "#fff",
+    flex: 2.5,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 210,
   },
   emailInput: {
     width: "100%",
@@ -133,8 +101,8 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginTop: 80,
-    // marginBottom: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   passwordInput: {
     width: "100%",
@@ -143,8 +111,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginTop: 30,
-    marginBottom: 30,
+    marginBottom: 20,
   },
 
   button: {
@@ -153,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 30,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
@@ -167,47 +134,51 @@ const styles = StyleSheet.create({
     color: "#1B2128",
     fontSize: 16,
   },
+  registerText: {
+    color: "gray",
+    fontSize: 16,
+    fontWeight: "400",
+  },
 
   container: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "transparent",
-  },
-  topSection: {
-    flex: 0.7,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "red",
+    // flexDirection: "column",
+    // backgroundColor: "transparent",
   },
   midSection: {
     flex: 1,
     backgroundColor: "#1B2128",
     // backgroundColor: "blue",
-    marginTop: -40,
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
+    // marginTop: -10,
+    borderBottomRightRadius: 65,
+    borderBottomLeftRadius: 65,
     justifyContent: "center",
     alignItems: "center",
   },
-  bottomSection: {
-    flex: 3.5,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "yellow",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    marginTop: -30,
-    // justifyContent: "center",
-    // alignItems: "center",
-    alignContent: "flex-start",
-  },
   midText: {
+    marginTop: 80,
     color: "white",
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
   },
-  sectionContainer: {
-    width: "100%",
-    maxWidth: 400,
-    paddingHorizontal: 20,
-    marginVertical: 15,
+  welcomeText: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 5,
+  },
+  firstText: {
+    color: "#1B2128",
+    fontSize: 15,
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    marginBottom: -6,
+  },
+  secText: {
+    color: "#1B2128",
+    fontSize: 15,
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    marginBottom: 10,
   },
 });

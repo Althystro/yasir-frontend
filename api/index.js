@@ -2,6 +2,7 @@ import axios from "axios";
 import { getToken } from "./storage";
 
 // const BASE_URL = "https://react-native-food-delivery-be.eapi.joincoded.com/api";
+//  baseURL: "http://192.168.2.224:8080",
 
 const instance = axios.create({
   baseURL: "http://localhost:8080",

@@ -17,12 +17,15 @@ const login = async (userInfo) => {
 };
 
 const register = async (userInfo) => {
-  const res = await instance.post("/auth/signup", userInfo);
-  if (res.data) {
-    saveToken(res.data.token);
+  try {
+    const res = await instance.post("/auth/signup", userInfo);
+    if (res.data) {
+      saveToken(res.data.token);
+    }
+    return res.data;
+  } catch (error) {
+    throw error;
   }
-
-  return res.data;
 };
 
 const getMyProfile = async () => {
@@ -32,7 +35,7 @@ const getMyProfile = async () => {
 
 const updateProfile = async (userInfo) => {
   console.log(userInfo);
-  const res = await instance.post("/users/me", userInfo);
+  const res = await instance.put("/users/me", userInfo);
   return res.data;
 };
 

@@ -6,7 +6,7 @@ const openAi = async (prompt) => {
 
   const res = await instance.post("/api/v1/user/chat", prompt);
   const aiResponse = res.data;
-  console.log(aiResponse);
+  // console.log(aiResponse.id);
   return aiResponse;
 };
 

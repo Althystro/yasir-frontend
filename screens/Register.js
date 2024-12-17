@@ -5,10 +5,13 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import UserContext from "../context/UserContext";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "../api/auth";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Register({ navigation }) {
   const [firstName, setFirstName] = useState("");
@@ -37,7 +40,7 @@ export default function Register({ navigation }) {
     },
     onError: () => {
       Alert.alert(
-        "Login Failed",
+        "Registration Failed",
         "Please check your credentials and try again"
       );
     },
@@ -48,167 +51,153 @@ export default function Register({ navigation }) {
   };
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.title}>Register</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="First Name"
-    //     value={firstName}
-    //     onChangeText={setFirstName}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Last Name"
-    //     value={lastName}
-    //     onChangeText={setLastName}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Civil ID"
-    //     value={civilId}
-    //     onChangeText={setCivilId}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Phone Number"
-    //     value={phoneNumber}
-    //     onChangeText={setPhoneNumber}
-    //     autoCapitalize="none"
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Email"
-    //     value={email}
-    //     onChangeText={setEmail}
-    //   />
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Password"
-    //     value={password}
-    //     onChangeText={setPassword}
-    //     secureTextEntry
-    //   />
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>Yessir | يسر</Text>
+          <Text style={styles.headerSubtitle}>Create Account</Text>
+        </View>
+      </View>
 
-    //   <TouchableOpacity style={styles.button} onPress={handleRegister}>
-    //     <Text style={styles.buttonText}>Register</Text>
-    //   </TouchableOpacity>
+      <View style={styles.bottomSection}>
+        <View style={styles.registerContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Civil ID"
+            value={civilId}
+            onChangeText={setCivilId}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
-    //   <TouchableOpacity
-    //     style={styles.linkButton}
-    //     onPress={() => navigation.navigate("Login")}
-    //   >
-    //     <Text style={styles.linkText}>Already have an account? Login</Text>
-    //   </TouchableOpacity>
-    // </View>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
 
-    <View style={styles.container}>
-    <View style={styles.topSection}>{/* Nothing added here? */}</View>
-    <View style={styles.midSection}>
-      {/* Only for the logo moto */}
-      <Text style={styles.midText}> Yessir | يسر </Text>
-      <Text style={{ color: "white", fontSize: 30 }}>Join Yessir</Text>
-    </View>
-
-    {/* The inputs */}
-    <View style={styles.bottomSection}>
-    <View style={styles.registerContainer}>
-       <Text style={styles.title}>Register</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={setFirstName}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={setLastName}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Civil ID"
-        value={civilId}
-        onChangeText={setCivilId}
-        autoCapitalize="none"
-      />
-       <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        autoCapitalize="none"
-      />
-       <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
-       <TouchableOpacity style={styles.button} onPress={handleRegister}>
-         <Text style={styles.buttonText}>Register</Text>
-       </TouchableOpacity>
-
-       <TouchableOpacity
-        style={styles.linkButton}
-        onPress={() => navigation.navigate("Login")}
-      >
-         <Text style={styles.linkText}>Already have an account? Login</Text>
-       </TouchableOpacity>
-     </View>
-    </View>
-  </View>
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.linkText}>Already have an account? Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  registerContainer: {
-    // flex: 1,
-    // backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-    
+  container: {
+    flex: 1,
+    backgroundColor: "#1B2128",
   },
-  title: {
+  header: {
+    backgroundColor: "#1B2128",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 15,
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "white",
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "white",
+    opacity: 0.8,
+  },
+  bottomSection: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+    paddingHorizontal: 20,
+    paddingTop: 30,
+  },
+  registerContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   input: {
     width: "100%",
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    height: 50,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    fontSize: 16,
   },
   button: {
     width: "100%",
     backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 30,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   linkButton: {
     marginTop: 20,
@@ -216,47 +205,5 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#1B2128",
     fontSize: 16,
-  },
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "transparent",
-  },
-  topSection: {
-    flex: 0.7,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "red",
-  },
-  midSection: {
-    flex: 1,
-    backgroundColor: "#1B2128",
-    // backgroundColor: "blue",
-    marginTop: -40,
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bottomSection: {
-    flex: 3.5,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "yellow",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    marginTop: -30,
-    // justifyContent: "center",
-    // alignItems: "center",
-    alignContent: "flex-start",
-  },
-  midText: {
-    color: "white",
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  sectionContainer: {
-    width: "100%",
-    maxWidth: 400,
-    paddingHorizontal: 20,
-    marginVertical: 15,
   },
 });

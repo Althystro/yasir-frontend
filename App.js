@@ -12,7 +12,10 @@ import VehicleDetails from "./screens/VehicleDetails";
 import ProfileScreen from "./screens/Profile";
 import checkBaseURL from "./api/CheckBaseURL";
 import instance from "./api";
-import AllVehiclesList from "./components/AllVehiclesList";
+import AllVehiclesList from "./components/AllVehiclesCard";
+import AllVehicles from "./screens/AllVehicles";
+import Purchases from "./screens/Purchases";
+import PdfGenerator from "./components/PdfGenerator";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -39,7 +42,9 @@ export default function App() {
           {/* <VehicleDetails /> */}
           {/* <AuthNav /> */}
           {/* <ProfileScreen /> */}
-          {/* <AllVehiclesList /> */}
+          {/* <AllVehicles /> */}
+
+          {/* <Purchases/> */}
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>

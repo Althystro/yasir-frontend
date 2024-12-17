@@ -5,46 +5,31 @@ import {
   SafeAreaView,
   TextInput,
   searchInput,
-  ScrollView,
+  Modal,
+  TouchableOpacity,
+  Pressable,
+  Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React from "react";
+import React, { useState, useRef } from "react";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
+import AIRecomendation from "../components/AIRecomendation";
+import AnimatedHeader from "../components/AnimatedHeader";
 
 const Home = () => {
-  // Edit the restaurant data to whats used  here
-
-  //     const [searchInput, setSearchInput] = useState("");
-  //   const [filteredVehicles, setFilteredVehicles] = useState(restaurants);
-
-  //   const handleSearch = (text) => {
-  //     setSearchInput(text);
-  //     const filtered = restaurants.filter((restaurant) =>
-  //       restaurant.name.toLowerCase().includes(text.toLowerCase())
-  //     );
-  //     setFilteredVehicles(filtered);
-  //   };
+  const [modalVisible, setModalVisible] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-      <View style={styles.topSection}>
-        {/* The search button and profile ? */}
-
-
-        <View></View>
-      </View>
-      <View style={styles.midSection}>
-
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white" }}>Vroom</Text>
-      </View>
-
-      {/* Containes all cards */}
-      <ScrollView style={styles.bottomSection}>
-        
+      <AnimatedHeader
+        scrollY={scrollY}
+        title="Yessir | يسر"
+        subtitle="Vroom"
+        backgroundColor="#1B2128"
+        textColor="white"
+      >
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Icon
@@ -57,7 +42,6 @@ const Home = () => {
             placeholder="Search"
             style={styles.searchInput}
             value={searchInput}
-            // onChangeText={handleSearch}
           />
         </View>
         {/* Brands categories List */}
@@ -68,16 +52,41 @@ const Home = () => {
         <View>
           <PopularCars />
         </View>
-
-        {/* The Ai / calculater card this is will be changed later */}
-        <View style={{ flexDirection: "row" }}>
-          {/* Ai card */}
-          <View style={styles.aiSection}></View>
-          {/* Calculater card */}
-          <View style={styles.calculaterSection}></View>
+        <View>
+          <PopularCars />
         </View>
-      </ScrollView>
-      {/* </ScrollView> */}
+
+        <View style={{ height: 100 }} />
+      </AnimatedHeader>
+
+      <TouchableOpacity
+        style={styles.floatingAiButton}
+        onPress={() => setModalVisible(true)}
+      >
+        <Icon name="robot" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalView, { width: "100%", height: "100%" }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>AI Suggestions</Text>
+              <Pressable
+                onPress={() => setModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Icon name="close" size={24} color="#fff" />
+              </Pressable>
+            </View>
+            <AIRecomendation setModalVisible={setModalVisible} />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -87,45 +96,12 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "transparent",
-  },
-  topSection: {
-    flex: 0.3,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "red",
-  },
-  midSection: {
-    flex: 0.5,
     backgroundColor: "#1B2128",
-    // backgroundColor: "blue",
-    marginTop: -90,
-    paddingTop: -30,
-
-    borderTopRightRadius: 60,
-    borderTopLeftRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bottomSection: {
-    flex: 3.5,
-    backgroundColor: "#ffffff",
-    // backgroundColor: "yellow",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    marginTop: -140,
-    marginBottom: 60,
-    alignContent: "flex-start",
-  },
-  midText: {
-    color: "white",
-    fontSize: 35,
-    fontWeight: "bold",
-    marginTop: -120,
+    width: "100%",
+    marginTop: -40,
   },
   sectionContainer: {
     width: "100%",
-    maxWidth: 400,
     paddingHorizontal: 20,
     marginVertical: 15,
   },
@@ -133,49 +109,94 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    paddingHorizontal: 10,
-    marginHorizontal: 40,
+    paddingHorizontal: 15,
+    marginHorizontal: 20,
     borderRadius: 12,
     marginVertical: 15,
+    height: 45,
   },
   searchIcon: {
     marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: 8,
     fontSize: 16,
   },
-  aiSection: {
+  floatingAiButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 20,
     backgroundColor: "#1B2128",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
-    marginRight: 15,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 20,
-    width: 250,
-    height: 300,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 3},
-    // shadowOpacity: 0.1,
-    // shadowRadius: 8,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 999,
   },
-  calculaterSection: {
-    backgroundColor: "#EEEAE5",
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
-    marginRight: 15,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
+  },
+  modalView: {
+    backgroundColor: "#1B2128",
     borderRadius: 20,
-    width: 250,
-    height: 300,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 3},
-    // shadowOpacity: 0.1,
-    // shadowRadius: 8,
+    width: "90%",
+    maxHeight: "80%",
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: "#1B2128",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff",
+  },
+  closeButton: {
+    padding: 5,
+  },
+  suggestionsList: {
+    maxHeight: "90%",
+  },
+  suggestionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  suggestionText: {
+    marginLeft: 15,
+    fontSize: 16,
+    color: "#1B2128",
+    flex: 1,
   },
 });

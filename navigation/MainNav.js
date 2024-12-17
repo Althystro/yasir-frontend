@@ -2,14 +2,13 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AiRecomendation from "../components/AIRecomendation";
-import AllVehicles from "../components/AllVehiclesList";
-import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons if not already installed
+import AllVehiclesList from "../components/AllVehiclesList";
+import { Ionicons } from "@expo/vector-icons";
 import TestDrive from "../components/TestDrive";
 import PdfGenerator from "../components/PdfGenerator";
-import Home from "../screens/Home";
-import VehicleDetails from "../screens/VehicleDetails";
-import AllVehiclesList from "../components/AllVehiclesList";
 import HomeNav from "./HomeNavigation/HomeNav";
+import ProfileScreen from "../screens/Profile";
+import VehicleNav from "./VehicleNav/VehicleNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,12 +20,14 @@ const MainNav = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "AI Recommendations") {
-            iconName = focused ? "bulb" : "bulb-outline";
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
           } else if (route.name === "All Vehicles") {
             iconName = focused ? "car" : "car-outline";
           } else if (route.name === "Test Drive") {
             iconName = focused ? "car" : "car-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -36,10 +37,9 @@ const MainNav = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeNav} />
-      <Tab.Screen name="AI Recommendations" component={AiRecomendation} />
-      <Tab.Screen name="All Vehicles" component={AllVehicles} />
+      <Tab.Screen name="All Vehicles" component={VehicleNav} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
-      <Tab.Screen name="Pdf Generator" component={PdfGenerator} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };
