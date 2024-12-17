@@ -9,6 +9,7 @@ import PdfGenerator from "../components/PdfGenerator";
 import HomeNav from "./HomeNavigation/HomeNav";
 import ProfileScreen from "../screens/Profile";
 import VehicleNav from "./VehicleNav/VehicleNav";
+import TestDriveVehicle from "../components/TestDriveVehicle";
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +39,7 @@ const MainNav = () => {
     >
       <Tab.Screen name="Home" component={HomeNav} />
       <Tab.Screen name="All Vehicles" component={VehicleNav} />
-      <Tab.Screen name="Test Drive" component={TestDrive} />
+      <Tab.Screen name="Test Drive" component={TestDriveVehicle} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

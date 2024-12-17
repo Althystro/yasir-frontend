@@ -150,39 +150,20 @@
 // });
 
 import React, { useState } from "react";
-import {
-  FlatList,
-  Modal,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import Stepper from "react-native-stepper-ui";
 import SelectDateAndTime from "./SelectDateAndTime";
-import DealershipSelector from "./DealershipSelector";
 import Confirmation from "./Confirmation";
 
-const MyComponent = (props) => {
-  return (
-    <View>
-      <Text>{props.title}</Text>
-    </View>
-  );
-};
-
-const content = [
-  <SelectDateAndTime />,
-  <DealershipSelector />,
-  <Confirmation />,
-];
-
-const TestDrive = () => {
+const TestDrive = ({ route }) => {
+  const { vehicle } = route.params;
   const [active, setActive] = useState(0);
-
+  const content = [
+    <SelectDateAndTime vehicle={vehicle} />,
+    // <DealershipSelector />,
+    <Confirmation vehicle={vehicle} />,
+  ];
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.midSection}>
@@ -216,20 +197,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-  },
-  container2: {
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  picker2: {
-    height: 50,
-    color: "#333",
   },
   selectedText2: {
     marginTop: 10,

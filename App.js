@@ -16,10 +16,12 @@ import AllVehiclesList from "./components/AllVehiclesCard";
 import AllVehicles from "./screens/AllVehicles";
 import Purchases from "./screens/Purchases";
 import PdfGenerator from "./components/PdfGenerator";
+import TestDriveContext from "./context/TestDriveContext";
 
 export default function App() {
   const queryClient = new QueryClient();
   const [user, setUser] = useState(false);
+  const [TestDrive, setTestDrive] = useState({});
 
   const checkToken = async () => {
     const token = await getToken();
@@ -36,15 +38,17 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-          {user ? <MainNav /> : <AuthNav />}
+          <TestDriveContext.Provider value={[TestDrive, setTestDrive]}>
+            {user ? <MainNav /> : <AuthNav />}
 
-          {/* <Home /> */}
-          {/* <VehicleDetails /> */}
-          {/* <AuthNav /> */}
-          {/* <ProfileScreen /> */}
-          {/* <AllVehicles /> */}
+            {/* <Home /> */}
+            {/* <VehicleDetails /> */}
+            {/* <AuthNav /> */}
+            {/* <ProfileScreen /> */}
+            {/* <AllVehicles /> */}
 
-          {/* <Purchases/> */}
+            {/* <Purchases/> */}
+          </TestDriveContext.Provider>
         </UserContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
