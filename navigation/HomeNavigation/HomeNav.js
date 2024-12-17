@@ -7,15 +7,19 @@ import TestDrive from "../../components/TestDrive";
 import AIRecomendation from "../../components/AIRecomendation";
 import VehicleDetails from "../../screens/VehicleDetails";
 import PdfGenerator from "../../components/PdfGenerator";
+
+
 import { Ionicons } from "@expo/vector-icons";
 import Purchases from "../../screens/Purchases";
 import ProfileScreen from "../../screens/Profile";
 import VehicleNav from "../VehicleNav/VehicleNav";
 
+
 const Stack = createStackNavigator();
 
 const HomeNav = () => {
   return (
+
     <>
       <StatusBar barStyle="light-content" />
       <Stack.Navigator
@@ -56,6 +60,7 @@ const HomeNav = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </>
+
   );
 };
 
