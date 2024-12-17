@@ -10,12 +10,19 @@ import {
   SafeAreaView,
   ImageBackground,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getMyProfile } from "../api/auth";
+import { getFinancers, createPaymentPlan } from "../api/paymentPlan";
+import { Picker } from "@react-native-picker/picker";
 
 const { width } = Dimensions.get("window");
 
@@ -24,7 +31,58 @@ const Purchases = ({ route, navigation }) => {
   const [active, setActive] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(null);
-  const [downPayment, setDownPayment] = useState("");
+  const [downPayment, setDownPayment] = useState(0);
+  const [selectedFinancer, setSelectedFinancer] = useState("");
+  //const [length, setLength] = useState(null);
+  console.log(selectedFinancer);
+
+  const {
+    data: customer,
+    isLoading: isCustomerLoading,
+    error: customerError,
+  } = useQuery({
+    queryKey: ["customer"],
+    queryFn: getMyProfile,
+  });
+
+  const {
+    data: financers,
+    isLoading: isFinancersLoading,
+    error: financersError,
+  } = useQuery({
+    queryKey: ["financers"],
+    queryFn: getFinancers,
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ["createPaymentPlan"],
+    mutationFn: () =>
+      createPaymentPlan({
+        customerId: customer.id,
+        vehicleId: vehicle.id,
+        financerId: selectedFinancer.split("-")[0],
+        totalAmount: vehicle.price - downPayment,
+        lengthMonths: selectedDuration * 12,
+      }),
+    onSuccess: () => {
+      Alert.alert("Purchase Complete!");
+    },
+    onError: () => {
+      Alert.alert("Error", "Failed to create payment plan");
+    },
+  });
+
+  if (isCustomerLoading || isFinancersLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (customerError || financersError) {
+    return (
+      <View>
+        <Text>Error loading data</Text>
+      </View>
+    );
+  }
 
   // Step 1: Financing Duration Component
   const FinancingDurationStep = () => (
@@ -97,13 +155,76 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 4: Signature Component
-  const SignatureStep = ({ vehicle }) => {
-    if (!vehicle) {
+  // Step 4: Payment Plan component
+  const PaymentPlanStep = ({ vehicle, customer, financers }) => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Payment Plan</Text>
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons
+            name="face-man-profile"
+            size={24}
+            color="#1B2128"
+          />
+          <Text style={styles.detailText}>
+            Name: {customer.firstName} {customer.lastName}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <AntDesign name="car" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Vehicle: {vehicle.brand} {vehicle.model}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons name="finance" size={24} color="#1B2128" />
+          <Picker
+            selectedValue={selectedFinancer}
+            style={styles.detailText}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedFinancer(itemValue)
+            }
+          >
+            {financers.map((financer, index) => (
+              <Picker.Item
+                key={index}
+                label={financer.name}
+                value={`${financer.id}-${financer.name}`}
+              />
+            ))}
+          </Picker>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="calendar-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Length: {selectedDuration * 12} Months
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="pricetag-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Total Amount: KD {vehicle.price - downPayment}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  // Step 5: Signature Component
+  const SignatureStep = ({
+    vehicle,
+    customer,
+    downPayment,
+    length,
+    financer,
+  }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+
+    if (!customer) {
       return (
         <View style={styles.stepContainer}>
           <Text style={styles.stepTitle}>
-            Error: Vehicle data not available
+            Error: Customer data not available
           </Text>
         </View>
       );
@@ -128,7 +249,13 @@ const Purchases = ({ route, navigation }) => {
                 <Icon name="close" size={24} color="#1B2128" />
               </TouchableOpacity>
             </View>
-            <PdfGenerator vehicle={vehicle} />
+            <PdfGenerator
+              vehicle={vehicle}
+              customer={customer}
+              downpayment={downPayment}
+              length={length}
+              financer={financer}
+            />
           </View>
         </Modal>
         <TouchableOpacity
@@ -142,7 +269,7 @@ const Purchases = ({ route, navigation }) => {
     );
   };
 
-  // Step 5: Confirmation Component
+  // Step 6: Confirmation Component
   const ConfirmationStep = () => (
     <View style={styles.stepContainer}>
       <View style={styles.confirmationIconContainer}>
@@ -169,7 +296,18 @@ const Purchases = ({ route, navigation }) => {
     <FinancingDurationStep />,
     <DownPaymentStep />,
     <VehicleDetailsStep />,
-    <SignatureStep vehicle={vehicle} />,
+    <PaymentPlanStep
+      vehicle={vehicle}
+      customer={customer}
+      financers={financers.financer}
+    />,
+    <SignatureStep
+      vehicle={vehicle}
+      customer={customer}
+      downPayment={downPayment}
+      length={selectedDuration}
+      financer={selectedFinancer}
+    />,
     <ConfirmationStep />,
   ];
 
@@ -202,7 +340,10 @@ const Purchases = ({ route, navigation }) => {
           content={content}
           onBack={() => setActive((p) => p - 1)}
           onNext={() => setActive((p) => p + 1)}
-          onFinish={() => Alert.alert("Purchase Complete!")}
+          onFinish={() => {
+            Alert.alert("Purchase Complete!");
+            mutate();
+          }}
           stepStyle={styles.stepStyle}
           stepTextStyle={styles.stepTextStyle}
           activeStepStyle={styles.activeStepStyle}
