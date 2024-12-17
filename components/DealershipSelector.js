@@ -3,16 +3,30 @@ import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
+import { useQuery } from "@tanstack/react-query";
+import { getVehicle } from "../api/vehicles";
 
-const DealershipSelector = () => {
+const DealershipSelector = ({ route }) => {
+  const { vehicleId } = route.params;
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [selectedDealership, setSelectedDealership] = useState("");
 
-  const dealerships = [
-    { id: 1, name: "Dealership A" },
-    { id: 2, name: "Dealership B" },
-    { id: 3, name: "Dealership C" },
-  ];
+  // const {
+  //   data: vehicle,
+  //   isLoading,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ["fetchVehicle", vehicleId],
+  //   queryFn: () => getVehicle(vehicleId),
+  // });
+
+  // if (isLoading) {
+  //   return <Text>Loading vehicle details...</Text>;
+  // }
+
+  // if (isError) {
+  //   return <Text>Error loading vehicle details.</Text>;
+  // }
 
   const openPicker = () => setIsPickerVisible(true);
   const closePicker = () => setIsPickerVisible(false);

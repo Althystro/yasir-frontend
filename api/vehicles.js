@@ -5,4 +5,10 @@ const getAllVehicles = async () => {
   return res.data;
 };
 
-export default getAllVehicles;
+const getVehicle = async (id) => {
+  const res = await instance.get(`/vehicle/${id}`);
+  console.log(res);
+  return res.data;
+};
+
+export { getAllVehicles, getVehicle };

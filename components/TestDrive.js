@@ -166,14 +166,6 @@ import SelectDateAndTime from "./SelectDateAndTime";
 import DealershipSelector from "./DealershipSelector";
 import Confirmation from "./Confirmation";
 
-const MyComponent = (props) => {
-  return (
-    <View>
-      <Text>{props.title}</Text>
-    </View>
-  );
-};
-
 const content = [
   <SelectDateAndTime />,
   <DealershipSelector />,
@@ -197,7 +189,7 @@ const TestDrive = () => {
           onBack={() => setActive((p) => p - 1)}
           buttonStyle={{
             backgroundColor: "black",
-            marginTop: 250,
+            marginTop: 200,
             width: "50%",
             borderRadius: 20,
           }}
