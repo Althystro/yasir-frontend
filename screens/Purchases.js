@@ -15,7 +15,7 @@ import React, { useState, useRef } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
-import AnimatedHeader from "../components/AnimatedHeader";
+import StaticImageHeader from "../components/StaticImageHeader";
 
 const { width } = Dimensions.get("window");
 
@@ -176,15 +176,16 @@ const Purchases = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AnimatedHeader
+      <StaticImageHeader
         scrollY={scrollY}
         title="Confirm Purchase"
         subtitle={`${vehicle.brand} ${vehicle.model}`}
         backgroundColor="#1B2128"
         textColor="white"
         headerImage={vehicle.image2}
-      >
-        <View style={styles.stepperContainer}>
+      />
+      <View style={styles.stepperContainer}>
+        <View style={styles.contentContainer}>
           <Stepper
             active={active}
             content={content}
@@ -196,9 +197,45 @@ const Purchases = ({ route, navigation }) => {
             activeStepStyle={styles.activeStepStyle}
             activeStepTextStyle={styles.activeStepTextStyle}
             connectorStyle={styles.connectorStyle}
+            renderNextButton={(handleNext, disabled) => (
+              <TouchableOpacity
+                style={[
+                  styles.navigationButton,
+                  styles.nextButton,
+                  disabled && styles.disabledButton,
+                ]}
+                onPress={handleNext}
+                disabled={disabled}
+              >
+                <Text style={styles.navigationButtonText}>
+                  {active === content.length - 1 ? "Finish" : "Next"}
+                </Text>
+                <Icon name="chevron-forward" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            )}
+            renderPreviousButton={(handlePrev, disabled) =>
+              active > 0 ? (
+                <TouchableOpacity
+                  style={[
+                    styles.navigationButton,
+                    styles.backButton,
+                    disabled && styles.disabledButton,
+                  ]}
+                  onPress={handlePrev}
+                  disabled={disabled}
+                >
+                  <Icon name="chevron-back" size={24} color="#1B2128" />
+                  <Text
+                    style={[styles.navigationButtonText, styles.backButtonText]}
+                  >
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              ) : null
+            }
           />
         </View>
-      </AnimatedHeader>
+      </View>
     </SafeAreaView>
   );
 };
@@ -207,7 +244,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1B2128",
-    marginTop: -40,
+    marginTop: -60,
   },
   stepperContainer: {
     flex: 1,
@@ -215,7 +252,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: -20,
+    marginTop: -60,
     paddingTop: 20,
     paddingBottom: 20,
   },
@@ -425,6 +462,48 @@ const styles = StyleSheet.create({
     backgroundColor: "#DFE4F0",
     justifyContent: "center",
     alignItems: "center",
+  },
+  navigationButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 15,
+    minWidth: 130,
+    gap: 8,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+  },
+  nextButton: {
+    backgroundColor: "#1B2128",
+  },
+  backButton: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
+    borderColor: "#E5E9F0",
+  },
+  navigationButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    letterSpacing: 0.5,
+  },
+  backButtonText: {
+    color: "#1B2128",
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  contentContainer: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  stepperButton: {
+    marginTop: 15,
   },
 });
 
