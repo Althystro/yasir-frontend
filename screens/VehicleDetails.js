@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
+
 import AnimatedHeader from "../components/AnimatedHeader";
+
 
 const VehicleDetails = ({ route, navigation }) => {
   const { vehicle } = route.params;
@@ -33,6 +35,7 @@ const VehicleDetails = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+
       <AnimatedHeader
         scrollY={scrollY}
         title={`${vehicle.brand} ${vehicle.model}`}
@@ -56,6 +59,7 @@ const VehicleDetails = ({ route, navigation }) => {
               <Ionicons name="calendar" size={24} color="#1B2128" />
               <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
             </View>
+
           </View>
 
           <View style={styles.calculatorSection}>
@@ -89,6 +93,7 @@ const VehicleDetails = ({ route, navigation }) => {
               </Text>
             )}
           </View>
+
 
           <View style={styles.priceContainer}>
             <Text style={styles.labelPriceText}>Price:</Text>
@@ -137,10 +142,12 @@ export default VehicleDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: "#1B2128",
     marginTop: -40,
   },
   bottomSection: {
+
     flex: 1,
     backgroundColor: "#ffffff",
     borderTopRightRadius: 40,
