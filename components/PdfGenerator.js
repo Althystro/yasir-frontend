@@ -22,7 +22,7 @@ const PdfGenerator = ({ vehicle, customer, downpayment, length, financer }) => {
   const [showPdfPreview, setShowPdfPreview] = useState(false);
   console.log(financer);
 
-  const financerName = financer.split("-")[1];
+  const financerName = financer.name;
 
   if (!vehicle) {
     return (

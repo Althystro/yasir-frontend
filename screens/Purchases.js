@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,28 +7,26 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  Pressable,
   SafeAreaView,
   Dimensions,
   Animated,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useRef } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
 import StaticImageHeader from "../components/StaticImageHeader";
-import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getMyProfile } from "../api/auth";
 import { getFinancers, createPaymentPlan } from "../api/paymentPlan";
 import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
-const Purchases = ({ route, navigation }) => {
+const Purchases = ({ route }) => {
   const { vehicle } = route.params;
   const [active, setActive] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,8 +34,29 @@ const Purchases = ({ route, navigation }) => {
   const [downPayment, setDownPayment] = useState("");
   const scrollY = useRef(new Animated.Value(0)).current;
   const [selectedFinancer, setSelectedFinancer] = useState("");
-  //const [length, setLength] = useState(null);
-  console.log(selectedFinancer);
+  const [financers, setFinancers] = useState([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchFinancers = async () => {
+      const response = await getFinancers();
+      setFinancers(response.financer);
+      if (response.financer.length > 0) {
+        setSelectedFinancer(response.financer[0]);
+      }
+    };
+
+    fetchFinancers();
+  }, []);
+
+  const handleFinish = () => {
+    navigation.navigate("Profile");
+  };
+
+  const handleDownPaymentChange = (text) => {
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setDownPayment(numericValue);
+  };
 
   const {
     data: customer,
@@ -47,22 +67,14 @@ const Purchases = ({ route, navigation }) => {
     queryFn: getMyProfile,
   });
 
-  const {
-    data: financers,
-    isLoading: isFinancersLoading,
-    error: financersError,
-  } = useQuery({
-    queryKey: ["financers"],
-    queryFn: getFinancers,
-  });
-
+  console.log(selectedFinancer);
   const { mutate } = useMutation({
     mutationKey: ["createPaymentPlan"],
     mutationFn: () =>
       createPaymentPlan({
         customerId: customer.id,
         vehicleId: vehicle.id,
-        financerId: selectedFinancer.split("-")[0],
+        financerId: selectedFinancer.id,
         totalAmount: vehicle.price - downPayment,
         lengthMonths: selectedDuration * 12,
       }),
@@ -74,11 +86,11 @@ const Purchases = ({ route, navigation }) => {
     },
   });
 
-  if (isCustomerLoading || isFinancersLoading) {
+  if (isCustomerLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  if (customerError || financersError) {
+  if (customerError) {
     return (
       <View>
         <Text>Error loading data</Text>
@@ -86,7 +98,6 @@ const Purchases = ({ route, navigation }) => {
     );
   }
 
-  // Step 1: Financing Duration Component
   const FinancingDurationStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Select Financing Duration</Text>
@@ -114,25 +125,21 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 2: Down Payment Component
-  const DownPaymentStep = () => (
+  const DownPaymentStep = (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Set Down Payment Amount</Text>
+      <Text style={styles.stepTitle}>Enter Down Payment</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.currencyPrefix}>KD</Text>
         <TextInput
-          style={styles.input}
           value={downPayment}
-          onChangeText={setDownPayment}
-          placeholder="Enter amount"
+          onChangeText={handleDownPaymentChange}
           keyboardType="numeric"
-          placeholderTextColor="#999"
+          placeholder="Enter down payment"
+          style={styles.input}
         />
       </View>
     </View>
   );
 
-  // Step 3: Vehicle Details Component
   const VehicleDetailsStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Vehicle Details</Text>
@@ -157,7 +164,6 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 4: Payment Plan component
   const PaymentPlanStep = ({ vehicle, customer, financers }) => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Payment Plan</Text>
@@ -212,7 +218,6 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 5: Signature Component
   const SignatureStep = ({
     vehicle,
     customer,
@@ -271,7 +276,6 @@ const Purchases = ({ route, navigation }) => {
     );
   };
 
-  // Step 6: Confirmation Component
   const ConfirmationStep = () => (
     <View style={styles.stepContainer}>
       <View style={styles.confirmationIconContainer}>
@@ -295,22 +299,24 @@ const Purchases = ({ route, navigation }) => {
   );
 
   const content = [
-    <FinancingDurationStep />,
-    <DownPaymentStep />,
-    <VehicleDetailsStep />,
+    <FinancingDurationStep key="step1" />,
+    DownPaymentStep,
+    <VehicleDetailsStep key="step3" />,
     <PaymentPlanStep
+      key="step4"
       vehicle={vehicle}
       customer={customer}
-      financers={financers.financer}
+      financers={financers}
     />,
     <SignatureStep
+      key="step5"
       vehicle={vehicle}
       customer={customer}
       downPayment={downPayment}
       length={selectedDuration}
       financer={selectedFinancer}
     />,
-    <ConfirmationStep />,
+    <ConfirmationStep key="step6" />,
   ];
 
   return (
@@ -333,6 +339,7 @@ const Purchases = ({ route, navigation }) => {
             onFinish={() => {
               Alert.alert("Purchase Complete!");
               mutate();
+              handleFinish();
             }}
             stepStyle={styles.stepStyle}
             stepTextStyle={styles.stepTextStyle}

@@ -4,6 +4,7 @@ import AllVehiclesList from "../../components/AllVehiclesList";
 import VehicleDetails from "../../screens/VehicleDetails";
 import Purchases from "../../screens/Purchases";
 import { Ionicons } from "@expo/vector-icons";
+import Profile from "../../screens/Profile"; // Import the Profile screen
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,11 @@ const VehicleNav = () => {
         name="Purchases"
         component={Purchases}
         options={{ title: "Purchases" }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ title: "Profile" }}
       />
     </Stack.Navigator>
   );
