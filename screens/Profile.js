@@ -12,12 +12,17 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateProfile } from "../api/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { deleteToken } from "../api/storage";
 import UserContext from "../context/UserContext";
+import Feather from "@expo/vector-icons/Feather";
+import { getPaymentPlanByUserId } from "../api/paymentPlan";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function ProfileScreen() {
   const [user, setUser] = useContext(UserContext);
@@ -69,6 +74,36 @@ export default function ProfileScreen() {
     }
   }, [isSuccess, profile]);
 
+  const {
+    data: paymentPlansData,
+    isLoading: isPaymentPlansLoading,
+    error: paymentPlansError,
+  } = useQuery({
+    queryKey: ["PaymentPlan", profile?.id],
+    queryFn: () => getPaymentPlanByUserId(profile.id),
+    enabled: !!profile, // Only run the query if profile is available
+  });
+
+  if (isPaymentPlansLoading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (paymentPlansError) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>{error.message}</Text>
+        <Text>Error loading profile</Text>
+      </SafeAreaView>
+    );
+  }
+
+  // console.log(paymentPlansData);
+
   const handleUpdateProfile = () => {
     mutate({ address, phoneNumber });
   };
@@ -108,13 +143,69 @@ export default function ProfileScreen() {
     </View>
   );
 
+  const renderPaymentPlan = (plan) => {
+    return (
+      <View key={plan.paymentPlanId} style={styles.paymentPlanContainer}>
+        <View style={styles.planRow}>
+          <Icon name="person" size={16} />
+          <Text style={styles.planTitle}> Customer Name: </Text>
+          <Text style={styles.planText}>
+            {profile.firstName} {profile.lastName}
+          </Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="account-balance" size={16} />
+          <Text style={styles.planTitle}> Financer Name: </Text>
+          <Text style={styles.planText}>{plan.financerName}</Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="attach-money" size={16} />
+          <Text style={styles.planTitle}> Installment Amount: </Text>
+          <Text style={styles.planText}>
+            {plan.installmentAmount.toFixed(2)}
+          </Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="calendar-today" size={16} />
+          <Text style={styles.planTitle}> Length (Months): </Text>
+          <Text style={styles.planText}>{plan.lengthMonths}</Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="info" size={16} />
+          <Text style={styles.planTitle}> Status: </Text>
+          <Text style={styles.planText}>{plan.status}</Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="attach-money" size={16} />
+          <Text style={styles.planTitle}> Total Amount: </Text>
+          <Text style={styles.planText}>{plan.totalAmount}</Text>
+        </View>
+        <View style={styles.planRow}>
+          <Icon name="directions-car" size={16} />
+          <Text style={styles.planTitle}> Vehicle Model: </Text>
+          <Text style={styles.planText}>{plan.vehicleModel}</Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profile</Text>
-        <Text style={styles.headerSubtitle}>
-          Welcome back, {profile.firstName}
-        </Text>
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={styles.headerButton}
+        >
+          <Feather name="edit" size={24} color="#fff" />
+        </TouchableOpacity>
+        <View style={{ alignItems: "center" }}>
+          <Text style={styles.headerTitle}>
+            Welcome back {profile.firstName}
+          </Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout} style={styles.headerButton}>
+          <Feather name="log-out" size={24} color="#fff" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
@@ -132,28 +223,16 @@ export default function ProfileScreen() {
           </Text>
         </View>
 
-        <View style={styles.infoSection}>
-          {renderProfileInfo("mail", "Email", profile.email)}
-          {renderProfileInfo("card", "Civil ID", profile.civilId)}
-          {renderProfileInfo("location", "Address", profile.address)}
-          {renderProfileInfo("call", "Phone", profile.phoneNumber)}
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.updateButton]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.buttonText}>Update Profile</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.logoutButton]}
-            onPress={handleLogout}
-          >
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.infoSection}>
+            {renderProfileInfo("mail", "Email", profile.email)}
+            {renderProfileInfo("card", "Civil ID", profile.civilId)}
+            {renderProfileInfo("location", "Address", profile.address)}
+            {renderProfileInfo("call", "Phone", profile.phoneNumber)}
+            {paymentPlansData &&
+              paymentPlansData.map((plan) => renderPaymentPlan(plan))}
+          </View>
+        </ScrollView>
       </View>
 
       <Modal
@@ -214,16 +293,19 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
   header: {
+    flexDirection: "row",
     backgroundColor: "#1B2128",
     paddingTop: 60,
     paddingBottom: 20,
     alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 35,
+    fontSize: 26,
     fontWeight: "bold",
     color: "white",
     marginBottom: 5,
+    marginHorizontal: "15%",
   },
   headerSubtitle: {
     fontSize: 16,
@@ -280,6 +362,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+  },
+  paymentPlanContainer: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  planRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  planTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1B2128",
+  },
+  planText: {
+    fontSize: 16,
+    color: "#1B2128",
+    marginLeft: 5,
   },
   iconContainer: {
     width: 40,
