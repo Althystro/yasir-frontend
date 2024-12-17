@@ -76,13 +76,10 @@ export default function Login({ navigation }) {
           style={styles.linkButton}
           onPress={() => navigation.navigate("Register")}
         >
-          <Text style={styles.linkText}>Don't have an account? {''}
-
-          <Text style={styles.registerText}>Register</Text>
-
-
+          <Text style={styles.linkText}>
+            Don't have an account? {""}
+            <Text style={styles.registerText}>Register</Text>
           </Text>
-          
         </TouchableOpacity>
       </View>
     </View>
