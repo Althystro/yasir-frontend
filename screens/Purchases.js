@@ -23,6 +23,7 @@ import { getMyProfile } from "../api/auth";
 import { getFinancers, createPaymentPlan } from "../api/paymentPlan";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width } = Dimensions.get("window");
 
@@ -349,17 +350,30 @@ const Purchases = ({ route }) => {
             renderNextButton={(handleNext, disabled) => (
               <TouchableOpacity
                 style={[
-                  styles.navigationButton,
-                  styles.nextButton,
+                  styles.buttonContainer,
                   disabled && styles.disabledButton,
                 ]}
                 onPress={handleNext}
                 disabled={disabled}
               >
-                <Text style={styles.navigationButtonText}>
-                  {active === content.length - 1 ? "Finish" : "Next"}
-                </Text>
-                <Icon name="chevron-forward" size={24} color="#FFFFFF" />
+                <LinearGradient
+                  colors={
+                    disabled
+                      ? ["#b0b0b0", "#d3d3d3"]
+                      : ["#4c669f", "#3b5998", "#192f6a"]
+                  }
+                  style={styles.buttonGradient}
+                >
+                  <Text style={styles.buttonText}>
+                    {active === content.length - 1 ? "Finish" : "Next"}
+                  </Text>
+                  <Icon
+                    name="chevron-forward"
+                    size={24}
+                    color="#FFFFFF"
+                    style={styles.icon}
+                  />
+                </LinearGradient>
               </TouchableOpacity>
             )}
             renderPreviousButton={(handlePrev, disabled) =>
@@ -374,11 +388,8 @@ const Purchases = ({ route }) => {
                   disabled={disabled}
                 >
                   <Icon name="chevron-back" size={24} color="#1B2128" />
-                  <Text
-                    style={[styles.navigationButtonText, styles.backButtonText]}
-                  >
-                    Back
-                  </Text>
+
+                  <Text style={styles.backButtonText}>Back</Text>
                 </TouchableOpacity>
               ) : null
             }
@@ -393,7 +404,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1B2128",
-    marginTop: -60,
+    marginTop: 0,
   },
   stepperContainer: {
     flex: 1,
@@ -401,7 +412,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: -60,
+    marginTop: 50,
     paddingTop: 20,
     paddingBottom: 20,
   },
@@ -629,6 +640,8 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     backgroundColor: "#1B2128",
+    borderWidth: 1.5,
+    borderColor: "#E5E9F0",
   },
   backButton: {
     backgroundColor: "#FFFFFF",
@@ -636,12 +649,13 @@ const styles = StyleSheet.create({
     borderColor: "#E5E9F0",
   },
   navigationButtonText: {
-    fontSize: 16,
+    fontSize: 30,
     fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.5,
   },
   backButtonText: {
+    fontSize: 30,
     color: "#1B2128",
   },
   disabledButton: {
@@ -653,6 +667,16 @@ const styles = StyleSheet.create({
   },
   stepperButton: {
     marginTop: 15,
+  },
+  buttonContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  buttonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
 });
 

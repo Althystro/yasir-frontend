@@ -12,12 +12,14 @@ import {
   Dimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
 import AIRecomendation from "../components/AIRecomendation";
 import AnimatedHeader from "../components/AnimatedHeader";
+import UserContext from "../context/UserContext";
+import { deleteToken } from "../api/storage";
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,7 +29,11 @@ const Home = () => {
   const tooltipScale = useRef(new Animated.Value(0.95)).current;
   const buttonTooltipOpacity = useRef(new Animated.Value(1)).current;
   const navigation = useNavigation();
-
+  const [user, setUser] = useContext(UserContext);
+  const handleLogout = () => {
+    deleteToken();
+    setUser(false);
+  };
   useEffect(() => {
     // Hide button tooltip after 5 seconds
     const timeout = setTimeout(() => {
@@ -105,6 +111,12 @@ const Home = () => {
         {/* Brands categories List */}
 
         {/* All Vehicles Section */}
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={handleLogout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
         <View style={styles.sectionContainer}>
           <TouchableOpacity
             style={styles.allVehiclesCard}

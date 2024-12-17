@@ -1,7 +1,7 @@
 import React from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View, Image } from "react-native";
 
-const HEADER_MAX_HEIGHT = 180;
+const HEADER_MAX_HEIGHT = 280;
 const HEADER_MIN_HEIGHT = 85;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -15,6 +15,7 @@ const StaticHeader = ({
   headerStyle,
   titleStyle,
   subtitleStyle,
+  headerImage,
 }) => {
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -29,6 +30,12 @@ const StaticHeader = ({
   });
 
   const headerSubtitleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
     outputRange: [1, 0],
     extrapolate: "clamp",
@@ -58,7 +65,7 @@ const StaticHeader = ({
             {
               opacity: headerTitleOpacity,
               color: textColor,
-              marginTop: 80,
+              marginTop: 60,
             },
             titleStyle,
           ]}
@@ -74,6 +81,19 @@ const StaticHeader = ({
         >
           {subtitle}
         </Animated.Text>
+        {headerImage && (
+          <Animated.View
+            style={[
+              styles.imageContainer,
+              {
+                opacity: imageOpacity,
+                marginTop: 10,
+              },
+            ]}
+          >
+            <Image source={{ uri: headerImage }} style={styles.headerImage} />
+          </Animated.View>
+        )}
       </Animated.View>
     </View>
   );
@@ -84,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1B2128",
   },
   header: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     paddingBottom: 20,
   },
@@ -96,6 +116,17 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 16,
     marginTop: 5,
+  },
+  imageContainer: {
+    width: "100%",
+    height: 180,
+    paddingHorizontal: 20,
+  },
+  headerImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 15,
+    resizeMode: "contain",
   },
 });
 

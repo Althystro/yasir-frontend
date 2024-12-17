@@ -5,7 +5,7 @@ import { getToken } from "./storage";
 //  baseURL: "http://192.168.2.224:8080",
 
 const instance = axios.create({
-  baseURL: "http://192.168.86.250:8080",
+  baseURL: "http://localhost:8080",
 });
 instance.interceptors.request.use(async (config) => {
   const token = await getToken();
