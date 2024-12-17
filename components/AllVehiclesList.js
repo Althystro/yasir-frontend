@@ -12,18 +12,26 @@ import { useQuery } from "@tanstack/react-query";
 import getAllVehicles from "../api/vehicles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
 
-const VehicleCard = ({ item }) => (
-  <View style={styles.card}>
-    <Image source={{ uri: item.image }} style={styles.image} />
-    <Text style={styles.model}>{item.model}</Text>
-    <View style={styles.details}>
-      <Text style={styles.seats}>{item.brand}</Text>
-      <Text style={styles.price}>KD{item.price.toLocaleString()}</Text>
-    </View>
-    <Text style={styles.included}>Incl. 500 free kilometers</Text>
-  </View>
-);
+const VehicleCard = ({ item }) => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate("VehicleDetails", { vehicle: item })}
+    >
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <Text style={styles.model}>{item.model}</Text>
+      <View style={styles.details}>
+        <Text style={styles.seats}>{item.brand}</Text>
+        <Text style={styles.price}>KD{item.price.toLocaleString()}</Text>
+      </View>
+      <Text style={styles.included}>Incl. 500 free kilometers</Text>
+    </TouchableOpacity>
+  );
+};
 
 const AllVehiclesList = () => {
   const {
@@ -94,51 +102,53 @@ const AllVehiclesList = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Offers</Text>
+        <Text style={styles.title}>Offers</Text>
       </View>
 
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
-
-      <View style={styles.filterContainer}>
-        <Picker
-          selectedValue={selectedBrand}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedBrand(itemValue)}
-        >
-          <Picker.Item label="All Brands" value="" />
-          {brands.map((brand, index) => (
-            <Picker.Item key={index} label={brand} value={brand} />
-          ))}
-        </Picker>
-
+      <View style={styles.mainView}>
         <TextInput
-          style={styles.priceInput}
-          placeholder="Min Price"
-          keyboardType="numeric"
-          value={minPrice}
-          onChangeText={setMinPrice}
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
 
-        <TextInput
-          style={styles.priceInput}
-          placeholder="Max Price"
-          keyboardType="numeric"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
+        <View style={styles.filterContainer}>
+          <Picker
+            selectedValue={selectedBrand}
+            style={styles.picker}
+            onValueChange={(itemValue) => setSelectedBrand(itemValue)}
+          >
+            <Picker.Item label="All Brands" value="" />
+            {brands.map((brand, index) => (
+              <Picker.Item key={index} label={brand} value={brand} />
+            ))}
+          </Picker>
+
+          <TextInput
+            style={styles.priceInput}
+            placeholder="Min Price"
+            keyboardType="numeric"
+            value={minPrice}
+            onChangeText={setMinPrice}
+          />
+
+          <TextInput
+            style={styles.priceInput}
+            placeholder="Max Price"
+            keyboardType="numeric"
+            value={maxPrice}
+            onChangeText={setMaxPrice}
+          />
+        </View>
+
+        <FlatList
+          data={filteredVehicles}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <VehicleCard item={item} />}
+          style={{ width: "100%" }}
         />
       </View>
-
-      <FlatList
-        data={filteredVehicles}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <VehicleCard item={item} />}
-        style={{ width: "100%" }}
-      />
     </View>
   );
 };
@@ -146,7 +156,6 @@ const AllVehiclesList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     width: "100%",
   },
   header: {
@@ -154,20 +163,19 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    marginBottom: 10,
     width: "100%",
   },
-  headerText: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
   title: {
-    fontSize: 20,
+    fontSize: 23,
     fontWeight: "bold",
-    color: "black",
+    color: "#fff",
+    marginBottom: 20,
+  },
+  mainView: {
+    padding: 20,
+    borderRadius: 30,
+    marginTop: -30,
+    backgroundColor: "#fff",
   },
   searchInput: {
     borderWidth: 1,
@@ -202,17 +210,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   card: {
-    backgroundColor: "#E6F7FF",
+    backgroundColor: "rgba(211, 211, 211, 0.4)",
     borderRadius: 12,
     paddingVertical: 15,
     paddingHorizontal: 10,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowColor: "rgba(211, 211, 211, 0.6)",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.6,
+    shadowRadius: 2,
     elevation: 5,
-    width: "100%",
   },
   image: {
     width: "100%",

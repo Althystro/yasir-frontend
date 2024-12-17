@@ -35,7 +35,7 @@ const getMyProfile = async () => {
 
 const updateProfile = async (userInfo) => {
   console.log(userInfo);
-  const res = await instance.post("/users/me", userInfo);
+  const res = await instance.put("/users/me", userInfo);
   return res.data;
 };
 
