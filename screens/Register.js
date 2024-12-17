@@ -5,10 +5,13 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import UserContext from "../context/UserContext";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "../api/auth";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Register({ navigation }) {
   const [firstName, setFirstName] = useState("");
@@ -48,18 +51,23 @@ export default function Register({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topSection}>{/* Nothing added here? */}</View>
-      <View style={styles.midSection}>
-        {/* Only for the logo moto */}
-        <Text style={styles.midText}> Yessir | يسر </Text>
-        <Text style={{ color: "white", fontSize: 30 }}>Join Yessir</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>Yessir | يسر</Text>
+          <Text style={styles.headerSubtitle}>Create Account</Text>
+        </View>
       </View>
 
-      {/* The inputs */}
       <View style={styles.bottomSection}>
         <View style={styles.registerContainer}>
-          <Text style={styles.title}>Register</Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"
@@ -114,65 +122,82 @@ export default function Register({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  registerContainer: {
-    flex: 2.5,
-    // backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+  container: {
+    flex: 1,
+    backgroundColor: "#1B2128",
   },
-  title: {
+  header: {
+    backgroundColor: "#1B2128",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 15,
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "white",
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "white",
+    opacity: 0.8,
+  },
+  bottomSection: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+    paddingHorizontal: 20,
+    paddingTop: 30,
+  },
+  registerContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   input: {
     width: "100%",
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    height: 50,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    paddingHorizontal: 15,
     marginBottom: 15,
-  },
-  firstNameInput: {
-    // width: "40%",
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    marginRight: 10,
-  },
-  lastNameInput: {
-    // width: "40%",
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    fontSize: 16,
   },
   button: {
     width: "100%",
     backgroundColor: "#1B2128",
     padding: 15,
-    borderRadius: 30,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   linkButton: {
     marginTop: 20,
@@ -180,67 +205,5 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#1B2128",
     fontSize: 16,
-  },
-  registerText: {
-    color: "gray",
-    fontSize: 16,
-    fontWeight: "400",
-  },
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "transparent",
-  },
-  midSection: {
-    flex: 0.8,
-    backgroundColor: "#1B2128",
-    // backgroundColor: "blue",
-    // marginTop: 40,
-    borderBottomRightRadius: 65,
-    borderBottomLeftRadius: 65,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  midText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 80,
-  },
-  welcomeText: {
-    color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  sectionContainer: {
-    width: "100%",
-    maxWidth: 400,
-    paddingHorizontal: 20,
-    marginVertical: 15,
-  },
-  firstText: {
-    color: "#1B2128",
-    fontSize: 15,
-    fontWeight: "600",
-    alignSelf: "flex-start",
-    marginRight: 80,
-    marginLeft: 8,
-  },
-  secText: {
-    color: "#1B2128",
-    fontSize: 15,
-    fontWeight: "600",
-    alignSelf: "flex-start",
-    marginBottom: 3,
-    marginRight: 70,
-    marginLeft: 20,
-  },
-  inputText: {
-    color: "#1B2128",
-    fontSize: 15,
-    fontWeight: "600",
-    alignSelf: "flex-start",
-    marginBottom: 3,
   },
 });
