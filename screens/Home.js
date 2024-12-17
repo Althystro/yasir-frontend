@@ -11,15 +11,22 @@ import {
   Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import CarBrandsList from "../componant/CarBrandsList";
 import PopularCars from "../componant/PopularCars";
 import AIRecomendation from "../components/AIRecomendation";
 import AnimatedHeader from "../components/AnimatedHeader";
+import { deleteToken } from "../api/storage";
+import UserContext from "../context/UserContext";
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [user, setUser] = useContext(UserContext);
+  const handleLogout = () => {
+    deleteToken();
+    setUser(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,6 +45,7 @@ const Home = () => {
             color="#1B2128"
             style={styles.searchIcon}
           />
+
           <TextInput
             placeholder="Search"
             style={styles.searchInput}
@@ -46,6 +54,12 @@ const Home = () => {
         </View>
         {/* Brands categories List */}
         <View style={styles.sectionContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.logoutButton]}
+            onPress={handleLogout}
+          >
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
           <CarBrandsList />
         </View>
         {/* Popular Car card */}
