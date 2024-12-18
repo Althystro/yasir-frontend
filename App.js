@@ -42,8 +42,8 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
           <TestDriveContext.Provider value={[TestDrive, setTestDrive]}>
-            {/* {user ? <HomeNav /> : <AuthNav />} */}
-            <PaymentPlansScreen />
+            {user ? <HomeNav /> : <AuthNav />}
+            {/* <PaymentPlansScreen /> */}
             {/* <Home /> */}
             {/* <VehicleDetails /> */}
             {/* <AuthNav /> */}
