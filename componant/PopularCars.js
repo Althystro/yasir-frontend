@@ -163,11 +163,12 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginLeft: 20,
-    fontSize: 24,
-    fontWeight: "600",
+    fontSize: 30,
+    fontWeight: "Bold",
     marginBottom: 20,
     color: "#1a1a1a",
     letterSpacing: 0.5,
+    fontFamily: "",
   },
   container: {
     width: 280,
