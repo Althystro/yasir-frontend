@@ -39,7 +39,11 @@ const MainNav = () => {
       <Tab.Screen name="Home" component={HomeNav} />
       <Tab.Screen name="All Vehicles" component={VehicleNav} />
       <Tab.Screen name="Test Drive" component={TestDrive} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false, headerLeft: null }}
+      />
     </Tab.Navigator>
   );
 };

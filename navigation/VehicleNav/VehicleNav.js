@@ -48,7 +48,10 @@ const VehicleNav = () => {
       <Stack.Screen
         name="Profile"
         component={Profile}
-        options={{ title: "Profile" }}
+        options={{
+          title: "Profile",
+          headerLeft: () => null, // Remove the back button on the Profile screen
+        }}
       />
     </Stack.Navigator>
   );
