@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Purchases from "../../screens/Purchases";
 import ProfileScreen from "../../screens/Profile";
 import VehicleNav from "../VehicleNav/VehicleNav";
+import TestDriveVehicle from "../../components/TestDriveVehicle";
 
 const Stack = createStackNavigator();
 

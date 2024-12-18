@@ -13,6 +13,7 @@ const VehicleNav = () => {
     <Stack.Navigator
       initialRouteName="AllVehiclesList"
       screenOptions={{
+        headerShown: false,
         headerTransparent: true,
         headerTintColor: "transparent",
         headerTitle: "",

@@ -1,23 +1,25 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { FlatList } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
 import TestDriveContext from "../context/TestDriveContext";
+import carBrands from "../data/carBrands";
+import cars from "../data/cars";
 
-const DealershipSelector = () => {
+const DealershipCarSelector = () => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
+  const [isCarPickerVisible, setIsCarPickerVisible] = useState(false);
   const [selectedDealership, setSelectedDealership] = useState("");
+  const [selectedCar, setSelectedCar] = useState("");
   const [TestDrive, setTestDrive] = useContext(TestDriveContext);
-
-  const dealerships = [
-    { id: 1, name: "Dealership A" },
-    { id: 2, name: "Dealership B" },
-    { id: 3, name: "Dealership C" },
-  ];
 
   const openPicker = () => setIsPickerVisible(true);
   const closePicker = () => setIsPickerVisible(false);
+
+  const openCarPicker = () => setIsCarPickerVisible(true);
+  const closeCarPicker = () => setIsCarPickerVisible(false);
 
   return (
     <View style={styles.container}>
@@ -50,11 +52,11 @@ const DealershipSelector = () => {
               }}
             >
               <Picker.Item label="Select a Dealership" value="" />
-              {dealerships.map((dealership) => (
+              {carBrands.map((brand) => (
                 <Picker.Item
-                  key={dealership.id}
-                  label={dealership.name}
-                  value={dealership.name}
+                  key={brand.id}
+                  label={brand.brandName}
+                  value={brand.brandName}
                 />
               ))}
             </Picker>
@@ -65,11 +67,53 @@ const DealershipSelector = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Car Selector */}
+      <View style={styles.iconContainer}>
+        <FontAwesome5 name="car-side" size={24} color="black" />
+        <Text style={styles.label}>Select a Car</Text>
+      </View>
+      <TouchableOpacity style={styles.selector} onPress={openCarPicker}>
+        <Text style={styles.selectorText}>{selectedCar || "Choose Car"}</Text>
+      </TouchableOpacity>
+
+      {/* Dropdown Menu */}
+      <Modal
+        visible={isCarPickerVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeCarPicker}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select a Car</Text>
+            <Picker
+              selectedValue={selectedCar}
+              onValueChange={(itemValue) => {
+                setSelectedCar(itemValue);
+                setTestDrive({ ...TestDrive, car: itemValue });
+              }}
+            >
+              <Picker.Item label="Select a Car" value="" />
+              {cars.map((car) => (
+                <Picker.Item key={car.id} label={car.name} value={car.name} />
+              ))}
+            </Picker>
+
+            <TouchableOpacity
+              style={styles.doneButton}
+              onPress={closeCarPicker}
+            >
+              <Text style={styles.doneButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
-export default DealershipSelector;
+export default DealershipCarSelector;
 
 const styles = StyleSheet.create({
   container: {

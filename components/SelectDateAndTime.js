@@ -1,12 +1,14 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import DateTimeCalendar from "./DateTimeCalendar";
 import { Picker } from "@react-native-picker/picker";
+import TestDriveContext from "../context/TestDriveContext";
 
 const SelectDateAndTime = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [isPickerVisible, setIsPickerVisible] = useState(false);
+  const [TestDrive, setTestDrive] = useContext(TestDriveContext);
   const availableTimes = ["10:00 AM", "12:00 PM", "2:00 PM", "3:00 PM"];
 
   const openPicker = () => setIsPickerVisible(true);
@@ -32,7 +34,10 @@ const SelectDateAndTime = () => {
             <Text style={styles.modalTitle}>Select a Time</Text>
             <Picker
               selectedValue={selectedTime}
-              onValueChange={(itemValue) => setSelectedTime(itemValue)}
+              onValueChange={(itemValue) => {
+                setSelectedTime(itemValue);
+                setTestDrive({ ...TestDrive, time: itemValue });
+              }}
             >
               <Picker.Item label="Select a Time" value="" />
               {availableTimes.map((time, index) => (

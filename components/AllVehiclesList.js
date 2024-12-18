@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import getAllVehicles from "../api/vehicles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+import AnimatedHeader from "./AnimatedHeader";
 
 const VehicleCard = ({ item }) => {
   const navigation = useNavigation();
@@ -20,13 +22,13 @@ const VehicleCard = ({ item }) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate("VehicleDetails", { vehicle: item })}
+      onPress={() => navigation.navigate("Vehicle Details", { vehicle: item })}
     >
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.model}>{item.model}</Text>
       <View style={styles.details}>
         <Text style={styles.seats}>{item.brand}</Text>
-        <Text style={styles.price}>KD{item.price.toLocaleString()}</Text>
+        <Text style={styles.price}>KD {item.price.toLocaleString()}</Text>
       </View>
       <Text style={styles.included}>Incl. 500 free kilometers</Text>
     </TouchableOpacity>
@@ -43,6 +45,7 @@ const AllVehiclesList = () => {
     queryFn: getAllVehicles,
   });
 
+  const scrollY = new Animated.Value(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -95,60 +98,70 @@ const AllVehiclesList = () => {
       ? [...new Set(vehiclesResponse.vehicles.map((vehicle) => vehicle.brand))]
       : [];
 
+  const ListHeaderComponent = () => (
+    <View style={styles.mainView}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      <View style={styles.filterContainer}>
+        <Picker
+          selectedValue={selectedBrand}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedBrand(itemValue)}
+        >
+          <Picker.Item label="All Brands" value="" />
+          {brands.map((brand, index) => (
+            <Picker.Item key={index} label={brand} value={brand} />
+          ))}
+        </Picker>
+
+        <TextInput
+          style={styles.priceInput}
+          placeholder="Min Price"
+          keyboardType="numeric"
+          value={minPrice}
+          onChangeText={setMinPrice}
+        />
+
+        <TextInput
+          style={styles.priceInput}
+          placeholder="Max Price"
+          keyboardType="numeric"
+          value={maxPrice}
+          onChangeText={setMaxPrice}
+        />
+      </View>
+    </View>
+  );
+
   if (isLoading) return <Text style={styles.message}>Loading...</Text>;
   if (error || (vehiclesResponse && vehiclesResponse.error))
     return <Text style={styles.message}>Error loading vehicles</Text>;
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Offers</Text>
-      </View>
-
-      <View style={styles.mainView}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-
-        <View style={styles.filterContainer}>
-          <Picker
-            selectedValue={selectedBrand}
-            style={styles.picker}
-            onValueChange={(itemValue) => setSelectedBrand(itemValue)}
-          >
-            <Picker.Item label="All Brands" value="" />
-            {brands.map((brand, index) => (
-              <Picker.Item key={index} label={brand} value={brand} />
-            ))}
-          </Picker>
-
-          <TextInput
-            style={styles.priceInput}
-            placeholder="Min Price"
-            keyboardType="numeric"
-            value={minPrice}
-            onChangeText={setMinPrice}
-          />
-
-          <TextInput
-            style={styles.priceInput}
-            placeholder="Max Price"
-            keyboardType="numeric"
-            value={maxPrice}
-            onChangeText={setMaxPrice}
-          />
-        </View>
-
+      <AnimatedHeader
+        scrollY={scrollY}
+        title="Offers"
+        backgroundColor="#1a1a1a"
+      >
         <FlatList
           data={filteredVehicles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <VehicleCard item={item} />}
-          style={{ width: "100%" }}
+          ListHeaderComponent={ListHeaderComponent}
+          contentContainerStyle={styles.listContent}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
         />
-      </View>
+      </AnimatedHeader>
     </View>
   );
 };
@@ -173,8 +186,9 @@ const styles = StyleSheet.create({
   },
   mainView: {
     padding: 20,
-    borderRadius: 30,
-    marginTop: -30,
+    backgroundColor: "#fff",
+  },
+  listContent: {
     backgroundColor: "#fff",
   },
   searchInput: {

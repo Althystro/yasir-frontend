@@ -20,6 +20,26 @@ const VehicleDetails = ({ route, navigation }) => {
   const [loanTerm, setLoanTerm] = useState("");
   const scrollY = useRef(new Animated.Value(0)).current;
 
+  const defaultColors = [
+    { name: "Pearl White", code: "#FFFFFF" },
+    { name: "Midnight Black", code: "#000000" },
+    { name: "Racing Red", code: "#FF0000" },
+    { name: "Ocean Blue", code: "#0000FF" },
+    { name: "Silver Grey", code: "#C0C0C0" },
+    { name: "Forest Green", code: "#228B22" },
+    { name: "Metallic Bronze", code: "#CD7F32" },
+    { name: "Royal Purple", code: "#7851A9" },
+    { name: "Champagne Gold", code: "#F7E7CE" },
+    { name: "Electric Blue", code: "#7DF9FF" },
+    { name: "Burgundy Red", code: "#800020" },
+    { name: "Graphite Grey", code: "#383838" },
+    { name: "Mystic Brown", code: "#614051" },
+    { name: "Pearl Orange", code: "#FFA500" },
+    { name: "Cosmic Black", code: "#202020" },
+  ];
+
+  const colors = vehicle.colors || defaultColors;
+
   const calculateMonthlyPayment = () => {
     if (!vehicle || !downPayment || !loanTerm) return 0;
 
@@ -36,8 +56,8 @@ const VehicleDetails = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <AnimatedHeader
         scrollY={scrollY}
-        title={`${vehicle.brand} `}
-        // subtitle={vehicle.year}
+        title={`${vehicle.brand} ${vehicle.model}`}
+        subtitle={vehicle.name}
         backgroundColor="#1B2128"
         textColor="white"
         headerImage={vehicle.image2}
@@ -76,6 +96,30 @@ const VehicleDetails = ({ route, navigation }) => {
                 <Text style={styles.infoTitle}>Engine</Text>
               </View>
               <Text style={styles.infoText}>{vehicle.engine}</Text>
+            </View>
+
+            <View style={styles.colorSection}>
+              <View style={styles.infoHeaderContainer}>
+                <Ionicons name="color-palette" size={24} color="#1B2128" />
+                <Text style={styles.infoTitle}>Available Colors</Text>
+              </View>
+              <View style={styles.colorPaletteContainer}>
+                {colors.map((color, index) => (
+                  <View key={index} style={styles.colorItem}>
+                    <View style={styles.colorCircleContainer}>
+                      <View
+                        style={[
+                          styles.colorCircle,
+                          { backgroundColor: color.code },
+                          color.code === "#FFFFFF" && styles.whiteColorBorder,
+                        ]}
+                      />
+                      <View style={styles.shine} />
+                    </View>
+                    <Text style={styles.colorName}>{color.name}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
 
@@ -336,5 +380,71 @@ const styles = StyleSheet.create({
     color: "#4B5563",
     lineHeight: 24,
     letterSpacing: 0.3,
+  },
+  colorSection: {
+    backgroundColor: "#f8f9fa",
+    padding: 20,
+    borderRadius: 20,
+    marginTop: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  colorPaletteContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 15,
+    marginTop: 10,
+    justifyContent: "center",
+    paddingHorizontal: 5,
+  },
+  colorItem: {
+    alignItems: "center",
+    width: 65,
+    marginBottom: 15,
+  },
+  colorCircleContainer: {
+    position: "relative",
+    width: 40,
+    height: 40,
+    marginBottom: 5,
+  },
+  colorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  shine: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    transform: [{ rotate: "45deg" }],
+    width: "100%",
+    height: "50%",
+    opacity: 0.5,
+  },
+  whiteColorBorder: {
+    borderWidth: 1.5,
+    borderColor: "#CCCCCC",
+  },
+  colorName: {
+    fontSize: 10,
+    color: "#4B5563",
+    textAlign: "center",
+    fontWeight: "500",
+    marginTop: 4,
   },
 });

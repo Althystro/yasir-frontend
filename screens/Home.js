@@ -111,12 +111,7 @@ const Home = () => {
         {/* Brands categories List */}
 
         {/* All Vehicles Section */}
-        <TouchableOpacity
-          style={[styles.button, styles.logoutButton]}
-          onPress={handleLogout}
-        >
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
+
         <View style={styles.sectionContainer}>
           <TouchableOpacity
             style={styles.allVehiclesCard}
