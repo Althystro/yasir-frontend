@@ -24,6 +24,7 @@ const HomeNav = () => {
         initialRouteName="Home"
         screenOptions={{
           headerTransparent: true,
+          headerShown: false,
           headerTintColor: "transparent",
           headerTitle: "",
           headerTitleStyle: {
@@ -55,7 +56,11 @@ const HomeNav = () => {
         <Stack.Screen name="Vehicle Details" component={VehicleDetails} />
         <Stack.Screen name="Pdf Generator" component={PdfGenerator} />
         <Stack.Screen name="Purchases" component={Purchases} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </>
   );

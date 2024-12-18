@@ -169,6 +169,20 @@ const AllVehiclesList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
+  },
+  header: {
+    backgroundColor: "#1B2128",
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  title: {
+    fontSize: 23,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 20,
   },
   mainView: {
     padding: 20,

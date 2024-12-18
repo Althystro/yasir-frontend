@@ -30,10 +30,6 @@ const Home = () => {
   const buttonTooltipOpacity = useRef(new Animated.Value(1)).current;
   const navigation = useNavigation();
   const [user, setUser] = useContext(UserContext);
-  const handleLogout = () => {
-    deleteToken();
-    setUser(false);
-  };
   useEffect(() => {
     // Hide button tooltip after 5 seconds
     const timeout = setTimeout(() => {
