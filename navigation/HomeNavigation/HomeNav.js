@@ -24,6 +24,7 @@ const HomeNav = () => {
         initialRouteName="Home"
         screenOptions={{
           headerTransparent: true,
+          headerShown: false,
           headerTintColor: "transparent",
           headerTitle: "",
           headerTitleStyle: {
