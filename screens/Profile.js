@@ -146,7 +146,6 @@ export default function ProfileScreen() {
   );
 
   const renderPaymentPlan = (plan) => {
-    // Helper function to format currency
     const formatCurrency = (amount) => {
       if (typeof amount !== "number") return "0.00";
       return amount.toFixed(2);
@@ -154,46 +153,56 @@ export default function ProfileScreen() {
 
     return (
       <View key={plan.paymentPlanId} style={styles.paymentPlanContainer}>
-        <View style={styles.planRow}>
-          <Icon name="person" size={16} />
-          <Text style={styles.planTitle}> Customer Name: </Text>
-          <Text style={styles.planText}>
-            {profile.firstName} {profile.lastName}
-          </Text>
+        <View style={styles.planHeader}>
+          <MaterialIcons name="directions-car" size={24} color="#1B2128" />
+          <Text style={styles.planHeaderText}>{plan.vehicleModel}</Text>
         </View>
-        <View style={styles.planRow}>
-          <Icon name="account-balance" size={16} />
-          <Text style={styles.planTitle}> Financer Name: </Text>
-          <Text style={styles.planText}>{plan.financerName}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="attach-money" size={16} />
-          <Text style={styles.planTitle}> Installment Amount: </Text>
-          <Text style={styles.planText}>
-            {formatCurrency(plan.installmentAmount)}
-          </Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="calendar-today" size={16} />
-          <Text style={styles.planTitle}> Length (Months): </Text>
-          <Text style={styles.planText}>{plan.lengthMonths}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="info" size={16} />
-          <Text style={styles.planTitle}> Status: </Text>
-          <Text style={styles.planText}>{plan.status}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="attach-money" size={16} />
-          <Text style={styles.planTitle}> Total Amount: </Text>
-          <Text style={styles.planText}>
-            {formatCurrency(plan.totalAmount)}
-          </Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="directions-car" size={16} />
-          <Text style={styles.planTitle}> Vehicle Model: </Text>
-          <Text style={styles.planText}>{plan.vehicleModel}</Text>
+
+        <View style={styles.planDivider} />
+
+        <View style={styles.planDetailsContainer}>
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Customer</Text>
+              <Text style={styles.planDetailValue}>
+                {profile.firstName} {profile.lastName}
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Financer</Text>
+              <Text style={styles.planDetailValue}>{plan.financerName}</Text>
+            </View>
+          </View>
+
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Monthly Payment</Text>
+              <Text style={styles.planDetailValue}>
+                ${formatCurrency(plan.installmentAmount)}
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Total Amount</Text>
+              <Text style={styles.planDetailValue}>
+                ${formatCurrency(plan.totalAmount)}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Duration</Text>
+              <Text style={styles.planDetailValue}>
+                {plan.lengthMonths} Months
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Status</Text>
+              <Text style={[styles.planDetailValue, styles.statusText]}>
+                {plan.status}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     );
@@ -305,6 +314,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1B2128",
+    marginTop: 40,
   },
   content: {
     flex: 1,
@@ -356,35 +366,63 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   paymentPlanContainer: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    marginVertical: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowRadius: 3.84,
+    elevation: 5,
+    overflow: "hidden",
   },
-  planRow: {
+  planHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    padding: 16,
+    backgroundColor: "#f8f9fa",
   },
-  planTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
+  planHeaderText: {
+    fontSize: 18,
+    fontWeight: "600",
     color: "#1B2128",
+    marginLeft: 10,
   },
-  planText: {
+  planDivider: {
+    height: 1,
+    backgroundColor: "#e1e1e1",
+    marginHorizontal: 16,
+  },
+  planDetailsContainer: {
+    padding: 16,
+  },
+  planDetailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  planDetailItem: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  planDetailLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  planDetailValue: {
     fontSize: 16,
     color: "#1B2128",
-    marginLeft: 5,
+    fontWeight: "500",
+  },
+  statusText: {
+    color: "#28a745",
+    fontWeight: "600",
   },
   iconContainer: {
     width: 40,
