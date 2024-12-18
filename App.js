@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, LogBox } from "react-native";
 import { getToken } from "./api/storage";
 import UserContext from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,6 +18,8 @@ import Purchases from "./screens/Purchases";
 import PdfGenerator from "./components/PdfGenerator";
 import TestDriveContext from "./context/TestDriveContext";
 import HomeNav from "./navigation/HomeNavigation/HomeNav";
+
+LogBox.ignoreAllLogs();
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -39,9 +41,8 @@ export default function App() {
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider value={[user, setUser]}>
-
           <TestDriveContext.Provider value={[TestDrive, setTestDrive]}>
-          {user ? <HomeNav /> : <AuthNav />}
+            {user ? <HomeNav /> : <AuthNav />}
 
             {/* <Home /> */}
             {/* <VehicleDetails /> */}

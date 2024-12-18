@@ -178,13 +178,13 @@ export default function ProfileScreen() {
             <View style={styles.planDetailItem}>
               <Text style={styles.planDetailLabel}>Monthly Payment</Text>
               <Text style={styles.planDetailValue}>
-                ${formatCurrency(plan.installmentAmount)}
+                KD {formatCurrency(plan.installmentAmount)}
               </Text>
             </View>
             <View style={styles.planDetailItem}>
               <Text style={styles.planDetailLabel}>Total Amount</Text>
               <Text style={styles.planDetailValue}>
-                ${formatCurrency(plan.totalAmount)}
+                KD {formatCurrency(plan.totalAmount)}
               </Text>
             </View>
           </View>

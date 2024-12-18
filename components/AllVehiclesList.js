@@ -23,12 +23,12 @@ import carBrands from "../data/carBrands";
 
 import SimpleAnimatedHeader from "./SimpleAnimatedHeader";
 
-
 const VehicleCard = ({ item }) => {
   const navigation = useNavigation();
 
-  const brand = carBrands.find((brand) => item.brand.toLowerCase() === brand.brand.toLowerCase());
-
+  const brand = carBrands.find(
+    (brand) => item.brand.toLowerCase() === brand.brand.toLowerCase()
+  );
 
   return (
     <TouchableOpacity
@@ -38,7 +38,7 @@ const VehicleCard = ({ item }) => {
       <View style={styles.blueCard}>
         <View style={styles.topRow}>
           <Text style={styles.carName}>{item.model}</Text>
-        
+
           <Image
             source={{ uri: brand.logo }}
             style={styles.brandLogo}
@@ -138,27 +138,24 @@ const AllVehiclesList = () => {
 
   const ListHeaderComponent = () => (
     <View style={styles.mainView}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
+      <View style={styles.searchContainer}>
+        <Icon
+          name="search-outline"
+          size={20}
+          color="#666"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search vehicles..."
+          placeholderTextColor="#666"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
 
       <View style={styles.filterContainer}>
-        {/* This needs to be changed */}
-        {/* <Picker
-          selectedValue={selectedBrand}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedBrand(itemValue)}
-        >
-          <Picker.Item label="All Brands" value="" />
-          {brands.map((brand, index) => (
-            <Picker.Item key={index} label={brand} value={brand} />
-          ))}
-        </Picker> */}
-
-<DropDownPicker
+        <DropDownPicker
           open={brandDropdownOpen}
           value={selectedBrand}
           items={brandItems}
@@ -168,23 +165,34 @@ const AllVehiclesList = () => {
           placeholder="All Brands"
           style={styles.dropdown}
           dropDownContainerStyle={styles.dropdownContainer}
+          zIndex={2000}
         />
 
-        <TextInput
-          style={styles.priceInput}
-          placeholder="Min Price"
-          keyboardType="numeric"
-          value={minPrice}
-          onChangeText={setMinPrice}
-        />
+        <View style={styles.priceInputContainer}>
+          <View style={styles.priceInputWrapper}>
+            <TextInput
+              style={styles.priceInput}
+              placeholder="Min Price"
+              placeholderTextColor="#666"
+              keyboardType="numeric"
+              value={minPrice}
+              onChangeText={setMinPrice}
+            />
+            <Text style={styles.currencyLabel}>KD</Text>
+          </View>
 
-        <TextInput
-          style={styles.priceInput}
-          placeholder="Max Price"
-          keyboardType="numeric"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
-        />
+          <View style={styles.priceInputWrapper}>
+            <TextInput
+              style={styles.priceInput}
+              placeholder="Max Price"
+              placeholderTextColor="#666"
+              keyboardType="numeric"
+              value={maxPrice}
+              onChangeText={setMaxPrice}
+            />
+            <Text style={styles.currencyLabel}>KD</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -197,21 +205,81 @@ const AllVehiclesList = () => {
     <View style={styles.container}>
       <SimpleAnimatedHeader
         scrollY={scrollY}
-        title="Offers"
-        backgroundColor="#1a1a1a"
+        title="Gallery"
+        backgroundColor="#1B2128"
       >
-        <FlatList
-          data={filteredVehicles}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <VehicleCard item={item} />}
-          ListHeaderComponent={ListHeaderComponent}
-          contentContainerStyle={styles.listContent}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-          )}
-          scrollEventThrottle={16}
-        />
+        <View style={styles.contentContainer}>
+          <View style={styles.mainView}>
+            <View style={styles.searchContainer}>
+              <Icon
+                name="search-outline"
+                size={20}
+                color="#666"
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search vehicles..."
+                placeholderTextColor="#666"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
+
+            <View style={styles.filterContainer}>
+              <DropDownPicker
+                open={brandDropdownOpen}
+                value={selectedBrand}
+                items={brandItems}
+                setOpen={setBrandDropdownOpen}
+                setValue={setSelectedBrand}
+                setItems={setBrandItems}
+                placeholder="All Brands"
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                zIndex={2000}
+              />
+
+              <View style={styles.priceInputContainer}>
+                <View style={styles.priceInputWrapper}>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="Min Price"
+                    placeholderTextColor="#666"
+                    keyboardType="numeric"
+                    value={minPrice}
+                    onChangeText={setMinPrice}
+                  />
+                  <Text style={styles.currencyLabel}>KD</Text>
+                </View>
+
+                <View style={styles.priceInputWrapper}>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="Max Price"
+                    placeholderTextColor="#666"
+                    keyboardType="numeric"
+                    value={maxPrice}
+                    onChangeText={setMaxPrice}
+                  />
+                  <Text style={styles.currencyLabel}>KD</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <FlatList
+            data={filteredVehicles}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <VehicleCard item={item} />}
+            contentContainerStyle={styles.listContent}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false }
+            )}
+            scrollEventThrottle={16}
+          />
+        </View>
       </SimpleAnimatedHeader>
     </View>
   );
@@ -221,6 +289,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    marginTop: 20,
+  },
+  contentContainer: {
+    flex: 1,
+    zIndex: 1,
+  },
+  mainView: {
+    padding: 20,
+    backgroundColor: "#fff",
+    gap: 15,
+    zIndex: 2000,
+    elevation: 2000,
+  },
+  filterContainer: {
+    gap: 10,
+    width: "100%",
+    zIndex: 2000,
+    elevation: 2000,
+  },
+  dropdown: {
+    backgroundColor: "#ffffff",
+    borderColor: "#ddd",
+    zIndex: 2000,
+    elevation: 2000,
+  },
+  dropdownContainer: {
+    backgroundColor: "#ffffff",
+    borderColor: "#ddd",
+    zIndex: 2000,
+    elevation: 2000,
+  },
+  listContent: {
+    backgroundColor: "#fff",
+    zIndex: 1,
   },
   header: {
     backgroundColor: "#1B2128",
@@ -235,44 +337,50 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 20,
   },
-  mainView: {
-    padding: 20,
-    backgroundColor: "#fff",
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    height: 45,
+    backgroundColor: "#f8f8f8",
   },
-  listContent: {
-    backgroundColor: "#fff",
+  searchIcon: {
+    marginRight: 10,
   },
   searchInput: {
+    flex: 1,
+    height: "100%",
+    fontSize: 16,
+    color: "#333",
+  },
+  priceInputContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  priceInputWrapper: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    height: 40,
-    marginBottom: -20,
-    width: "100%",
+    borderRadius: 10,
+    backgroundColor: "#f8f8f8",
+    paddingHorizontal: 15,
+    height: 45,
   },
-  filterContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: -20,
-    width: "100%",
-  },
-  // picker: {
-  //   flex: 2,
-  //   resizeMode: "contain",
-  //   width: "100%",
-  // },
   priceInput: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    height: 40,
-    marginLeft: 10,
-    resizeMode: "contain",
-    width: "100%",
+    height: "100%",
+    fontSize: 16,
+    color: "#333",
+  },
+  currencyLabel: {
+    color: "#666",
+    fontSize: 16,
+    marginLeft: 5,
   },
   card: {
     flexDirection: "row",
@@ -285,7 +393,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   blueCard: {
-    backgroundColor: "#1b2128",
+    backgroundColor: "#1B2128",
     borderRadius: 15,
     padding: 15,
     width: 180,
@@ -311,7 +419,7 @@ const styles = StyleSheet.create({
   brandLogo: {
     width: 50,
     height: 30,
-    marginRight:15
+    marginRight: 15,
   },
   price: {
     fontSize: 16,
@@ -342,17 +450,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginBottom: 30,
-  },
-  dropdown: {
-    marginVertical: 10,
-    backgroundColor: "#ffffff",
-    borderColor: "#ccc",
-    width:"40%"
-  },
-  dropdownContainer: {
-    backgroundColor: "#ffffff",
-    borderColor: "#ccc",
-    
   },
 });
 
