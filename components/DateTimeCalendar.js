@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Button,
@@ -8,14 +8,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import TestDriveContext from "../context/TestDriveContext";
 
 const DateTimeCalendar = () => {
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [TestDrive, setTestDrive] = useContext(TestDriveContext);
 
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate;
+    const formattedDate = currentDate.toDateString();
     setDate(currentDate);
+    setTestDrive({ ...TestDrive, date: formattedDate });
   };
 
   return (
