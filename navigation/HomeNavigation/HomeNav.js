@@ -24,8 +24,8 @@ const HomeNav = () => {
         initialRouteName="Home"
         screenOptions={{
           headerTransparent: true,
-          headerShown: false,
-          headerTintColor: "transparent",
+          headerShown: true,
+          headerTintColor: "white",
           headerTitle: "",
           headerTitleStyle: {
             fontWeight: "600",
@@ -44,11 +44,9 @@ const HomeNav = () => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={
-            {
-              // headerShown: false,
-            }
-          }
+          options={{
+            headerShown: false,
+          }}
         />
         <Stack.Screen name="All Vehicles" component={VehicleNav} />
         <Stack.Screen name="Test Drive" component={TestDrive} />

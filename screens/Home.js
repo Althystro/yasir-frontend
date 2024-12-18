@@ -30,6 +30,10 @@ const Home = () => {
   const buttonTooltipOpacity = useRef(new Animated.Value(1)).current;
   const navigation = useNavigation();
   const [user, setUser] = useContext(UserContext);
+  const handleLogout = () => {
+    setUser(false);
+    deleteToken();
+  };
   useEffect(() => {
     // Hide button tooltip after 5 seconds
     const timeout = setTimeout(() => {
@@ -107,7 +111,12 @@ const Home = () => {
         {/* Brands categories List */}
 
         {/* All Vehicles Section */}
-
+        {/* <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={handleLogout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity> */}
         <View style={styles.sectionContainer}>
           <TouchableOpacity
             style={styles.allVehiclesCard}
