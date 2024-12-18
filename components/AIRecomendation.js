@@ -153,7 +153,10 @@ const AIRecomendation = ({ setModalVisible }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      showsVerticalScrollIndicator={true}
+    >
       <View style={styles.container}>
         {renderProgressSteps()}
 
@@ -166,6 +169,7 @@ const AIRecomendation = ({ setModalVisible }) => {
               setInputs((prev) => ({ ...prev, [currentQ.key]: text }))
             }
             placeholder={currentQ.placeholder}
+            placeholderTextColor="#9EA3B0"
           />
 
           <View style={styles.navigationButtons}>
@@ -218,14 +222,14 @@ export default AIRecomendation;
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: "white",
+    backgroundColor: "#1B2128",
     borderRadius: 15,
+    minHeight: "100%",
   },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "white",
-    marginTop: 10,
+    backgroundColor: "#1B2128",
     borderRadius: 15,
   },
   progressContainer: {
@@ -234,24 +238,27 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#666",
+    color: "#9EA3B0",
   },
   questionContainer: {
     flex: 1,
     gap: 20,
+    paddingBottom: 80,
   },
   questionText: {
     fontSize: 24,
     fontWeight: "600",
-    color: "#333",
+    color: "#FFFFFF",
     marginBottom: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#2A3441",
     borderRadius: 5,
     padding: 15,
     fontSize: 16,
+    backgroundColor: "#2A3441",
+    color: "#FFFFFF",
   },
   navigationButtons: {
     flexDirection: "row",
@@ -267,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   disabledButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#2A3441",
   },
   resetButton: {
     backgroundColor: "#dc3545",
@@ -276,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#28a745",
   },
   buttonText: {
-    color: "white",
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "500",
   },
@@ -284,8 +291,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 10,
     marginBottom: 20,
+    marginTop: -10,
   },
   stepRow: {
     flexDirection: "row",
@@ -295,11 +303,11 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#2A3441",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
-    borderColor: "#ddd",
+    borderColor: "#3A4451",
   },
   activeStep: {
     backgroundColor: "#007AFF",
@@ -310,17 +318,17 @@ const styles = StyleSheet.create({
     borderColor: "#28a745",
   },
   stepNumber: {
-    color: "#666",
+    color: "#9EA3B0",
     fontSize: 14,
     fontWeight: "600",
   },
   activeStepNumber: {
-    color: "#fff",
+    color: "#FFFFFF",
   },
   stepLine: {
     width: 30,
     height: 2,
-    backgroundColor: "#ddd",
+    backgroundColor: "#2A3441",
     marginHorizontal: 5,
   },
   completedLine: {

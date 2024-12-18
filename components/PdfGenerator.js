@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   detailsContainer: {
+    height: 200,
     width: "100%",
     padding: 10,
     marginVertical: 10,

@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import AnimatedHeader from "../components/AnimatedHeader";
 
-
 const VehicleDetails = ({ route, navigation }) => {
   const { vehicle } = route.params;
   const [downPayment, setDownPayment] = useState("");
@@ -35,11 +34,10 @@ const VehicleDetails = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-
       <AnimatedHeader
         scrollY={scrollY}
-        title={`${vehicle.brand} ${vehicle.model}`}
-        subtitle={vehicle.year}
+        title={`${vehicle.brand} `}
+        // subtitle={vehicle.year}
         backgroundColor="#1B2128"
         textColor="white"
         headerImage={vehicle.image2}
@@ -49,17 +47,36 @@ const VehicleDetails = ({ route, navigation }) => {
           <View style={styles.featuresContainer}>
             <View style={styles.featuresCard}>
               <Ionicons name="car" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Type: {vehicle.type}</Text>
+              <Text style={styles.featuresLabel}>Type</Text>
+              <Text style={styles.featuresText}>{vehicle.type}</Text>
             </View>
             <View style={styles.featuresCard}>
               <Ionicons name="business" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Brand: {vehicle.brand}</Text>
+              <Text style={styles.featuresLabel}>Brand</Text>
+              <Text style={styles.featuresText}>{vehicle.brand}</Text>
             </View>
             <View style={styles.featuresCard}>
               <Ionicons name="calendar" size={24} color="#1B2128" />
-              <Text style={styles.featuresText}>Model: {vehicle.year}</Text>
+              <Text style={styles.featuresLabel}>Year</Text>
+              <Text style={styles.featuresText}>{vehicle.year}</Text>
             </View>
+          </View>
 
+          <View style={styles.descriptionSection}>
+            <View style={styles.infoCard}>
+              <View style={styles.infoHeaderContainer}>
+                <Ionicons name="information-circle" size={24} color="#1B2128" />
+                <Text style={styles.infoTitle}>Description</Text>
+              </View>
+              <Text style={styles.infoText}>{vehicle.description}</Text>
+            </View>
+            <View style={styles.infoCard}>
+              <View style={styles.infoHeaderContainer}>
+                <Ionicons name="speedometer" size={24} color="#1B2128" />
+                <Text style={styles.infoTitle}>Engine</Text>
+              </View>
+              <Text style={styles.infoText}>{vehicle.engine}</Text>
+            </View>
           </View>
 
           <View style={styles.calculatorSection}>
@@ -93,7 +110,6 @@ const VehicleDetails = ({ route, navigation }) => {
               </Text>
             )}
           </View>
-
 
           <View style={styles.priceContainer}>
             <Text style={styles.labelPriceText}>Price:</Text>
@@ -147,7 +163,6 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
   bottomSection: {
-
     flex: 1,
     backgroundColor: "#ffffff",
     borderTopRightRadius: 40,
@@ -169,19 +184,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
     borderRadius: 20,
     width: "31%",
-    height: 90,
+    height: 100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  featuresText: {
+  featuresLabel: {
     fontSize: 12,
-    fontWeight: "600",
+    color: "#666",
+    marginTop: 8,
+  },
+  featuresText: {
+    fontSize: 16,
+    fontWeight: "700",
     color: "#1B2128",
     textAlign: "center",
-    marginTop: 8,
+    marginTop: 4,
     paddingHorizontal: 4,
   },
   calculatorSection: {
@@ -282,5 +302,39 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 4,
+  },
+  descriptionSection: {
+    marginTop: 20,
+    gap: 15,
+  },
+  infoCard: {
+    backgroundColor: "#f8f9fa",
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  infoHeaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    paddingBottom: 8,
+  },
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1B2128",
+    marginLeft: 8,
+  },
+  infoText: {
+    fontSize: 15,
+    color: "#4B5563",
+    lineHeight: 24,
+    letterSpacing: 0.3,
   },
 });

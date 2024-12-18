@@ -1,11 +1,11 @@
 import React from "react";
 import { Animated, StyleSheet, View, Image } from "react-native";
 
-const HEADER_MAX_HEIGHT_WITH_IMAGE = 380;
-const HEADER_MAX_HEIGHT_WITHOUT_IMAGE = 180;
+const HEADER_MAX_HEIGHT = 280;
 const HEADER_MIN_HEIGHT = 85;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-const StaticImageHeader = ({
+const StaticHeader = ({
   scrollY,
   title,
   subtitle,
@@ -17,12 +17,6 @@ const StaticImageHeader = ({
   subtitleStyle,
   headerImage,
 }) => {
-  // Determine header height based on whether there's an image
-  const HEADER_MAX_HEIGHT = headerImage
-    ? HEADER_MAX_HEIGHT_WITH_IMAGE
-    : HEADER_MAX_HEIGHT_WITHOUT_IMAGE;
-  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -41,20 +35,11 @@ const StaticImageHeader = ({
     extrapolate: "clamp",
   });
 
-  const imageHeight = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [200, 0],
-    extrapolate: "clamp",
-  });
-
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
-
-  // Adjust title position based on whether there's an image
-  const titleMarginTop = headerImage ? 40 : 80;
 
   return (
     <View
@@ -62,7 +47,7 @@ const StaticImageHeader = ({
         styles.container,
         {
           backgroundColor,
-          marginTop: headerImage ? 0 : -40,
+          marginTop: -40,
         },
         containerStyle,
       ]}
@@ -80,7 +65,7 @@ const StaticImageHeader = ({
             {
               opacity: headerTitleOpacity,
               color: textColor,
-              marginTop: titleMarginTop,
+              marginTop: 60,
             },
             titleStyle,
           ]}
@@ -101,8 +86,8 @@ const StaticImageHeader = ({
             style={[
               styles.imageContainer,
               {
-                height: imageHeight,
                 opacity: imageOpacity,
+                marginTop: 10,
               },
             ]}
           >
@@ -119,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1B2128",
   },
   header: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     paddingBottom: 20,
   },
@@ -134,16 +119,15 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: "100%",
+    height: 180,
     paddingHorizontal: 20,
-    marginTop: 20,
   },
   headerImage: {
     width: "100%",
     height: "100%",
     borderRadius: 15,
     resizeMode: "contain",
-    alignSelf: "center",
   },
 });
 
-export default StaticImageHeader;
+export default StaticHeader;

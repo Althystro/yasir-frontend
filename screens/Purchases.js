@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,28 +7,99 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  Pressable,
   SafeAreaView,
   Dimensions,
   Animated,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
-import React, { useState, useRef } from "react";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Stepper from "react-native-stepper-ui";
 import StaticImageHeader from "../components/StaticImageHeader";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getMyProfile } from "../api/auth";
+import { getFinancers, createPaymentPlan } from "../api/paymentPlan";
+import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width } = Dimensions.get("window");
 
-const Purchases = ({ route, navigation }) => {
+const Purchases = ({ route }) => {
   const { vehicle } = route.params;
   const [active, setActive] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [downPayment, setDownPayment] = useState("");
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [selectedFinancer, setSelectedFinancer] = useState("");
+  const [financers, setFinancers] = useState([]);
+  const navigation = useNavigation();
 
-  // Step 1: Financing Duration Component
+  useEffect(() => {
+    const fetchFinancers = async () => {
+      const response = await getFinancers();
+      setFinancers(response.financer);
+      if (response.financer.length > 0) {
+        setSelectedFinancer(response.financer[0]);
+      }
+    };
+
+    fetchFinancers();
+  }, []);
+
+  const handleFinish = () => {
+    navigation.navigate("Profile");
+  };
+
+  const handleDownPaymentChange = (text) => {
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setDownPayment(numericValue);
+  };
+
+  const {
+    data: customer,
+    isLoading: isCustomerLoading,
+    error: customerError,
+  } = useQuery({
+    queryKey: ["customer"],
+    queryFn: getMyProfile,
+  });
+
+  console.log(selectedFinancer);
+  const { mutate } = useMutation({
+    mutationKey: ["createPaymentPlan"],
+    mutationFn: () =>
+      createPaymentPlan({
+        customerId: customer.id,
+        vehicleId: vehicle.id,
+        financerId: selectedFinancer.id,
+        totalAmount: vehicle.price - downPayment,
+        lengthMonths: selectedDuration * 12,
+      }),
+    onSuccess: () => {
+      Alert.alert("Purchase Complete!");
+    },
+    onError: () => {
+      Alert.alert("Error", "Failed to create payment plan");
+    },
+  });
+
+  if (isCustomerLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (customerError) {
+    return (
+      <View>
+        <Text>Error loading data</Text>
+      </View>
+    );
+  }
+
   const FinancingDurationStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Select Financing Duration</Text>
@@ -55,25 +127,21 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 2: Down Payment Component
-  const DownPaymentStep = () => (
+  const DownPaymentStep = (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Set Down Payment Amount</Text>
+      <Text style={styles.stepTitle}>Enter Down Payment</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.currencyPrefix}>KD</Text>
         <TextInput
-          style={styles.input}
           value={downPayment}
-          onChangeText={setDownPayment}
-          placeholder="Enter amount"
+          onChangeText={handleDownPaymentChange}
           keyboardType="numeric"
-          placeholderTextColor="#999"
+          placeholder="Enter down payment"
+          style={styles.input}
         />
       </View>
     </View>
   );
 
-  // Step 3: Vehicle Details Component
   const VehicleDetailsStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Vehicle Details</Text>
@@ -98,13 +166,74 @@ const Purchases = ({ route, navigation }) => {
     </View>
   );
 
-  // Step 4: Signature Component
-  const SignatureStep = ({ vehicle }) => {
-    if (!vehicle) {
+  const PaymentPlanStep = ({ vehicle, customer, financers }) => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Payment Plan</Text>
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons
+            name="face-man-profile"
+            size={24}
+            color="#1B2128"
+          />
+          <Text style={styles.detailText}>
+            Name: {customer.firstName} {customer.lastName}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <AntDesign name="car" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Vehicle: {vehicle.brand} {vehicle.model}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons name="finance" size={24} color="#1B2128" />
+          <Picker
+            selectedValue={selectedFinancer}
+            style={styles.detailText}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedFinancer(itemValue)
+            }
+          >
+            {financers.map((financer, index) => (
+              <Picker.Item
+                key={index}
+                label={financer.name}
+                value={`${financer.id}-${financer.name}`}
+              />
+            ))}
+          </Picker>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="calendar-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Length: {selectedDuration * 12} Months
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Icon name="pricetag-outline" size={24} color="#1B2128" />
+          <Text style={styles.detailText}>
+            Total Amount: KD {vehicle.price - downPayment}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const SignatureStep = ({
+    vehicle,
+    customer,
+    downPayment,
+    length,
+    financer,
+  }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+
+    if (!customer) {
       return (
         <View style={styles.stepContainer}>
           <Text style={styles.stepTitle}>
-            Error: Vehicle data not available
+            Error: Customer data not available
           </Text>
         </View>
       );
@@ -129,7 +258,13 @@ const Purchases = ({ route, navigation }) => {
                 <Icon name="close" size={24} color="#1B2128" />
               </TouchableOpacity>
             </View>
-            <PdfGenerator vehicle={vehicle} />
+            <PdfGenerator
+              vehicle={vehicle}
+              customer={customer}
+              downpayment={downPayment}
+              length={length}
+              financer={financer}
+            />
           </View>
         </Modal>
         <TouchableOpacity
@@ -137,41 +272,86 @@ const Purchases = ({ route, navigation }) => {
           onPress={() => setModalVisible(true)}
         >
           <Icon name="create-outline" size={24} color="#FFF" />
-          <Text style={styles.buttonText}>Open Signature</Text>
+          <Text style={styles.signatureButtonText}>Open Signature</Text>
         </TouchableOpacity>
       </View>
     );
   };
 
-  // Step 5: Confirmation Component
   const ConfirmationStep = () => (
     <View style={styles.stepContainer}>
-      <View style={styles.confirmationIconContainer}>
-        <Icon name="checkmark-circle" size={80} color="#1B2128" />
-      </View>
+      <LinearGradient
+        colors={["#1B2128", "#2D3540"]}
+        style={styles.confirmationGradient}
+      >
+        <View style={styles.confirmationIconContainer}>
+          <Icon name="checkmark-circle" size={60} color="#FFFFFF" />
+        </View>
+      </LinearGradient>
       <Text style={styles.confirmationTitle}>Purchase Confirmed!</Text>
+      <Text style={styles.confirmationSubtitle}>
+        Your vehicle purchase has been successfully processed
+      </Text>
+
       <View style={styles.summaryContainer}>
         <View style={styles.summaryRow}>
-          <Icon name="time-outline" size={24} color="#1B2128" />
-          <Text style={styles.summaryText}>
-            Financing Duration: {selectedDuration} Year
-            {selectedDuration > 1 ? "s" : ""}
-          </Text>
+          <Icon name="time-outline" size={20} color="#1B2128" />
+          <View style={styles.summaryTextContainer}>
+            <Text style={styles.summaryLabel}>Financing Duration</Text>
+            <Text style={styles.summaryValue}>
+              {selectedDuration} Year{selectedDuration > 1 ? "s" : ""}
+            </Text>
+          </View>
         </View>
+
         <View style={styles.summaryRow}>
-          <Icon name="cash-outline" size={24} color="#1B2128" />
-          <Text style={styles.summaryText}>Down Payment: KD {downPayment}</Text>
+          <Icon name="cash-outline" size={20} color="#1B2128" />
+          <View style={styles.summaryTextContainer}>
+            <Text style={styles.summaryLabel}>Down Payment</Text>
+            <Text style={styles.summaryValue}>KD {downPayment}</Text>
+          </View>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Icon name="car-outline" size={20} color="#1B2128" />
+          <View style={styles.summaryTextContainer}>
+            <Text style={styles.summaryLabel}>Vehicle</Text>
+            <Text style={styles.summaryValue}>
+              {vehicle.brand} {vehicle.model}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Icon name="calendar-outline" size={20} color="#1B2128" />
+          <View style={styles.summaryTextContainer}>
+            <Text style={styles.summaryLabel}>Year</Text>
+            <Text style={styles.summaryValue}>{vehicle.year}</Text>
+          </View>
         </View>
       </View>
     </View>
   );
 
   const content = [
-    <FinancingDurationStep />,
-    <DownPaymentStep />,
-    <VehicleDetailsStep />,
-    <SignatureStep vehicle={vehicle} />,
-    <ConfirmationStep />,
+    <FinancingDurationStep key="step1" />,
+    DownPaymentStep,
+    <VehicleDetailsStep key="step3" />,
+    <PaymentPlanStep
+      key="step4"
+      vehicle={vehicle}
+      customer={customer}
+      financers={financers}
+    />,
+    <SignatureStep
+      key="step5"
+      vehicle={vehicle}
+      customer={customer}
+      downPayment={downPayment}
+      length={selectedDuration}
+      financer={selectedFinancer}
+    />,
+    <ConfirmationStep key="step6" />,
   ];
 
   return (
@@ -186,54 +366,83 @@ const Purchases = ({ route, navigation }) => {
       />
       <View style={styles.stepperContainer}>
         <View style={styles.contentContainer}>
-          <Stepper
-            active={active}
-            content={content}
-            onBack={() => setActive((p) => p - 1)}
-            onNext={() => setActive((p) => p + 1)}
-            onFinish={() => Alert.alert("Purchase Complete!")}
-            stepStyle={styles.stepStyle}
-            stepTextStyle={styles.stepTextStyle}
-            activeStepStyle={styles.activeStepStyle}
-            activeStepTextStyle={styles.activeStepTextStyle}
-            connectorStyle={styles.connectorStyle}
-            renderNextButton={(handleNext, disabled) => (
+          <View style={styles.stepsContainer}>
+            {content.map((_, index) => (
+              <View key={index} style={styles.stepRow}>
+                <View
+                  style={[
+                    styles.stepCircle,
+                    index === active && styles.activeStep,
+                    index < active && styles.completedStep,
+                  ]}
+                >
+                  {index < active ? (
+                    <Icon name="checkmark" size={16} color="#fff" />
+                  ) : (
+                    <Text
+                      style={[
+                        styles.stepNumber,
+                        index === active && styles.activeStepNumber,
+                      ]}
+                    >
+                      {index + 1}
+                    </Text>
+                  )}
+                </View>
+                {index < content.length - 1 && (
+                  <View
+                    style={[
+                      styles.stepLine,
+                      index < active && styles.completedLine,
+                    ]}
+                  />
+                )}
+              </View>
+            ))}
+          </View>
+
+          <ScrollView
+            style={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {content[active]}
+          </ScrollView>
+
+          <View style={styles.navigationButtons}>
+            <TouchableOpacity
+              style={[styles.navButton, active === 0 && styles.disabledButton]}
+              onPress={() => setActive((p) => p - 1)}
+              disabled={active === 0}
+            >
+              <Text style={[styles.buttonText, styles.previousButtonText]}>
+                Previous
+              </Text>
+            </TouchableOpacity>
+
+            {active === content.length - 1 ? (
               <TouchableOpacity
-                style={[
-                  styles.navigationButton,
-                  styles.nextButton,
-                  disabled && styles.disabledButton,
-                ]}
-                onPress={handleNext}
-                disabled={disabled}
+                style={[styles.navButton, styles.submitButton]}
+                onPress={() => {
+                  Alert.alert("Purchase Complete!");
+                  mutate();
+                  handleFinish();
+                }}
               >
-                <Text style={styles.navigationButtonText}>
-                  {active === content.length - 1 ? "Finish" : "Next"}
+                <Text style={[styles.buttonText, styles.nextButtonText]}>
+                  Complete Purchase
                 </Text>
-                <Icon name="chevron-forward" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[styles.navButton, styles.nextButton]}
+                onPress={() => setActive((p) => p + 1)}
+              >
+                <Text style={[styles.buttonText, styles.nextButtonText]}>
+                  Next
+                </Text>
               </TouchableOpacity>
             )}
-            renderPreviousButton={(handlePrev, disabled) =>
-              active > 0 ? (
-                <TouchableOpacity
-                  style={[
-                    styles.navigationButton,
-                    styles.backButton,
-                    disabled && styles.disabledButton,
-                  ]}
-                  onPress={handlePrev}
-                  disabled={disabled}
-                >
-                  <Icon name="chevron-back" size={24} color="#1B2128" />
-                  <Text
-                    style={[styles.navigationButtonText, styles.backButtonText]}
-                  >
-                    Back
-                  </Text>
-                </TouchableOpacity>
-              ) : null
-            }
-          />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -244,7 +453,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1B2128",
-    marginTop: -60,
+    marginTop: 0,
   },
   stepperContainer: {
     flex: 1,
@@ -252,7 +461,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: -60,
+    marginTop: 50,
     paddingTop: 20,
     paddingBottom: 20,
   },
@@ -370,31 +579,49 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 8,
   },
+  signatureButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 15,
+    textAlign: "center",
+  },
   buttonText: {
     color: "white",
     fontWeight: "600",
     fontSize: 15,
     textAlign: "center",
   },
-  confirmationIconContainer: {
-    backgroundColor: "#F5F7FA",
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  confirmationGradient: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    alignSelf: "center",
+    marginBottom: 24,
+  },
+  confirmationIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   confirmationTitle: {
-    fontSize: 26,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "700",
     color: "#1B2128",
-    marginVertical: 20,
     textAlign: "center",
+    marginBottom: 8,
+  },
+  confirmationSubtitle: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 32,
   },
   summaryContainer: {
-    width: "100%",
-    gap: 15,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    gap: 16,
   },
   summaryRow: {
     flexDirection: "row",
@@ -402,14 +629,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F7FA",
     padding: 16,
     borderRadius: 12,
-    marginBottom: 12,
     borderWidth: 1,
     borderColor: "#E5E9F0",
   },
-  summaryText: {
-    fontSize: 16,
-    color: "#1B2128",
+  summaryTextContainer: {
+    marginLeft: 12,
     flex: 1,
+  },
+  summaryLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+  },
+  summaryValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1B2128",
   },
   stepStyle: {
     backgroundColor: "#F5F7FA",
@@ -480,6 +715,8 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     backgroundColor: "#1B2128",
+    borderWidth: 1.5,
+    borderColor: "#E5E9F0",
   },
   backButton: {
     backgroundColor: "#FFFFFF",
@@ -487,12 +724,13 @@ const styles = StyleSheet.create({
     borderColor: "#E5E9F0",
   },
   navigationButtonText: {
-    fontSize: 16,
+    fontSize: 30,
     fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.5,
   },
   backButtonText: {
+    fontSize: 30,
     color: "#1B2128",
   },
   disabledButton: {
@@ -500,10 +738,101 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginBottom: 20,
+    display: "flex",
+    flexDirection: "column",
   },
-  stepperButton: {
-    marginTop: 15,
+  scrollContent: {
+    flex: 1,
+    marginBottom: 10,
+  },
+  stepsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+    marginBottom: 20,
+    marginTop: 10,
+    backgroundColor: "#F5F5F5",
+  },
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stepCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#F5F7FA",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#DFE4F0",
+  },
+  activeStep: {
+    backgroundColor: "#1B2128",
+    borderColor: "#1B2128",
+  },
+  completedStep: {
+    backgroundColor: "#28a745",
+    borderColor: "#28a745",
+  },
+  stepNumber: {
+    color: "#666",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  activeStepNumber: {
+    color: "#FFFFFF",
+  },
+  stepLine: {
+    width: 30,
+    height: 2,
+    backgroundColor: "#DFE4F0",
+    marginHorizontal: 5,
+  },
+  completedLine: {
+    backgroundColor: "#28a745",
+  },
+  navigationButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    backgroundColor: "#F5F5F5",
+  },
+  navButton: {
+    flex: 1,
+    backgroundColor: "#F5F7FA",
+    padding: 15,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#DFE4F0",
+  },
+  nextButton: {
+    backgroundColor: "#1B2128",
+    borderColor: "#1B2128",
+  },
+  submitButton: {
+    backgroundColor: "#28a745",
+    borderColor: "#28a745",
+  },
+  disabledButton: {
+    backgroundColor: "#F5F7FA",
+    opacity: 0.5,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
+  previousButtonText: {
+    color: "#1B2128",
+  },
+  nextButtonText: {
+    color: "#FFFFFF",
   },
 });
 
