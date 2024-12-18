@@ -1,0 +1,42 @@
+{
+  "name": "react-native-images-to-pdf",
+  "version": "0.2.1",
+  "summary": "Easily generate PDF files from images in React Native.",
+  "homepage": "https://github.com/Canciller/react-native-images-to-pdf#readme",
+  "license": "MIT",
+  "authors": "canciller <lopez.ojeda.gabriel.emilio@gmail.com> (https://github.com/Canciller)",
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source": {
+    "git": "https://github.com/Canciller/react-native-images-to-pdf.git",
+    "tag": "0.2.1"
+  },
+  "source_files": "ios/**/*.{h,m,mm,swift}",
+  "dependencies": {
+    "React-Core": [
+
+    ],
+    "React-Codegen": [
+
+    ],
+    "RCT-Folly": [
+
+    ],
+    "RCTRequired": [
+
+    ],
+    "RCTTypeSafety": [
+
+    ],
+    "ReactCommon/turbomodule/core": [
+
+    ]
+  },
+  "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -DRCT_NEW_ARCH_ENABLED=1",
+  "pod_target_xcconfig": {
+    "HEADER_SEARCH_PATHS": "\"$(PODS_ROOT)/boost\"",
+    "OTHER_CPLUSPLUSFLAGS": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+    "CLANG_CXX_LANGUAGE_STANDARD": "c++17"
+  }
+}
