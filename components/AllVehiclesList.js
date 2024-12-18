@@ -15,10 +15,14 @@ import getAllVehicles from "../api/vehicles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+
 import AnimatedHeader from "./AnimatedHeader";
 import DropDownPicker from "react-native-dropdown-picker";
 
 import carBrands from "../data/carBrands";
+
+import SimpleAnimatedHeader from "./SimpleAnimatedHeader";
+
 
 const VehicleCard = ({ item }) => {
   const navigation = useNavigation();
@@ -191,7 +195,7 @@ const AllVehiclesList = () => {
 
   return (
     <View style={styles.container}>
-      <AnimatedHeader
+      <SimpleAnimatedHeader
         scrollY={scrollY}
         title="Offers"
         backgroundColor="#1a1a1a"
@@ -208,7 +212,7 @@ const AllVehiclesList = () => {
           )}
           scrollEventThrottle={16}
         />
-      </AnimatedHeader>
+      </SimpleAnimatedHeader>
     </View>
   );
 };
