@@ -6,6 +6,7 @@ import {
   Image,
   FlatList,
   Dimensions,
+  Platform,
 } from "react-native";
 import React, { useState, useMemo } from "react";
 import { getAllVehicles } from "../api/vehicles";
@@ -163,12 +164,21 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginLeft: 20,
-    fontSize: 30,
-    fontWeight: "Bold",
-    marginBottom: 20,
-    color: "#1a1a1a",
+    fontSize: 32,
+    fontWeight: "700",
+    marginBottom: 24,
+    color: "#1b2128",
     letterSpacing: 0.5,
-    fontFamily: "",
+    // fontFamily: "Poppins-Bold",
+    fontFamily: Platform.select({
+      android: "Inter_900Black",
+      ios: "Inter-Black",
+    }),
+    textTransform: "capitalize",
+    lineHeight: 38,
+    textShadowColor: "rgba(0, 0, 0, 0.1)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   container: {
     width: 280,
