@@ -7,6 +7,7 @@ import TestDrive from "../../components/TestDrive";
 import AIRecomendation from "../../components/AIRecomendation";
 import VehicleDetails from "../../screens/VehicleDetails";
 import PdfGenerator from "../../components/PdfGenerator";
+import FilteredVehicleList from "../../screens/FilteredVehicleList"; // Import the new screen
 
 import { Ionicons } from "@expo/vector-icons";
 import Purchases from "../../screens/Purchases";
@@ -24,7 +25,8 @@ const HomeNav = () => {
         initialRouteName="Home"
         screenOptions={{
           headerTransparent: true,
-          headerTintColor: "transparent",
+          headerShown: true,
+          headerTintColor: "white",
           headerTitle: "",
           headerTitleStyle: {
             fontWeight: "600",
@@ -43,11 +45,9 @@ const HomeNav = () => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={
-            {
-              // headerShown: false,
-            }
-          }
+          options={{
+            headerShown: false,
+          }}
         />
         <Stack.Screen name="All Vehicles" component={VehicleNav} />
         <Stack.Screen name="Test Drive" component={TestDrive} />
@@ -55,7 +55,15 @@ const HomeNav = () => {
         <Stack.Screen name="Vehicle Details" component={VehicleDetails} />
         <Stack.Screen name="Pdf Generator" component={PdfGenerator} />
         <Stack.Screen name="Purchases" component={Purchases} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FilteredVehicleList"
+          component={FilteredVehicleList}
+        />
       </Stack.Navigator>
     </>
   );

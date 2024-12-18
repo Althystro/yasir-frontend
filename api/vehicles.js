@@ -16,5 +16,13 @@ const getVehicleById = async (id) => {
     console.log(error);
   }
 };
+const getAllDealerships = async () => {
+  try {
+    const res = await instance.get("/vehicle/dealership");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export { getAllVehicles, getVehicleById };
+export { getAllVehicles, getVehicleById, getAllDealerships };

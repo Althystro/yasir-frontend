@@ -1,5 +1,13 @@
 import React from "react";
-import { Animated, StyleSheet, View, Image } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const HEADER_MAX_HEIGHT_WITH_IMAGE = 380;
 const HEADER_MAX_HEIGHT_WITHOUT_IMAGE = 180;
@@ -18,6 +26,8 @@ const AnimatedHeader = ({
   subtitleStyle,
   headerImage,
 }) => {
+  const navigation = useNavigation();
+
   // Determine header height based on whether there's an image
   const HEADER_MAX_HEIGHT = headerImage
     ? HEADER_MAX_HEIGHT_WITH_IMAGE
@@ -110,6 +120,14 @@ const AnimatedHeader = ({
             <Image source={{ uri: headerImage }} style={styles.headerImage} />
           </Animated.View>
         )}
+        {!headerImage && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Profile")}
+            style={styles.profileButton}
+          >
+            <Ionicons name="person" size={28} color="white" />
+          </TouchableOpacity>
+        )}
       </Animated.View>
 
       <Animated.ScrollView
@@ -165,6 +183,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
     paddingTop: 20,
+  },
+  profileButton: {
+    position: "absolute",
+    right: 40,
+    bottom: 40,
   },
 });
 

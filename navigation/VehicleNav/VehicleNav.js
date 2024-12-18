@@ -5,6 +5,7 @@ import VehicleDetails from "../../screens/VehicleDetails";
 import Purchases from "../../screens/Purchases";
 import { Ionicons } from "@expo/vector-icons";
 import Profile from "../../screens/Profile"; // Import the Profile screen
+import Home from "../../screens/Home";
 
 const Stack = createStackNavigator();
 
@@ -13,6 +14,7 @@ const VehicleNav = () => {
     <Stack.Navigator
       initialRouteName="AllVehiclesList"
       screenOptions={{
+        headerShown: false,
         headerTransparent: true,
         headerTintColor: "transparent",
         headerTitle: "",
@@ -48,7 +50,18 @@ const VehicleNav = () => {
       <Stack.Screen
         name="Profile"
         component={Profile}
-        options={{ title: "Profile" }}
+        options={{
+          title: "Profile",
+          headerLeft: () => null, // Remove the back button on the Profile screen
+        }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          title: "Home",
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );

@@ -12,7 +12,7 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
-  ScrollView,
+  Animated,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateProfile } from "../api/auth";
@@ -23,6 +23,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { getPaymentPlanByUserId } from "../api/paymentPlan";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import SimpleAnimatedHeader from "../components/SimpleAnimatedHeader";
 
 export default function ProfileScreen() {
   const [user, setUser] = useContext(UserContext);
@@ -30,6 +31,7 @@ export default function ProfileScreen() {
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const queryClient = useQueryClient();
+  const scrollY = new Animated.Value(0);
 
   const {
     data: profile,
@@ -144,86 +146,108 @@ export default function ProfileScreen() {
   );
 
   const renderPaymentPlan = (plan) => {
+    const formatCurrency = (amount) => {
+      if (typeof amount !== "number") return "0.00";
+      return amount.toFixed(2);
+    };
+
     return (
       <View key={plan.paymentPlanId} style={styles.paymentPlanContainer}>
-        <View style={styles.planRow}>
-          <Icon name="person" size={16} />
-          <Text style={styles.planTitle}> Customer Name: </Text>
-          <Text style={styles.planText}>
-            {profile.firstName} {profile.lastName}
-          </Text>
+        <View style={styles.planHeader}>
+          <MaterialIcons name="directions-car" size={24} color="#1B2128" />
+          <Text style={styles.planHeaderText}>{plan.vehicleModel}</Text>
         </View>
-        <View style={styles.planRow}>
-          <Icon name="account-balance" size={16} />
-          <Text style={styles.planTitle}> Financer Name: </Text>
-          <Text style={styles.planText}>{plan.financerName}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="attach-money" size={16} />
-          <Text style={styles.planTitle}> Installment Amount: </Text>
-          <Text style={styles.planText}>
-            {plan.installmentAmount.toFixed(2)}
-          </Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="calendar-today" size={16} />
-          <Text style={styles.planTitle}> Length (Months): </Text>
-          <Text style={styles.planText}>{plan.lengthMonths}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="info" size={16} />
-          <Text style={styles.planTitle}> Status: </Text>
-          <Text style={styles.planText}>{plan.status}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="attach-money" size={16} />
-          <Text style={styles.planTitle}> Total Amount: </Text>
-          <Text style={styles.planText}>{plan.totalAmount}</Text>
-        </View>
-        <View style={styles.planRow}>
-          <Icon name="directions-car" size={16} />
-          <Text style={styles.planTitle}> Vehicle Model: </Text>
-          <Text style={styles.planText}>{plan.vehicleModel}</Text>
+
+        <View style={styles.planDivider} />
+
+        <View style={styles.planDetailsContainer}>
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Customer</Text>
+              <Text style={styles.planDetailValue}>
+                {profile.firstName} {profile.lastName}
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Financer</Text>
+              <Text style={styles.planDetailValue}>{plan.financerName}</Text>
+            </View>
+          </View>
+
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Monthly Payment</Text>
+              <Text style={styles.planDetailValue}>
+                KD {formatCurrency(plan.installmentAmount)}
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Total Amount</Text>
+              <Text style={styles.planDetailValue}>
+                KD {formatCurrency(plan.totalAmount)}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.planDetailRow}>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Duration</Text>
+              <Text style={styles.planDetailValue}>
+                {plan.lengthMonths} Months
+              </Text>
+            </View>
+            <View style={styles.planDetailItem}>
+              <Text style={styles.planDetailLabel}>Status</Text>
+              <Text style={[styles.planDetailValue, styles.statusText]}>
+                {plan.status}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          style={styles.headerButton}
-        >
-          <Feather name="edit" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.headerTitle}>
-            Welcome back {profile.firstName}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={handleLogout} style={styles.headerButton}>
-          <Feather name="log-out" size={24} color="#fff" />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <SimpleAnimatedHeader
+        scrollY={scrollY}
+        title={`Welcome back ${profile.firstName}`}
+        backgroundColor="#1B2128"
+      >
+        <View style={styles.content}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              source={{
+                uri:
+                  profile.image ||
+                  "https://png.pngtree.com/png-clipart/20220719/original/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_8385663.png",
+              }}
+              style={styles.profileImage}
+            />
+            <Text style={styles.userName}>
+              {profile.firstName + " " + profile.lastName}
+            </Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={[styles.actionButton, styles.editButton]}
+              >
+                <Feather name="edit" size={24} color="#1B2128" />
+                <Text style={styles.actionButtonText}>Edit Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={[styles.actionButton, styles.logoutButton]}
+              >
+                <Feather name="log-out" size={24} color="#DC3545" />
+                <Text style={[styles.actionButtonText, { color: "#DC3545" }]}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-      <View style={styles.content}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            source={{
-              uri:
-                profile.image ||
-                "https://png.pngtree.com/png-clipart/20220719/original/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_8385663.png",
-            }}
-            style={styles.profileImage}
-          />
-          <Text style={styles.userName}>
-            {profile.firstName + " " + profile.lastName}
-          </Text>
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.infoSection}>
             {renderProfileInfo("mail", "Email", profile.email)}
             {renderProfileInfo("card", "Civil ID", profile.civilId)}
@@ -232,8 +256,8 @@ export default function ProfileScreen() {
             {paymentPlansData &&
               paymentPlansData.map((plan) => renderPaymentPlan(plan))}
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </SimpleAnimatedHeader>
 
       <Modal
         animationType="slide"
@@ -282,7 +306,7 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -290,33 +314,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1B2128",
-    marginTop: -40,
-  },
-  header: {
-    flexDirection: "row",
-    backgroundColor: "#1B2128",
-    paddingTop: 60,
-    paddingBottom: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 5,
-    marginHorizontal: "15%",
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: "white",
-    opacity: 0.9,
+    marginTop: 40,
   },
   content: {
     flex: 1,
     backgroundColor: "#ffffff",
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
     paddingHorizontal: 20,
   },
   profileImageContainer: {
@@ -364,35 +366,63 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   paymentPlanContainer: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    marginVertical: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowRadius: 3.84,
+    elevation: 5,
+    overflow: "hidden",
   },
-  planRow: {
+  planHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    padding: 16,
+    backgroundColor: "#f8f9fa",
   },
-  planTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
+  planHeaderText: {
+    fontSize: 18,
+    fontWeight: "600",
     color: "#1B2128",
+    marginLeft: 10,
   },
-  planText: {
+  planDivider: {
+    height: 1,
+    backgroundColor: "#e1e1e1",
+    marginHorizontal: 16,
+  },
+  planDetailsContainer: {
+    padding: 16,
+  },
+  planDetailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  planDetailItem: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  planDetailLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  planDetailValue: {
     fontSize: 16,
     color: "#1B2128",
-    marginLeft: 5,
+    fontWeight: "500",
+  },
+  statusText: {
+    color: "#28a745",
+    fontWeight: "600",
   },
   iconContainer: {
     width: 40,
@@ -420,35 +450,32 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 10,
-    marginTop: 30,
-    marginBottom: 30,
+    width: "100%",
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
-  button: {
-    flex: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    minWidth: 130,
+    justifyContent: "center",
   },
-  updateButton: {
-    backgroundColor: "#1B2128",
+  editButton: {
+    borderColor: "#1B2128",
+    backgroundColor: "#ffffff",
   },
   logoutButton: {
-    backgroundColor: "#DC3545",
+    borderColor: "#DC3545",
+    backgroundColor: "#ffffff",
   },
-  buttonText: {
-    color: "#ffffff",
+  actionButtonText: {
+    marginLeft: 8,
     fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
+    fontWeight: "500",
+    color: "#1B2128",
   },
   modalContainer: {
     flex: 1,

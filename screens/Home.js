@@ -20,6 +20,8 @@ import AIRecomendation from "../components/AIRecomendation";
 import AnimatedHeader from "../components/AnimatedHeader";
 import UserContext from "../context/UserContext";
 import { deleteToken } from "../api/storage";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDealerships } from "../api/vehicles";
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,9 +33,20 @@ const Home = () => {
   const navigation = useNavigation();
   const [user, setUser] = useContext(UserContext);
   const handleLogout = () => {
-    deleteToken();
     setUser(false);
+    deleteToken();
   };
+  const {
+    data: dealerships,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["dealerships"],
+    queryFn: getAllDealerships,
+  });
+
+  console.log(dealerships);
+
   useEffect(() => {
     // Hide button tooltip after 5 seconds
     const timeout = setTimeout(() => {
@@ -85,6 +98,14 @@ const Home = () => {
     }
   }, [modalVisible]);
 
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading dealerships</Text>;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <AnimatedHeader
@@ -94,29 +115,52 @@ const Home = () => {
         backgroundColor="#1B2128"
         textColor="white"
       >
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <Icon
-            name="magnify"
-            size={24}
-            color="#1B2128"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            placeholder="Search"
-            style={styles.searchInput}
-            value={searchInput}
-          />
+        <View>
+          <PopularCars carosel={true} />
         </View>
-        {/* Brands categories List */}
+        {/* Add Featured Categories */}
+        <View style={styles.sectionContainer}>
+          {/* <Text style={styles.sectionTitle}>Featured Categories</Text>
+          <View style={styles.categoriesContainer}>
+            {categories.map((category, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.categoryCard}
+                onPress={() =>
+                  navigation.navigate("All Vehicles", { filter: category.name })
+                }
+              >
+                <Icon name={category.icon} size={32} color="#fff" />
+                <Text style={styles.categoryText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View> */}
+
+          <View style={styles.categoriesContainer}>
+            {dealerships.dealerships.map((dealership) => (
+              <TouchableOpacity
+                key={dealership.id}
+                style={styles.categoryCard}
+                onPress={() =>
+                  navigation.navigate("FilteredVehicleList", {
+                    vehicles: dealership.vehicles, // Assuming each dealership has a `vehicles` property
+                  })
+                }
+              >
+                <Icon name="car" size={32} color="#fff" />
+                <Text style={styles.categoryText}>{dealership.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
         {/* All Vehicles Section */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.button, styles.logoutButton]}
           onPress={handleLogout}
         >
           <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={styles.sectionContainer}>
           <TouchableOpacity
             style={styles.allVehiclesCard}
@@ -132,9 +176,9 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        <View>
+        {/* <View>
           <PopularCars carosel={true} />
-        </View>
+        </View> */}
 
         <View style={{ height: 100 }} />
       </AnimatedHeader>
@@ -231,8 +275,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1B2128",
+    backgroundColor: "#fff",
     width: "100%",
+    height: "100%",
     marginTop: -40,
   },
   sectionContainer: {
@@ -472,5 +517,48 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: "#FFFFFF",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 15,
+  },
+  categoriesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  categoryCard: {
+    width: "48%",
+    backgroundColor: "#2A3441",
+    borderRadius: 15,
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 100,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  categoryText: {
+    color: "#fff",
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: "#333",
+    borderRadius: 5,
   },
 });
