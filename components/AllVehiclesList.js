@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Animated,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,22 +16,46 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import AnimatedHeader from "./AnimatedHeader";
+import DropDownPicker from "react-native-dropdown-picker";
+
+import carBrands from "../data/carBrands";
 
 const VehicleCard = ({ item }) => {
   const navigation = useNavigation();
+
+  const brand = carBrands.find((brand) => item.brand.toLowerCase() === brand.brand.toLowerCase());
+
 
   return (
     <TouchableOpacity
       style={styles.card}
       onPress={() => navigation.navigate("Vehicle Details", { vehicle: item })}
     >
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.model}>{item.model}</Text>
-      <View style={styles.details}>
-        <Text style={styles.seats}>{item.brand}</Text>
-        <Text style={styles.price}>KD {item.price.toLocaleString()}</Text>
+      <View style={styles.blueCard}>
+        <View style={styles.topRow}>
+          <Text style={styles.carName}>{item.model}</Text>
+        
+          <Image
+            source={{ uri: brand.logo }}
+            style={styles.brandLogo}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.detailRow}>
+          <Icon
+            name="pricetag-outline"
+            size={20}
+            color="gray"
+            style={styles.icon}
+          />
+          <Text style={styles.price}>{item.price.toLocaleString()} KD</Text>
+        </View>
       </View>
-      <Text style={styles.included}>Incl. 500 free kilometers</Text>
+      <Image
+        source={{ uri: item.image }}
+        style={styles.carImage}
+        resizeMode="contain"
+      />
     </TouchableOpacity>
   );
 };
@@ -52,9 +77,18 @@ const AllVehiclesList = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [filteredVehicles, setFilteredVehicles] = useState([]);
 
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false); // Dropdown state
+  const [brandItems, setBrandItems] = useState([]); // Dropdown items
+
   useEffect(() => {
     if (vehiclesResponse && vehiclesResponse.vehicles) {
       setFilteredVehicles(vehiclesResponse.vehicles);
+
+      // Extract unique brands for the dropdown picker
+      const uniqueBrands = [
+        ...new Set(vehiclesResponse.vehicles.map((vehicle) => vehicle.brand)),
+      ].map((brand) => ({ label: brand, value: brand }));
+      setBrandItems([{ label: "All Brands", value: "" }, ...uniqueBrands]);
     }
   }, [vehiclesResponse]);
 
@@ -108,7 +142,8 @@ const AllVehiclesList = () => {
       />
 
       <View style={styles.filterContainer}>
-        <Picker
+        {/* This needs to be changed */}
+        {/* <Picker
           selectedValue={selectedBrand}
           style={styles.picker}
           onValueChange={(itemValue) => setSelectedBrand(itemValue)}
@@ -117,7 +152,19 @@ const AllVehiclesList = () => {
           {brands.map((brand, index) => (
             <Picker.Item key={index} label={brand} value={brand} />
           ))}
-        </Picker>
+        </Picker> */}
+
+<DropDownPicker
+          open={brandDropdownOpen}
+          value={selectedBrand}
+          items={brandItems}
+          setOpen={setBrandDropdownOpen}
+          setValue={setSelectedBrand}
+          setItems={setBrandItems}
+          placeholder="All Brands"
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownContainer}
+        />
 
         <TextInput
           style={styles.priceInput}
@@ -169,7 +216,7 @@ const AllVehiclesList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    backgroundColor: "#fff",
   },
   header: {
     backgroundColor: "#1B2128",
@@ -207,11 +254,11 @@ const styles = StyleSheet.create({
     marginBottom: -20,
     width: "100%",
   },
-  picker: {
-    flex: 2,
-    resizeMode: "contain",
-    width: "100%",
-  },
+  // picker: {
+  //   flex: 2,
+  //   resizeMode: "contain",
+  //   width: "100%",
+  // },
   priceInput: {
     flex: 1,
     borderWidth: 1,
@@ -224,49 +271,84 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   card: {
-    backgroundColor: "rgba(211, 211, 211, 0.4)",
-    borderRadius: 12,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    shadowColor: "rgba(211, 211, 211, 0.6)",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.6,
-    shadowRadius: 2,
-    elevation: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    padding: 10,
+    shadowColor: "#000",
+    shadowRadius: 5,
+    elevation: 3,
+    position: "relative",
   },
-  image: {
-    width: "100%",
-    height: 200,
-    borderRadius: 12,
-    resizeMode: "contain",
+  blueCard: {
+    backgroundColor: "#1b2128",
+    borderRadius: 15,
+    padding: 15,
+    width: 180,
+    height: 160,
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "relative",
+    marginRight: -55,
+    zIndex: 1,
   },
-  model: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  details: {
+  topRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
   },
-  seats: {
-    fontSize: 16,
+  carName: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "white",
+  },
+  brandLogo: {
+    width: 50,
+    height: 30,
+    marginRight:15
   },
   price: {
     fontSize: 16,
+    color: "#708090",
     fontWeight: "bold",
+    marginRight: 50,
+    marginBottom: 30,
+  },
+  detailRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+  },
+  carImage: {
+    width: 250,
+    height: 200,
+    borderRadius: 15,
+    position: "relative",
+    zIndex: 2,
   },
   included: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: 5,
     color: "gray",
-  },
-  message: {
+    fontSize: 12,
+    fontStyle: "italic",
     textAlign: "center",
-    marginTop: 20,
-    fontSize: 18,
+  },
+  icon: {
+    marginBottom: 30,
+  },
+  dropdown: {
+    marginVertical: 10,
+    backgroundColor: "#ffffff",
+    borderColor: "#ccc",
+    width:"40%"
+  },
+  dropdownContainer: {
+    backgroundColor: "#ffffff",
+    borderColor: "#ccc",
+    
   },
 });
 
