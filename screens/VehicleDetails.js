@@ -36,8 +36,8 @@ const VehicleDetails = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <AnimatedHeader
         scrollY={scrollY}
-        title={`${vehicle.brand} `}
-        // subtitle={vehicle.year}
+        title={`${vehicle.brand} ${vehicle.model}`}
+        subtitle={vehicle.name}
         backgroundColor="#1B2128"
         textColor="white"
         headerImage={vehicle.image2}
