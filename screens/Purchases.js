@@ -159,7 +159,7 @@ const Purchases = ({ route }) => {
           <Icon name="calendar-outline" size={24} color="#1B2128" />
           <Text style={styles.detailText}>Year: {vehicle.year}</Text>
         </View>
-        <View style={styles.detailRow}>
+        <View style={[styles.detailRow, styles.lastDetailRow]}>
           <Icon name="pricetag-outline" size={24} color="#1B2128" />
           <Text style={styles.detailText}>Price: KD {vehicle.price}</Text>
         </View>
@@ -199,6 +199,7 @@ const Purchases = ({ route }) => {
               <Text style={styles.dropdownButtonText}>
                 {selectedFinancer ? selectedFinancer.name : "Select Financer"}
               </Text>
+              <Icon name="chevron-down" size={20} color="#1B2128" />
             </TouchableOpacity>
           </View>
           <View style={styles.detailRow}>
@@ -207,7 +208,7 @@ const Purchases = ({ route }) => {
               Length: {selectedDuration * 12} Months
             </Text>
           </View>
-          <View style={styles.detailRow}>
+          <View style={[styles.detailRow, styles.lastDetailRow]}>
             <Icon name="pricetag-outline" size={24} color="#1B2128" />
             <Text style={styles.detailText}>
               Total Amount: KD {vehicle.price - downPayment}
@@ -541,12 +542,16 @@ const styles = StyleSheet.create({
   durationButton: {
     width: "48%",
     padding: 16,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: "white",
     borderRadius: 12,
     alignItems: "center",
     marginBottom: 12,
     borderWidth: 1,
     borderColor: "#E5E9F0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   selectedButton: {
     backgroundColor: "#1B2128",
@@ -564,12 +569,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    backgroundColor: "#F5F7FA",
+    backgroundColor: "white",
     borderRadius: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: "#E5E9F0",
     marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   currencyPrefix: {
     fontSize: 16,
@@ -585,21 +594,19 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     width: "100%",
-    gap: 15,
+    gap: 0,
   },
   detailRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F7FA",
     padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#E5E9F0",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E9F0",
   },
   detailText: {
     fontSize: 16,
     color: "#1B2128",
+    marginLeft: 12,
     flex: 1,
   },
   modalView: {
@@ -667,19 +674,15 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   summaryContainer: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    padding: 16,
-    gap: 16,
+    width: "100%",
+    gap: 0,
   },
   summaryRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F7FA",
     padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E5E9F0",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E9F0",
   },
   summaryTextContainer: {
     marginLeft: 12,
@@ -886,9 +889,11 @@ const styles = StyleSheet.create({
   dropdownButton: {
     flex: 1,
     height: 40,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 10,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: "white",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#E5E9F0",
@@ -937,6 +942,9 @@ const styles = StyleSheet.create({
   },
   selectedDropdownItemText: {
     color: "#FFFFFF",
+  },
+  lastDetailRow: {
+    borderBottomWidth: 0,
   },
 });
 

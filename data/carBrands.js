@@ -1,16 +1,29 @@
 const carBrands = [
-    { id: 1, brandName: "Porsche", brandIcon: "car" },
-    { id: 2, brandName: "Toyota", brandIcon: "car" },
-    { id: 3, brandName: "Ford", brandIcon: "car" },
-    { id: 4, brandName: "Mercedes", brandIcon: "car" },
-    { id: 5, brandName: "BMW", brandIcon: "car" },
-    { id: 6, brandName: "Audi", brandIcon: "car" },
-    { id: 7, brandName: "Chevrolet", brandIcon: "car" },
-    { id: 8, brandName: "Tesla", brandIcon: "car" },
-  ];
+  {
+    id: 1,
+    brand: "Toyota",
+    logo: "https://www.carlogos.org/car-logos/toyota-logo-2005-download.png",
+  },
+  {
+    id: 2,
+    brand: "Ford",
+    logo: "https://www.carlogos.org/car-logos/ford-logo-2017-download.png",
+  },
+  {
+    id: 3,
+    brand: "Mercedes-Benz",
+    logo: "https://cdn.freebiesupply.com/logos/large/2x/mercedes-benz-9-logo-png-transparent.png",
+  },
+  {
+    id: 4,
+    brand: "Chevrolet",
+    logo: "https://www.carlogos.org/logo/Chevrolet-logo-2013-2560x1440.png",
+  },
+  {
+    id: 5,
+    brand: "Porsche",
+    logo: "https://www.carlogos.org/car-logos/porsche-logo-2014-full-download.png",
+  },
+];
 
-
-export default carBrands
-
-
-  
+export default carBrands;
