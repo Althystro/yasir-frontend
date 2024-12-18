@@ -7,6 +7,7 @@ import TestDrive from "../../components/TestDrive";
 import AIRecomendation from "../../components/AIRecomendation";
 import VehicleDetails from "../../screens/VehicleDetails";
 import PdfGenerator from "../../components/PdfGenerator";
+import FilteredVehicleList from "../../screens/FilteredVehicleList"; // Import the new screen
 
 import { Ionicons } from "@expo/vector-icons";
 import Purchases from "../../screens/Purchases";
@@ -58,6 +59,10 @@ const HomeNav = () => {
           name="Profile"
           component={ProfileScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FilteredVehicleList"
+          component={FilteredVehicleList}
         />
       </Stack.Navigator>
     </>

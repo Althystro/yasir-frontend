@@ -20,13 +20,8 @@ import AIRecomendation from "../components/AIRecomendation";
 import AnimatedHeader from "../components/AnimatedHeader";
 import UserContext from "../context/UserContext";
 import { deleteToken } from "../api/storage";
-
-const categories = [
-  { name: "Luxury", icon: "car-sports" },
-  { name: "SUVs", icon: "car-estate" },
-  { name: "Electric", icon: "car-electric" },
-  { name: "Family", icon: "car-side" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getAllDealerships } from "../api/vehicles";
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -41,6 +36,17 @@ const Home = () => {
     setUser(false);
     deleteToken();
   };
+  const {
+    data: dealerships,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["dealerships"],
+    queryFn: getAllDealerships,
+  });
+
+  console.log(dealerships);
+
   useEffect(() => {
     // Hide button tooltip after 5 seconds
     const timeout = setTimeout(() => {
@@ -92,6 +98,14 @@ const Home = () => {
     }
   }, [modalVisible]);
 
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading dealerships</Text>;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <AnimatedHeader
@@ -106,7 +120,7 @@ const Home = () => {
         </View>
         {/* Add Featured Categories */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Featured Categories</Text>
+          {/* <Text style={styles.sectionTitle}>Featured Categories</Text>
           <View style={styles.categoriesContainer}>
             {categories.map((category, index) => (
               <TouchableOpacity
@@ -118,6 +132,23 @@ const Home = () => {
               >
                 <Icon name={category.icon} size={32} color="#fff" />
                 <Text style={styles.categoryText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View> */}
+
+          <View style={styles.categoriesContainer}>
+            {dealerships.dealerships.map((dealership) => (
+              <TouchableOpacity
+                key={dealership.id}
+                style={styles.categoryCard}
+                onPress={() =>
+                  navigation.navigate("FilteredVehicleList", {
+                    vehicles: dealership.vehicles, // Assuming each dealership has a `vehicles` property
+                  })
+                }
+              >
+                <Icon name="car" size={32} color="#fff" />
+                <Text style={styles.categoryText}>{dealership.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -521,5 +552,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     fontWeight: "600",
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: "#333",
+    borderRadius: 5,
   },
 });
