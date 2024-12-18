@@ -113,7 +113,7 @@ const SimpleAnimatedHeader = ({
       </Animated.View>
 
       <Animated.ScrollView
-        style={[styles.scrollView, { marginTop: headerImage ? -40 : 0 }]}
+        style={[styles.scrollView, { marginTop: headerImage ? -40 : -20 }]}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }

@@ -12,6 +12,13 @@ import { getAllVehicles } from "../api/vehicles";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
 
+const COLORS = {
+  primary: "#1b2128", // Airbnb-style red
+  secondary: "#1b2128", // Dark gray for text
+  accent: "#1b2128", // Matching primary for active elements
+  lightGray: "#dddddd", // Light gray for inactive elements
+};
+
 const PopularCars = ({ carosel }) => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
@@ -72,25 +79,32 @@ const PopularCars = ({ carosel }) => {
           ? [
               styles.container,
               {
-                width: width - 20,
-                marginHorizontal: 10,
+                width: width - 40,
+                marginHorizontal: 20,
               },
             ]
           : styles.container
       }
       onPress={() => navigation.navigate("Vehicle Details", { vehicle: item })}
     >
-      <Image
-        source={{
-          uri: item.image,
-        }}
-        style={styles.image}
-      />
-      <Text style={styles.carName}>
-        {item.brand} {item.model}
-      </Text>
-      <Text style={styles.carYear}>{item.year}</Text>
-      <Text style={styles.carPrice}>KD {item.price.toLocaleString()}</Text>
+      <View style={styles.imageContainer}>
+        <Image
+          source={{
+            uri: item.image,
+          }}
+          style={styles.image}
+        />
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.carName}>
+          {item.brand} {item.model}
+        </Text>
+        <Text style={styles.carYear}>{item.year}</Text>
+        <Text style={styles.carPrice}>
+          <Text style={styles.currencyText}>KD </Text>
+          {item.price.toLocaleString()}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -102,7 +116,7 @@ const PopularCars = ({ carosel }) => {
             key={index}
             style={[
               styles.dot,
-              { backgroundColor: currentIndex === index ? "#000" : "#ccc" },
+              currentIndex === index ? styles.activeDot : styles.inactiveDot,
             ]}
           />
         ))}
@@ -112,14 +126,14 @@ const PopularCars = ({ carosel }) => {
 
   return (
     <View style={styles.outerContainer}>
-      <Text style={styles.headerText}>Popular Cars:</Text>
+      <Text style={styles.headerText}>Popular Cars</Text>
       <FlatList
         data={uniqueBrandVehicles}
         renderItem={renderCars}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={carosel ? null : { paddingHorizontal: 10 }}
+        contentContainerStyle={carosel ? null : { paddingHorizontal: 20 }}
         pagingEnabled={carosel}
         snapToAlignment="center"
         snapToInterval={carosel ? width : undefined}
@@ -132,7 +146,9 @@ const PopularCars = ({ carosel }) => {
           index,
         })}
       />
-      {carosel && renderDotIndicator()}
+      {carosel && (
+        <View style={styles.paginationContainer}>{renderDotIndicator()}</View>
+      )}
     </View>
   );
 };
@@ -141,63 +157,92 @@ export default PopularCars;
 
 const styles = StyleSheet.create({
   outerContainer: {
-    paddingTop: 20,
+    paddingTop: 30,
+    paddingBottom: 20,
+    backgroundColor: "#fff",
   },
   headerText: {
-    marginLeft: 15,
-    fontSize: 20,
-    fontWeight: "bold",
+    marginLeft: 20,
+    fontSize: 24,
+    fontWeight: "600",
     marginBottom: 20,
+    color: "#1a1a1a",
+    letterSpacing: 0.5,
   },
   container: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 250,
-    height: 300,
-    borderRadius: 10,
+    width: 280,
+    height: 320,
+    borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "#f7f0f0",
-    marginRight: 10,
-    padding: 15,
-    elevation: 3,
+    backgroundColor: "#fff",
+    marginRight: 15,
+    elevation: 5,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  imageContainer: {
+    height: "65%",
+    width: "100%",
+    backgroundColor: "#f8f9fa",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 10,
   },
   image: {
     width: "100%",
-    height: "60%",
-    borderRadius: 8,
+    height: "100%",
+    borderRadius: 12,
     objectFit: "contain",
   },
+  infoContainer: {
+    padding: 15,
+    backgroundColor: "#fff",
+  },
   carName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 10,
-    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1a1a1a",
+    marginBottom: 6,
   },
   carYear: {
     fontSize: 14,
-    color: "#666",
-    marginTop: 5,
+    color: "#6c757d",
+    marginBottom: 8,
+    fontWeight: "500",
   },
   carPrice: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: "700",
+    color: COLORS.secondary,
+  },
+  currencyText: {
+    color: COLORS.primary,
     fontWeight: "600",
-    color: "#28a745",
-    marginTop: 5,
+  },
+  paginationContainer: {
+    marginTop: 15,
+    marginBottom: 5,
   },
   paginationDots: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    height: 20,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    width: 20,
+    height: 3,
+    marginHorizontal: 3,
+    borderRadius: 1,
+    transition: "0.3s ease",
+  },
+  activeDot: {
+    backgroundColor: COLORS.accent,
+    width: 30,
+  },
+  inactiveDot: {
+    backgroundColor: COLORS.lightGray,
   },
 });

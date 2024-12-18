@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   durationButton: {
     width: "48%",
     padding: 16,
-    backgroundColor: "white",
+    backgroundColor: "#F5F7FA",
     borderRadius: 12,
     alignItems: "center",
     marginBottom: 12,
@@ -554,11 +554,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   selectedButton: {
-    backgroundColor: "#1B2128",
-    borderColor: "#1B2128",
+    backgroundColor: "#2D3540",
+    borderColor: "#2D3540",
   },
   durationButtonText: {
-    color: "#1B2128",
+    color: "#2D3540",
     fontWeight: "600",
     fontSize: 15,
   },

@@ -21,6 +21,13 @@ import AnimatedHeader from "../components/AnimatedHeader";
 import UserContext from "../context/UserContext";
 import { deleteToken } from "../api/storage";
 
+const categories = [
+  { name: "Luxury", icon: "car-sports" },
+  { name: "SUVs", icon: "car-estate" },
+  { name: "Electric", icon: "car-electric" },
+  { name: "Family", icon: "car-side" },
+];
+
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showButtonTooltip, setShowButtonTooltip] = useState(true);
@@ -94,21 +101,27 @@ const Home = () => {
         backgroundColor="#1B2128"
         textColor="white"
       >
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <Icon
-            name="magnify"
-            size={24}
-            color="#1B2128"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            placeholder="Search"
-            style={styles.searchInput}
-            value={searchInput}
-          />
+        <View>
+          <PopularCars carosel={true} />
         </View>
-        {/* Brands categories List */}
+        {/* Add Featured Categories */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Featured Categories</Text>
+          <View style={styles.categoriesContainer}>
+            {categories.map((category, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.categoryCard}
+                onPress={() =>
+                  navigation.navigate("All Vehicles", { filter: category.name })
+                }
+              >
+                <Icon name={category.icon} size={32} color="#fff" />
+                <Text style={styles.categoryText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
         {/* All Vehicles Section */}
         {/* <TouchableOpacity
@@ -132,9 +145,9 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        <View>
+        {/* <View>
           <PopularCars carosel={true} />
-        </View>
+        </View> */}
 
         <View style={{ height: 100 }} />
       </AnimatedHeader>
@@ -231,8 +244,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1B2128",
+    backgroundColor: "#fff",
     width: "100%",
+    height: "100%",
     marginTop: -40,
   },
   sectionContainer: {
@@ -472,5 +486,40 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: "#FFFFFF",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 15,
+  },
+  categoriesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  categoryCard: {
+    width: "48%",
+    backgroundColor: "#2A3441",
+    borderRadius: 15,
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 100,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  categoryText: {
+    color: "#fff",
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: "600",
   },
 });
