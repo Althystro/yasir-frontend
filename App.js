@@ -1,6 +1,12 @@
 import { StatusBar } from "expo-status-bar";
+
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, LogBox } from "react-native";
+
+import { useEffect, useState, useRef } from "react";
+import { StyleSheet, Text, View, Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+
 import { getToken } from "./api/storage";
 import UserContext from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,6 +24,7 @@ import Purchases from "./screens/Purchases";
 import PdfGenerator from "./components/PdfGenerator";
 import TestDriveContext from "./context/TestDriveContext";
 import HomeNav from "./navigation/HomeNavigation/HomeNav";
+import PaymentPlansScreen from "./screens/Admin";
 
 LogBox.ignoreAllLogs();
 
@@ -43,6 +50,10 @@ export default function App() {
         <UserContext.Provider value={[user, setUser]}>
           <TestDriveContext.Provider value={[TestDrive, setTestDrive]}>
             {user ? <HomeNav /> : <AuthNav />}
+
+
+
+            {/* <PaymentPlansScreen /> */}
 
             {/* <Home /> */}
             {/* <VehicleDetails /> */}

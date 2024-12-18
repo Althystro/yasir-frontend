@@ -53,7 +53,7 @@ const Purchases = ({ route }) => {
   }, []);
 
   const handleFinish = () => {
-    navigation.navigate("Profile");
+    navigation.navigate("Home");
   };
 
   const handleDownPaymentChange = (text) => {
