@@ -30,9 +30,25 @@ const getFinancers = async () => {
   }
 };
 
+const getAllPaymentPlans = async () => {
+  const res = await instance.get("/api/paymentPlans/all");
+  return res.data;
+};
+
+const updatePaymentPlan = async ({ id, firstStatus }) => {
+  const finalStatus = { status: firstStatus };
+  const res = await instance.put(
+    `/api/financers/updateStatus/${id}`,
+    finalStatus
+  );
+  return res.data;
+};
+
 export {
   getPaymentPlan,
   createPaymentPlan,
   getPaymentPlanByUserId,
   getFinancers,
+  getAllPaymentPlans,
+  updatePaymentPlan,
 };
