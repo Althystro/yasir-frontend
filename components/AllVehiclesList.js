@@ -183,14 +183,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     height: 40,
-    marginBottom: 20,
+    marginBottom: -20,
     width: "100%",
   },
   filterContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: -20,
     width: "100%",
   },
   picker: {
