@@ -23,6 +23,8 @@ const PdfGenerator = ({ vehicle, customer, downpayment, length, financer }) => {
   console.log(financer);
 
   const financerName = financer.name;
+  console.log(financer);
+  console.log(financerName);
 
   if (!vehicle) {
     return (

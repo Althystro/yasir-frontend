@@ -12,6 +12,7 @@ import {
   Animated,
   ActivityIndicator,
   ScrollView,
+  FlatList,
 } from "react-native";
 import PdfGenerator from "../components/PdfGenerator";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -166,59 +167,107 @@ const Purchases = ({ route }) => {
     </View>
   );
 
-  const PaymentPlanStep = ({ vehicle, customer, financers }) => (
-    <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Payment Plan</Text>
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <MaterialCommunityIcons
-            name="face-man-profile"
-            size={24}
-            color="#1B2128"
-          />
-          <Text style={styles.detailText}>
-            Name: {customer.firstName} {customer.lastName}
-          </Text>
+  const PaymentPlanStep = ({ vehicle, customer, financers }) => {
+    const [showFinancerDropdown, setShowFinancerDropdown] = useState(false);
+
+    return (
+      <View style={styles.stepContainer}>
+        <Text style={styles.stepTitle}>Payment Plan</Text>
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailRow}>
+            <MaterialCommunityIcons
+              name="face-man-profile"
+              size={24}
+              color="#1B2128"
+            />
+            <Text style={styles.detailText}>
+              Name: {customer.firstName} {customer.lastName}
+            </Text>
+          </View>
+          <View style={styles.detailRow}>
+            <AntDesign name="car" size={24} color="#1B2128" />
+            <Text style={styles.detailText}>
+              Vehicle: {vehicle.brand} {vehicle.model}
+            </Text>
+          </View>
+          <View style={styles.detailRow}>
+            <MaterialCommunityIcons name="finance" size={24} color="#1B2128" />
+            <TouchableOpacity
+              style={styles.dropdownButton}
+              onPress={() => setShowFinancerDropdown(true)}
+            >
+              <Text style={styles.dropdownButtonText}>
+                {selectedFinancer ? selectedFinancer.name : "Select Financer"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.detailRow}>
+            <Icon name="calendar-outline" size={24} color="#1B2128" />
+            <Text style={styles.detailText}>
+              Length: {selectedDuration * 12} Months
+            </Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Icon name="pricetag-outline" size={24} color="#1B2128" />
+            <Text style={styles.detailText}>
+              Total Amount: KD {vehicle.price - downPayment}
+            </Text>
+          </View>
         </View>
-        <View style={styles.detailRow}>
-          <AntDesign name="car" size={24} color="#1B2128" />
-          <Text style={styles.detailText}>
-            Vehicle: {vehicle.brand} {vehicle.model}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <MaterialCommunityIcons name="finance" size={24} color="#1B2128" />
-          <Picker
-            selectedValue={selectedFinancer}
-            style={styles.detailText}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedFinancer(itemValue)
-            }
+
+        <Modal
+          visible={showFinancerDropdown}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowFinancerDropdown(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowFinancerDropdown(false)}
           >
-            {financers.map((financer, index) => (
-              <Picker.Item
-                key={index}
-                label={financer.name}
-                value={`${financer.id}-${financer.name}`}
+            <View style={styles.dropdownModal}>
+              <View style={styles.dropdownHeader}>
+                <Text style={styles.dropdownTitle}>Select Financer</Text>
+                <TouchableOpacity
+                  onPress={() => setShowFinancerDropdown(false)}
+                >
+                  <Icon name="close" size={24} color="#1B2128" />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={financers}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.dropdownItem,
+                      selectedFinancer?.id === item.id &&
+                        styles.selectedDropdownItem,
+                    ]}
+                    onPress={() => {
+                      setSelectedFinancer(item);
+                      setShowFinancerDropdown(false);
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.dropdownItemText,
+                        selectedFinancer?.id === item.id &&
+                          styles.selectedDropdownItemText,
+                      ]}
+                    >
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.detailRow}>
-          <Icon name="calendar-outline" size={24} color="#1B2128" />
-          <Text style={styles.detailText}>
-            Length: {selectedDuration * 12} Months
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Icon name="pricetag-outline" size={24} color="#1B2128" />
-          <Text style={styles.detailText}>
-            Total Amount: KD {vehicle.price - downPayment}
-          </Text>
-        </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </View>
-    </View>
-  );
+    );
+  };
 
   const SignatureStep = ({
     vehicle,
@@ -832,6 +881,61 @@ const styles = StyleSheet.create({
     color: "#1B2128",
   },
   nextButtonText: {
+    color: "#FFFFFF",
+  },
+  dropdownButton: {
+    flex: 1,
+    height: 40,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    backgroundColor: "#F5F7FA",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E5E9F0",
+  },
+  dropdownButtonText: {
+    fontSize: 16,
+    color: "#1B2128",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dropdownModal: {
+    width: "80%",
+    maxHeight: "70%",
+    backgroundColor: "white",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  dropdownHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E9F0",
+  },
+  dropdownTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1B2128",
+  },
+  dropdownItem: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E9F0",
+  },
+  selectedDropdownItem: {
+    backgroundColor: "#1B2128",
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: "#1B2128",
+  },
+  selectedDropdownItemText: {
     color: "#FFFFFF",
   },
 });
