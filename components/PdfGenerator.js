@@ -7,20 +7,24 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  SafeAreaView,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SignatureScreen from "react-native-signature-canvas";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import FileUpload from "./FileUpload";
+import WebView from "react-native-webview";
 
 const PdfGenerator = ({ vehicle }) => {
   const signatureRef = useRef();
   const [signature, setSignature] = useState(null);
   const [showSignature, setShowSignature] = useState(false);
   const [pdfUri, setPdfUri] = useState(null);
-  const [showPdfPreview, setShowPdfPreview] = useState(false);
-
+  // const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [showPdfModal, setShowPdfModal] = useState(false);
   if (!vehicle) {
     return (
       <View style={styles.container}>
@@ -39,7 +43,7 @@ const PdfGenerator = ({ vehicle }) => {
     setSignature(null);
     setShowSignature(false);
     setPdfUri(null);
-    setShowPdfPreview(false);
+    // setShowPdfPreview(false);
   };
 
   const handleSaveSignature = () => {
@@ -104,12 +108,18 @@ const PdfGenerator = ({ vehicle }) => {
       });
 
       setPdfUri(uri);
-      setShowPdfPreview(true);
+      // setShowPdfPreview(true);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF");
     }
   };
+
+  useEffect(() => {
+    if (showPdfModal) {
+      generatePDF();
+    }
+  }, [showPdfModal]);
 
   const style = `
     .m-signature-pad--footer {display: none}
@@ -129,45 +139,45 @@ const PdfGenerator = ({ vehicle }) => {
     }
   `;
 
-  if (showPdfPreview && pdfUri) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Button title="Back" onPress={() => setShowPdfPreview(false)} />
-          <Button title="Share PDF" onPress={handleShare} />
-        </View>
-        <ScrollView style={styles.previewScroll}>
-          <View style={styles.previewContent}>
-            <Text style={styles.previewHeader}>
-              Vehicle Inspection Document
-            </Text>
-            <View style={styles.detailsContainer}>
-              <Text style={styles.previewText}>Vehicle Details:</Text>
-              <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
-              <Text style={styles.detailText}>Model: {vehicle.model}</Text>
-              <Text style={styles.detailText}>Year: {vehicle.year}</Text>
-              <Text style={styles.previewText}>
-                Date: {new Date().toLocaleDateString()}
-              </Text>
-            </View>
-            <Text style={styles.previewText}>Signature:</Text>
-            {signature && (
-              <Image
-                source={{ uri: signature }}
-                style={styles.previewSignature}
-                resizeMode="contain"
-              />
-            )}
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
+  // if (showPdfPreview && pdfUri) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <View style={styles.header}>
+  //         <Button title="Back" onPress={() => setShowPdfPreview(false)} />
+  //         <Button title="Share PDF" onPress={handleShare} />
+  //       </View>
+  //       <ScrollView style={styles.previewScroll}>
+  //         <View style={styles.previewContent}>
+  //           <Text style={styles.previewHeader}>
+  //             Vehicle Inspection Document
+  //           </Text>
+  //           <View style={styles.detailsContainer}>
+  //             <Text style={styles.previewText}>Vehicle Details:</Text>
+  //             <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
+  //             <Text style={styles.detailText}>Model: {vehicle.model}</Text>
+  //             <Text style={styles.detailText}>Year: {vehicle.year}</Text>
+  //             <Text style={styles.previewText}>
+  //               Date: {new Date().toLocaleDateString()}
+  //             </Text>
+  //           </View>
+  //           <Text style={styles.previewText}>Signature:</Text>
+  //           {signature && (
+  //             <Image
+  //               source={{ uri: signature }}
+  //               style={styles.previewSignature}
+  //               resizeMode="contain"
+  //             />
+  //           )}
+  //         </View>
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // }
 
   return (
-    <View style={styles.container}>
-      <FileUpload />
-      <Text style={styles.title}>Sign Here</Text>
+    <SafeAreaView style={styles.container}>
+      {/* <FileUpload /> */}
+      {/* <Text style={styles.title}>Sign Here</Text> */}
       <View style={styles.signatureContainer}>
         <SignatureScreen
           ref={signatureRef}
@@ -185,11 +195,59 @@ const PdfGenerator = ({ vehicle }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button title="Clear" onPress={handleClear} />
-        <Button title="Save Signature" onPress={handleSaveSignature} />
-        <Button title="Generate PDF" onPress={generatePDF} />
+        <TouchableOpacity style={styles.button} onPress={handleClear}>
+          <Text style={styles.buttonText}>Clear</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSaveSignature}>
+          <Text style={styles.buttonText}>Save Signature</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowPdfModal(true)}
+        >
+          <Text style={styles.buttonText}>Generate PDF</Text>
+        </TouchableOpacity>
+        {/* <Button title="Clear" onPress={handleClear} /> */}
+        {/* <Button title="Save Signature" onPress={handleSaveSignature} /> */}
+        {/* <Button title="Generate PDF" onPress={generatePDF} /> */}
       </View>
 
+      <Modal
+        visible={showPdfModal}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowPdfModal(false)}
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowPdfModal(false)}>
+              <Text style={styles.closeButton}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleShare}>
+              <Text style={styles.shareButton}>Share</Text>
+            </TouchableOpacity>
+          </View>
+          {/* {pdfUri ? (
+            <WebView
+              source={{ uri: pdfUri }}
+              style={styles.webview}
+              javaScriptEnabled
+            />
+          ) : (
+            <Text style={styles.loadingText}>Loading PDF...</Text>
+          )} */}
+          {pdfUri ? (
+            <Image
+              source={{ uri: pdfUri }}
+              style={styles.pdfPreview}
+              resizeMode="contain"
+            />
+          ) : (
+            <Text style={styles.loadingText}>Generating PDF...</Text>
+          )}
+        </SafeAreaView>
+      </Modal>
+      {/* 
       {showSignature && signature && (
         <View style={styles.previewContainer}>
           <Text style={styles.previewTitle}>Signature Preview:</Text>
@@ -199,8 +257,8 @@ const PdfGenerator = ({ vehicle }) => {
             resizeMode="contain"
           />
         </View>
-      )}
-    </View>
+      )} */}
+    </SafeAreaView>
   );
 };
 
@@ -209,7 +267,11 @@ export default PdfGenerator;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    //padding: 10,
+    backgroundColor: "white",
+    //maxHeight: "300",
+    //width: "80%",
+    //marginTop: 100,
   },
   errorText: {
     color: "red",
@@ -220,24 +282,26 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    alignItems: "center",
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#ddd",
     marginBottom: 20,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
   },
-  signatureContainer: {
-    height: 200,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#000000",
-    backgroundColor: "white",
-  },
+  // signatureContainer: {
+  //   height: 200,
+  //   marginBottom: 20,
+  //   borderWidth: 1,
+  //   borderColor: "#000000",
+  //   backgroundColor: "white",
+  // },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -292,4 +356,50 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginVertical: 2,
   },
+  button: {
+    backgroundColor: "black",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  signatureContainer: {
+    height: 155,
+    width: "90%",
+    alignSelf: "center",
+    marginVertical: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#ddd",
+    backgroundColor: "#ffffff",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 3,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    height: "80%",
+    width: "90%",
+    alignSelf: "center",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 20,
+  },
+  closeButton: { color: "gray", fontSize: 16 },
+  shareButton: { color: "gray", fontSize: 16 },
+  pdfPreview: {
+    flex: 1,
+    margin: 10,
+  },
+  loadingText: { textAlign: "center", marginTop: 50, fontSize: 18 },
 });

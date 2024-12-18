@@ -146,7 +146,7 @@ const FileUpload = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.filesContainer}>
+      {/* <View style={styles.filesContainer}>
         <Text style={styles.sectionTitle}>Uploaded Files</Text>
         <ScrollView style={styles.filesList}>
           {uploadedFiles.map((file, index) => (
@@ -167,7 +167,7 @@ const FileUpload = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -176,9 +176,9 @@ export default FileUpload;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 60,
+    //paddingTop: 0,
   },
   header: {
     flexDirection: "row",
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   uploadButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "black",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -215,16 +215,22 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   filesContainer: {
-    flex: 1,
+    //flex: 1,
+    height: 100,
+    width: "100%",
     padding: 20,
+    backgroundColor: "white",
+    maxHeight: 150,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
+    maxHeight: 120,
   },
   filesList: {
     flex: 1,
+    backgroundColor: "white",
   },
   fileItem: {
     flexDirection: "row",
