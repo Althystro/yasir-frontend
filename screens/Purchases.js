@@ -26,6 +26,7 @@ import { getFinancers, createPaymentPlan } from "../api/paymentPlan";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import FileUpload from "../components/FileUpload";
 
 const { width } = Dimensions.get("window");
 
@@ -291,42 +292,44 @@ const Purchases = ({ route }) => {
 
     return (
       <View style={styles.stepContainer}>
-        <Text style={styles.stepTitle}>Sign Documents</Text>
-        <Modal
+        <Text style={styles.stepTitle}>Sign Below</Text>
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Sign Document</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Icon name="close" size={24} color="#1B2128" />
-              </TouchableOpacity>
-            </View>
-            <PdfGenerator
-              vehicle={vehicle}
-              customer={customer}
-              downpayment={downPayment}
-              length={length}
-              financer={financer}
-            />
-          </View>
-        </Modal>
-        <TouchableOpacity
+        > */}
+        {/* <View stylxe={styles.modalView}> */}
+        {/* <View style={styles.modalHeader}> */}
+        {/* <Text style={styles.modalTitle}>Sign Document</Text> */}
+        {/* <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Icon name="close" size={24} color="#1B2128" />
+            </TouchableOpacity> */}
+        {/* </View> */}
+        <PdfGenerator
+          vehicle={vehicle}
+          customer={customer}
+          downpayment={downPayment}
+          length={length}
+          financer={financer}
+        />
+        {/* </View> */}
+        {/* </Modal> */}
+        {/* <TouchableOpacity
           style={styles.signatureButton}
           onPress={() => setModalVisible(true)}
         >
           <Icon name="create-outline" size={24} color="#FFF" />
           <Text style={styles.signatureButtonText}>Open Signature</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   };
+
+  const UploadingStep = () => <FileUpload />;
 
   const ConfirmationStep = () => (
     <View style={styles.stepContainer}>
@@ -401,7 +404,8 @@ const Purchases = ({ route }) => {
       length={selectedDuration}
       financer={selectedFinancer}
     />,
-    <ConfirmationStep key="step6" />,
+    <FileUpload key="step6" />,
+    <ConfirmationStep key="step7" />,
   ];
 
   return (
@@ -454,6 +458,7 @@ const Purchases = ({ route }) => {
           <ScrollView
             style={styles.scrollContent}
             showsVerticalScrollIndicator={false}
+            scrollEnabled={active === 4 ? false : true}
           >
             {content[active]}
           </ScrollView>
@@ -516,7 +521,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   stepContainer: {
-    padding: 16,
+    padding: 10,
     backgroundColor: "white",
     borderRadius: 20,
     elevation: 2,
@@ -524,7 +529,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    marginTop: 20,
+    //marginTop: 20,
   },
   stepTitle: {
     fontSize: 20,
@@ -610,7 +615,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalView: {
-    flex: 1,
+    //flex: 1,
+    marginTop: 10,
     backgroundColor: "white",
     margin: 20,
     borderRadius: 20,
@@ -623,6 +629,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    height: "75%",
+    //width: "100%",
   },
   signatureButton: {
     backgroundColor: "#1B2128",
@@ -840,7 +848,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 2,
     backgroundColor: "#DFE4F0",
-    marginHorizontal: 5,
+    //marginHorizontal: 5,
   },
   completedLine: {
     backgroundColor: "#28a745",
