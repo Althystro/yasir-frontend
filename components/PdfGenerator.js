@@ -14,12 +14,17 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import FileUpload from "./FileUpload";
 
-const PdfGenerator = ({ vehicle }) => {
+const PdfGenerator = ({ vehicle, customer, downpayment, length, financer }) => {
   const signatureRef = useRef();
   const [signature, setSignature] = useState(null);
   const [showSignature, setShowSignature] = useState(false);
   const [pdfUri, setPdfUri] = useState(null);
   const [showPdfPreview, setShowPdfPreview] = useState(false);
+  console.log(financer);
+
+  const financerName = financer.name;
+  console.log(financer);
+  console.log(financerName);
 
   if (!vehicle) {
     return (
@@ -79,8 +84,26 @@ const PdfGenerator = ({ vehicle }) => {
           </head>
           <body>
             <div class="container">
-              <h1 style="text-align: center;">Vehicle Inspection Document</h1>
+              <h1 style="text-align: center;">Vehicle Purchase Document</h1>
               <div class="details">
+                <p><strong>Paymen Plan Details:</strong></p>
+                <ul>
+                  <li>Customer Name: ${customer.firstName} ${
+        customer.lastName
+      }</li>
+                  <li>Vehicle: ${vehicle.year} ${vehicle.brand} ${
+        vehicle.model
+      }</li>
+                  <li>Financer: ${financerName}</li>
+                  <li>Length of contract: ${length} Years (${
+        length * 12
+      } Months)</li>
+      <li>Total price: ${vehicle.price}</li>
+                  <li>Downpayment: $${downpayment}</li>
+                  <li>Total after Downpayment: ${
+                    vehicle.price - downpayment
+                  }</li>
+                </ul>
                 <p><strong>Vehicle Details:</strong></p>
                 <ul>
                   <li>Brand: ${vehicle.brand}</li>
@@ -138,10 +161,29 @@ const PdfGenerator = ({ vehicle }) => {
         </View>
         <ScrollView style={styles.previewScroll}>
           <View style={styles.previewContent}>
-            <Text style={styles.previewHeader}>
-              Vehicle Inspection Document
-            </Text>
+            <Text style={styles.previewHeader}>Vehicle Purchase Document</Text>
             <View style={styles.detailsContainer}>
+              <Text style={styles.previewText}>Payment Plan Details:</Text>
+              <Text style={styles.detailText}>
+                Customer Name: {customer.firstName} {customer.lastName}
+              </Text>
+              <Text style={styles.detailText}>
+                Vehicle: {vehicle.year} {vehicle.brand} {vehicle.model}
+              </Text>
+              <Text style={styles.detailText}>Financer: {financerName}</Text>
+              <Text style={styles.detailText}>
+                Length: {length} Years ({length * 12} Months)
+              </Text>
+              <Text style={styles.detailText}>
+                Total price: {vehicle.price}
+              </Text>
+              <Text style={styles.detailText}>
+                Downpayment: KD {downpayment}
+              </Text>
+              <Text style={styles.detailText}>
+                Total after Downpayment: ${vehicle.price - downpayment}
+              </Text>
+              <Text></Text>
               <Text style={styles.previewText}>Vehicle Details:</Text>
               <Text style={styles.detailText}>Brand: {vehicle.brand}</Text>
               <Text style={styles.detailText}>Model: {vehicle.model}</Text>
@@ -281,7 +323,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   detailsContainer: {
-    height: 200,
     width: "100%",
     padding: 10,
     marginVertical: 10,
